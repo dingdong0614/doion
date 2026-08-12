@@ -16,13 +16,18 @@
 <header class="nav">
   <div class="wrap nav-inner">
     <a href="index.html" class="logo"><img src="assets/logo-dark.png" alt="doion" width="64" height="26"></a>
-    <nav class="nav-links">
+    <nav class="nav-links" id="navLinks">
       <a href="index.html">홈</a>
       <a href="pricing.html" aria-current="page">가격</a>
       <a href="portfolio.html">포트폴리오</a>
       <a href="process.html">진행방식</a>
     </nav>
-    <a href="contact.html" class="btn btn-solid btn-sm">무료 상담 신청</a>
+    <div class="nav-actions">
+      <a href="contact.html" class="btn btn-solid btn-sm">무료 상담 신청</a>
+      <button type="button" class="nav-toggle" id="navToggle" aria-expanded="false" aria-controls="navLinks" aria-label="메뉴 열기">
+        <span class="nav-toggle-bar"></span><span class="nav-toggle-bar"></span><span class="nav-toggle-bar"></span>
+      </button>
+    </div>
   </div>
 </header>
 
@@ -73,6 +78,36 @@
         </article>
       </div>
       <p class="price-note">VAT 별도 · 도메인/서버 비용은 별도 안내드립니다</p>
+    </div>
+  </section>
+
+  <section class="pricing addons">
+    <div class="wrap">
+      <p class="eyebrow">// MONTHLY</p>
+      <h2>제작 후에는, 이렇게 도와드립니다</h2>
+      <p class="section-lead">매달 필요한 부분만 추가로 관리해드립니다. 신청은 필요하실 때만 하시면 됩니다.</p>
+
+      <div class="spec-row addon-row">
+        <article class="spec-panel">
+          <p class="spec-name">관리비 프리미엄</p>
+          <p class="spec-price">15<span>만원 / 월</span></p>
+          <ul>
+            <li>월 7회 콘텐츠 수정</li>
+            <li>가격·메뉴·공지 업데이트</li>
+            <li>문의 대응 우선 지원</li>
+          </ul>
+        </article>
+
+        <article class="spec-panel">
+          <p class="spec-name">실시간 혼잡도 위젯</p>
+          <p class="spec-price">2.5<span>만원 / 월</span></p>
+          <ul>
+            <li>기본형·반응형UI형 전용 애드온</li>
+            <li>예약완벽연동형은 기본 포함</li>
+            <li>매장 혼잡도 실시간 표시</li>
+          </ul>
+        </article>
+      </div>
 
       <div class="cta-row" style="margin-top: var(--sp-8);">
         <a href="contact.html" class="btn btn-solid">무료 상담 신청</a>

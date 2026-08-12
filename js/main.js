@@ -40,7 +40,49 @@
     typeEl.textContent = shopNames[0];
   }
 
-  /* ---------- 2. contact form ---------- */
+  /* ---------- 2. mobile nav toggle ---------- */
+  var navEl = document.querySelector(".nav");
+  var navToggle = document.getElementById("navToggle");
+  var navLinks = document.getElementById("navLinks");
+
+  if (navEl && navToggle && navLinks) {
+    var closeNav = function () {
+      navEl.classList.remove("is-open");
+      navToggle.setAttribute("aria-expanded", "false");
+      navToggle.setAttribute("aria-label", "메뉴 열기");
+    };
+    var openNav = function () {
+      navEl.classList.add("is-open");
+      navToggle.setAttribute("aria-expanded", "true");
+      navToggle.setAttribute("aria-label", "메뉴 닫기");
+    };
+
+    navToggle.addEventListener("click", function () {
+      if (navEl.classList.contains("is-open")) {
+        closeNav();
+      } else {
+        openNav();
+      }
+    });
+
+    navLinks.addEventListener("click", function (e) {
+      if (e.target.tagName === "A") closeNav();
+    });
+
+    document.addEventListener("keydown", function (e) {
+      if (e.key === "Escape") closeNav();
+    });
+
+    document.addEventListener("click", function (e) {
+      if (navEl.classList.contains("is-open") && !navEl.contains(e.target)) closeNav();
+    });
+
+    window.addEventListener("resize", function () {
+      if (window.innerWidth > 760) closeNav();
+    });
+  }
+
+  /* ---------- 3. contact form ---------- */
   var form = document.getElementById("contactForm");
   var formNote = document.getElementById("formNote");
 
