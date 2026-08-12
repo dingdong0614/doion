@@ -480,6 +480,67 @@ h1, h2, h3 {
 }
 .log-card h3 { font-size: 1.2rem; margin-bottom: var(--sp-3); font-weight: 700; line-height: 1.4; }
 .log-card p:not(.log-no) { color: var(--text-muted); font-size: 1rem; line-height: 1.6; margin: 0; }
+.log-tag--info {
+  color: var(--teal);
+  background: rgba(1,148,140,0.12);
+  border-color: rgba(1,148,140,0.32);
+}
+
+/* ---------- chip row (badges) ---------- */
+.chip-row { display: flex; gap: var(--sp-3); flex-wrap: wrap; margin-top: var(--sp-6); }
+.chip {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  border: 1px solid var(--line-strong);
+  border-radius: 999px;
+  padding: 8px 16px;
+}
+
+/* ---------- compare grid (before / after) ---------- */
+.compare-grid { display: flex; flex-direction: column; gap: var(--sp-3); margin-top: var(--sp-7); }
+.compare-row { display: grid; grid-template-columns: 1fr 1fr; gap: var(--sp-3); }
+.compare-cell {
+  padding: var(--sp-5);
+  border-radius: var(--radius);
+  border: 1px solid var(--line);
+  border-left: 3px solid var(--error);
+  background: var(--surface);
+}
+.compare-cell.is-after { border-left-color: var(--success); }
+.compare-cell h4 { margin: 0 0 var(--sp-2); font-size: 1rem; font-weight: 700; color: var(--text); }
+.compare-cell p { margin: 0; color: var(--text-muted); font-size: 0.92rem; line-height: 1.55; }
+@media (max-width: 760px) { .compare-row { grid-template-columns: 1fr; } }
+
+/* ---------- stat compare bars ---------- */
+.stat-compare-group { display: flex; flex-direction: column; gap: var(--sp-7); }
+.stat-label {
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+  color: var(--text-muted);
+  margin: 0 0 var(--sp-2);
+}
+.stat-bar-track {
+  position: relative;
+  height: 34px;
+  border-radius: 6px;
+  background: var(--surface-raised);
+  overflow: hidden;
+}
+.stat-bar-fill {
+  height: 100%;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  padding: 0 var(--sp-3);
+  font-family: var(--font-mono);
+  font-weight: 700;
+  font-size: 0.85rem;
+  white-space: nowrap;
+}
+.stat-bar-fill.is-before { background: var(--line-strong); color: var(--text); }
+.stat-bar-fill.is-after { background: var(--accent); color: #fff; }
 
 /* ---------- pricing / spec sheet ---------- */
 .pricing { padding: var(--sp-9) 0; background: var(--bg-alt); }
@@ -490,7 +551,6 @@ h1, h2, h3 {
   gap: var(--sp-5);
   margin-top: var(--sp-7);
 }
-.addon-row { grid-template-columns: repeat(2, 1fr); max-width: 760px; }
 .spec-panel {
   background: var(--surface);
   border: 1px solid var(--line);
@@ -613,6 +673,7 @@ h1, h2, h3 {
   gap: 0;
   position: relative;
 }
+.pipeline--3col { grid-template-columns: repeat(3, 1fr); }
 .pipeline li {
   background: var(--surface);
   border: 1px solid var(--line);
