@@ -1,6 +1,10 @@
 (function () {
   "use strict";
 
+  // web3forms.com에서 발급받은 Access Key입니다. (ptholic 프로젝트와 동일한 방식)
+  // 문의를 받을 이메일을 바꾸고 싶으면 web3forms.com에서 새 이메일로 키를 재발급받아 이 값을 교체하세요.
+  var WEB3FORMS_ACCESS_KEY = "YOUR_WEB3FORMS_ACCESS_KEY";
+
   var prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
   /* ---------- 1. hero terminal typewriter ---------- */
@@ -61,19 +65,31 @@
       if (submitBtn) submitBtn.disabled = true;
       formNote.textContent = "전송 중...";
 
-      fetch("/api/contact", {
+      fetch("https://api.web3forms.com/submit", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ shopName: shopName, managerName: managerName, phone: phone })
+        headers: { "Content-Type": "application/json", Accept: "application/json" },
+        body: JSON.stringify({
+          access_key: WEB3FORMS_ACCESS_KEY,
+          subject: "[doion 상담 신청] " + shopName + " · " + managerName,
+          from_name: "doion 웹사이트 상담 신청 폼",
+          매장이름: shopName,
+          담당자이름: managerName,
+          연락처: phone
+        })
       })
-        .then(function (res) {
-          if (!res.ok) throw new Error("request failed");
-          formNote.textContent = "상담 신청이 접수되었습니다. 빠르게 연락드리겠습니다.";
-          formNote.classList.add("is-success");
-          form.reset();
+        .then(function (res) { return res.json(); })
+        .then(function (result) {
+          if (result.success) {
+            formNote.textContent = "상담 신청이 접수되었습니다. 빠르게 연락드리겠습니다.";
+            formNote.classList.add("is-success");
+            form.reset();
+          } else {
+            formNote.textContent = "전송에 실패했습니다. 잠시 후 다시 시도해주세요.";
+            formNote.classList.add("is-error");
+          }
         })
         .catch(function () {
-          formNote.textContent = "전송에 실패했습니다. 잠시 후 다시 시도해주시거나 다른 채널로 연락해주세요.";
+          formNote.textContent = "전송 중 오류가 발생했습니다. 잠시 후 다시 시도해주세요.";
           formNote.classList.add("is-error");
         })
         .finally(function () {
