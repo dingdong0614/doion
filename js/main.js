@@ -3,7 +3,7 @@
 
   // web3forms.com에서 발급받은 Access Key입니다. (ptholic 프로젝트와 동일한 방식)
   // 문의를 받을 이메일을 바꾸고 싶으면 web3forms.com에서 새 이메일로 키를 재발급받아 이 값을 교체하세요.
-  var WEB3FORMS_ACCESS_KEY = "YOUR_WEB3FORMS_ACCESS_KEY";
+  var WEB3FORMS_ACCESS_KEY = "25f74fdb-ce22-49d1-9cd7-576a68637237";
 
   var prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
