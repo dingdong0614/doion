@@ -41,6 +41,8 @@
   var formNote = document.getElementById("formNote");
 
   if (form) {
+    var submitBtn = form.querySelector('button[type="submit"]');
+
     form.addEventListener("submit", function (e) {
       e.preventDefault();
       var data = new FormData(form);
@@ -56,10 +58,27 @@
         return;
       }
 
-      // TODO: 실제 접수 방식(이메일 전송 서비스 또는 서버리스 함수) 연동 필요
-      formNote.textContent = "상담 신청이 접수되었습니다. 빠르게 연락드리겠습니다.";
-      formNote.classList.add("is-success");
-      form.reset();
+      if (submitBtn) submitBtn.disabled = true;
+      formNote.textContent = "전송 중...";
+
+      fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ shopName: shopName, managerName: managerName, phone: phone })
+      })
+        .then(function (res) {
+          if (!res.ok) throw new Error("request failed");
+          formNote.textContent = "상담 신청이 접수되었습니다. 빠르게 연락드리겠습니다.";
+          formNote.classList.add("is-success");
+          form.reset();
+        })
+        .catch(function () {
+          formNote.textContent = "전송에 실패했습니다. 잠시 후 다시 시도해주시거나 다른 채널로 연락해주세요.";
+          formNote.classList.add("is-error");
+        })
+        .finally(function () {
+          if (submitBtn) submitBtn.disabled = false;
+        });
     });
   }
 })();
