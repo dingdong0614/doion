@@ -513,6 +513,9 @@ h1, h2, h3 {
   border: 0;
   background: #121212;
 }
+@media (max-width: 600px) {
+  .browser-iframe { height: 840px; }
+}
 
 /* ---------- process / pipeline ---------- */
 .process { padding: var(--sp-9) 0; }
