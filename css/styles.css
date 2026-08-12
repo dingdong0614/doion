@@ -53,7 +53,7 @@
 }
 
 * { box-sizing: border-box; }
-html { scroll-behavior: smooth; }
+html { scroll-behavior: smooth; overflow-x: hidden; }
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
   *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
@@ -169,6 +169,8 @@ h1, h2, h3 {
   align-items: center;
   text-decoration: none;
   flex-shrink: 0;
+  padding: 9px 4px;
+  margin: -9px -4px;
 }
 .logo img { height: 26px; width: auto; display: block; }
 .nav-links {
