@@ -33,8 +33,8 @@
   --error: #CF4241;
   --amber: #FFB020;
 
-  --font-display: "Pretendard", -apple-system, BlinkMacSystemFont, sans-serif;
-  --font-body: "Pretendard", -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-display: "Pretendard Variable", -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-body: "Pretendard Variable", -apple-system, BlinkMacSystemFont, sans-serif;
   --font-mono: "JetBrains Mono", ui-monospace, monospace;
 
   --sp-1: 4px;
