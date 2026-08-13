@@ -218,8 +218,8 @@ h1, h2, h3 {
   justify-content: center;
   align-items: center;
   gap: 5px;
-  width: 36px;
-  height: 36px;
+  width: 44px;
+  height: 44px;
   padding: 0;
   border: 1px solid var(--line-strong);
   border-radius: 8px;
