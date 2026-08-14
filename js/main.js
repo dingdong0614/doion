@@ -8,7 +8,7 @@
   var prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
   /* ---------- 1. hero terminal typewriter ---------- */
-  var shopNames = ["피티홀릭짐", "당신의 매장"];
+  var shopNames = ["헬스장", "뷰티샵", "학원"];
   var typeEl = document.getElementById("typeTarget");
 
   if (typeEl && !prefersReducedMotion) {
