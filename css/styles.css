@@ -852,8 +852,8 @@ h1, h2, h3 {
   box-shadow: 0 0 0 1px rgba(70, 117, 219, 0.4), 0 12px 28px -10px rgba(70, 117, 219, 0.55);
 }
 .fab-call:hover { background: var(--accent-strong); }
-.fab-kakao { background: #FEE500; color: #191919; }
-.fab-kakao:hover { filter: brightness(0.96); }
+.fab-email { background: var(--teal); color: #ffffff; }
+.fab-email:hover { filter: brightness(1.1); }
 .fab svg { width: 26px; height: 26px; display: block; }
 
 @media (max-width: 768px) {

@@ -5,9 +5,8 @@
   // 문의를 받을 이메일을 바꾸고 싶으면 web3forms.com에서 새 이메일로 키를 재발급받아 이 값을 교체하세요.
   var WEB3FORMS_ACCESS_KEY = "70c6c844-d397-4367-a7d3-21bb1f7a655b";
 
-  // 우측 하단 플로팅 상담 버튼에 쓰이는 값입니다. 바꾸려면 이 두 줄만 수정하세요.
+  // 우측 하단 플로팅 상담 버튼에 쓰이는 값입니다. 바꾸려면 이 줄만 수정하세요.
   var CONTACT_PHONE = "010-9786-2433";
-  var KAKAO_CHANNEL_URL = "https://pf.kakao.com/_xxxxxx"; // 실제 카카오톡 채널 URL로 교체해주세요
 
   var prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
@@ -44,13 +43,13 @@
     typeEl.textContent = shopNames[0];
   }
 
-  /* ---------- 2. floating contact buttons (call + kakao) ---------- */
+  /* ---------- 2. floating contact buttons (call + 문의하기) ---------- */
   var fabGroup = document.getElementById("fabGroup");
   if (fabGroup) {
     var telHref = "tel:" + CONTACT_PHONE.replace(/-/g, "");
     fabGroup.innerHTML =
-      '<a class="fab fab-kakao" href="' + KAKAO_CHANNEL_URL + '" target="_blank" rel="noopener" aria-label="카카오톡 채널 상담">' +
-        '<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 3C6.48 3 2 6.58 2 11c0 2.79 1.86 5.25 4.66 6.68-.15.55-.98 3.58-1.01 3.8 0 0-.02.17.09.24.11.07.24.02.24.02.33-.05 3.77-2.48 4.36-2.9.53.08 1.08.12 1.66.12 5.52 0 10-3.58 10-8S17.52 3 12 3z" fill="currentColor"/></svg>' +
+      '<a class="fab fab-email" href="contact.html" aria-label="이메일로 문의하기">' +
+        '<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 4h16a1 1 0 011 1v14a1 1 0 01-1 1H4a1 1 0 01-1-1V5a1 1 0 011-1z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M3.5 5.5l8.5 7 8.5-7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>' +
       '</a>' +
       '<a class="fab fab-call" href="' + telHref + '" aria-label="전화 상담: ' + CONTACT_PHONE + '">' +
         '<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6.62 10.79a15.05 15.05 0 006.59 6.59l2.2-2.2a1 1 0 011.02-.24c1.12.37 2.33.57 3.57.57a1 1 0 011 1V20a1 1 0 01-1 1C10.61 21 3 13.39 3 4a1 1 0 011-1h3.5a1 1 0 011 1c0 1.24.2 2.45.57 3.57a1 1 0 01-.25 1.02l-2.2 2.2z" fill="currentColor"/></svg>' +
