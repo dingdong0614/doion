@@ -8,6 +8,11 @@
   // 우측 하단 플로팅 상담 버튼에 쓰이는 값입니다. 바꾸려면 이 줄만 수정하세요.
   var CONTACT_PHONE = "010-9786-2433";
 
+  // 실시간 상담 가능 여부 표시에 쓰이는 상담 가능 시간대입니다. 바꾸려면 이 값들만 수정하세요.
+  var BUSINESS_DAYS = [1, 2, 3, 4, 5]; // 0=일 1=월 ... 6=토
+  var BUSINESS_HOURS_START = 9;
+  var BUSINESS_HOURS_END = 18;
+
   var prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
   /* ---------- 1. hero terminal typewriter ---------- */
@@ -56,7 +61,26 @@
       '</a>';
   }
 
-  /* ---------- 3. mobile nav toggle ---------- */
+  /* ---------- 3. 실시간 상담 가능 여부 표시 ---------- */
+  var liveStatusEl = document.getElementById("liveStatus");
+  if (liveStatusEl) {
+    var renderLiveStatus = function () {
+      var now = new Date();
+      var isOpen = BUSINESS_DAYS.indexOf(now.getDay()) !== -1 &&
+        now.getHours() >= BUSINESS_HOURS_START && now.getHours() < BUSINESS_HOURS_END;
+      var hh = ("0" + now.getHours()).slice(-2);
+      var mm = ("0" + now.getMinutes()).slice(-2);
+
+      liveStatusEl.classList.toggle("is-live", isOpen);
+      liveStatusEl.innerHTML =
+        '<span class="live-status-dot"></span>' +
+        '<span class="live-status-text">' + (isOpen ? "지금 상담 가능" : "상담 시간 외") + " · " + hh + ":" + mm + " 기준</span>";
+    };
+    renderLiveStatus();
+    window.setInterval(renderLiveStatus, 60000);
+  }
+
+  /* ---------- 4. mobile nav toggle ---------- */
   var navEl = document.querySelector(".nav");
   var navToggle = document.getElementById("navToggle");
   var navLinks = document.getElementById("navLinks");
@@ -98,7 +122,7 @@
     });
   }
 
-  /* ---------- 4. contact form ---------- */
+  /* ---------- 5. contact form ---------- */
   var form = document.getElementById("contactForm");
   var formNote = document.getElementById("formNote");
 
@@ -156,7 +180,7 @@
     });
   }
 
-  /* ---------- 5. stat counter (scroll count-up) ---------- */
+  /* ---------- 6. stat counter (scroll count-up) ---------- */
   var statEls = document.querySelectorAll(".stat-number[data-target]");
 
   var renderStat = function (el, value) {
@@ -196,7 +220,7 @@
     });
   }
 
-  /* ---------- 6. portfolio filter tabs ---------- */
+  /* ---------- 7. portfolio filter tabs ---------- */
   var filterTabs = document.querySelectorAll(".filter-tab");
   var portfolioCards = document.querySelectorAll(".portfolio-card");
 

@@ -830,12 +830,44 @@ h1, h2, h3 {
   margin: 0;
 }
 
-/* ---------- floating contact buttons ---------- */
-.fab-group {
+/* ---------- floating contact widget (live status + buttons) ---------- */
+.contact-widget {
   position: fixed;
   right: var(--sp-5);
   bottom: var(--sp-5);
   z-index: 50;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: var(--sp-3);
+}
+.live-status {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  background: var(--surface);
+  border: 1px solid var(--line-strong);
+  border-radius: 999px;
+  padding: 8px 14px;
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  box-shadow: 0 12px 28px -10px rgba(0, 0, 0, 0.5);
+  white-space: nowrap;
+}
+.live-status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--text-faint);
+  flex-shrink: 0;
+}
+.live-status.is-live .live-status-dot {
+  background: var(--success);
+  box-shadow: 0 0 0 0 rgba(56, 143, 65, 0.5);
+  animation: term-pulse 1.8s ease-out infinite;
+}
+.fab-group {
   display: flex;
   flex-direction: column;
   gap: var(--sp-3);
@@ -864,9 +896,11 @@ h1, h2, h3 {
 .fab svg { width: 26px; height: 26px; display: block; }
 
 @media (max-width: 768px) {
-  .fab-group { right: var(--sp-4); bottom: var(--sp-4); gap: var(--sp-2); }
+  .contact-widget { right: var(--sp-4); bottom: var(--sp-4); gap: var(--sp-2); }
+  .fab-group { gap: var(--sp-2); }
   .fab { width: 48px; height: 48px; }
   .fab svg { width: 21px; height: 21px; }
+  .live-status { font-size: 0.72rem; padding: 6px 12px; }
 }
 
 /* ---------- responsive ---------- */
