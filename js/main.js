@@ -5,6 +5,10 @@
   // 문의를 받을 이메일을 바꾸고 싶으면 web3forms.com에서 새 이메일로 키를 재발급받아 이 값을 교체하세요.
   var WEB3FORMS_ACCESS_KEY = "70c6c844-d397-4367-a7d3-21bb1f7a655b";
 
+  // 우측 하단 플로팅 상담 버튼에 쓰이는 값입니다. 바꾸려면 이 두 줄만 수정하세요.
+  var CONTACT_PHONE = "010-9786-2433";
+  var KAKAO_CHANNEL_URL = "https://pf.kakao.com/_xxxxxx"; // 실제 카카오톡 채널 URL로 교체해주세요
+
   var prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
   /* ---------- 1. hero terminal typewriter ---------- */
@@ -40,7 +44,20 @@
     typeEl.textContent = shopNames[0];
   }
 
-  /* ---------- 2. mobile nav toggle ---------- */
+  /* ---------- 2. floating contact buttons (call + kakao) ---------- */
+  var fabGroup = document.getElementById("fabGroup");
+  if (fabGroup) {
+    var telHref = "tel:" + CONTACT_PHONE.replace(/-/g, "");
+    fabGroup.innerHTML =
+      '<a class="fab fab-kakao" href="' + KAKAO_CHANNEL_URL + '" target="_blank" rel="noopener" aria-label="카카오톡 채널 상담">' +
+        '<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 3C6.48 3 2 6.58 2 11c0 2.79 1.86 5.25 4.66 6.68-.15.55-.98 3.58-1.01 3.8 0 0-.02.17.09.24.11.07.24.02.24.02.33-.05 3.77-2.48 4.36-2.9.53.08 1.08.12 1.66.12 5.52 0 10-3.58 10-8S17.52 3 12 3z" fill="currentColor"/></svg>' +
+      '</a>' +
+      '<a class="fab fab-call" href="' + telHref + '" aria-label="전화 상담: ' + CONTACT_PHONE + '">' +
+        '<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6.62 10.79a15.05 15.05 0 006.59 6.59l2.2-2.2a1 1 0 011.02-.24c1.12.37 2.33.57 3.57.57a1 1 0 011 1V20a1 1 0 01-1 1C10.61 21 3 13.39 3 4a1 1 0 011-1h3.5a1 1 0 011 1c0 1.24.2 2.45.57 3.57a1 1 0 01-.25 1.02l-2.2 2.2z" fill="currentColor"/></svg>' +
+      '</a>';
+  }
+
+  /* ---------- 3. mobile nav toggle ---------- */
   var navEl = document.querySelector(".nav");
   var navToggle = document.getElementById("navToggle");
   var navLinks = document.getElementById("navLinks");
@@ -82,7 +99,7 @@
     });
   }
 
-  /* ---------- 3. contact form ---------- */
+  /* ---------- 4. contact form ---------- */
   var form = document.getElementById("contactForm");
   var formNote = document.getElementById("formNote");
 
@@ -137,6 +154,75 @@
         .finally(function () {
           if (submitBtn) submitBtn.disabled = false;
         });
+    });
+  }
+
+  /* ---------- 5. stat counter (scroll count-up) ---------- */
+  var statEls = document.querySelectorAll(".stat-number[data-target]");
+
+  var renderStat = function (el, value) {
+    var suffix = el.getAttribute("data-suffix") || "";
+    el.textContent = value + suffix;
+  };
+
+  if (statEls.length && !prefersReducedMotion && "IntersectionObserver" in window) {
+    var animateStat = function (el) {
+      var target = parseInt(el.getAttribute("data-target"), 10) || 0;
+      var duration = 1400;
+      var startTime = null;
+
+      var step = function (ts) {
+        if (startTime === null) startTime = ts;
+        var progress = Math.min((ts - startTime) / duration, 1);
+        var eased = 1 - Math.pow(1 - progress, 3);
+        renderStat(el, Math.round(target * eased));
+        if (progress < 1) window.requestAnimationFrame(step);
+      };
+      window.requestAnimationFrame(step);
+    };
+
+    var statObserver = new IntersectionObserver(function (entries, obs) {
+      entries.forEach(function (entry) {
+        if (entry.isIntersecting) {
+          animateStat(entry.target);
+          obs.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.4 });
+
+    statEls.forEach(function (el) { statObserver.observe(el); });
+  } else {
+    statEls.forEach(function (el) {
+      renderStat(el, parseInt(el.getAttribute("data-target"), 10) || 0);
+    });
+  }
+
+  /* ---------- 6. portfolio filter tabs ---------- */
+  var filterTabs = document.querySelectorAll(".filter-tab");
+  var portfolioCards = document.querySelectorAll(".portfolio-card");
+
+  if (filterTabs.length && portfolioCards.length) {
+    var applyFilter = function (category) {
+      portfolioCards.forEach(function (card) {
+        var match = category === "all" || card.getAttribute("data-category") === category;
+        if (match) {
+          card.style.display = "";
+          window.requestAnimationFrame(function () { card.classList.remove("is-hidden"); });
+        } else {
+          card.classList.add("is-hidden");
+          window.setTimeout(function () {
+            if (card.classList.contains("is-hidden")) card.style.display = "none";
+          }, 250);
+        }
+      });
+    };
+
+    filterTabs.forEach(function (tab) {
+      tab.addEventListener("click", function () {
+        filterTabs.forEach(function (t) { t.classList.remove("is-active"); });
+        tab.classList.add("is-active");
+        applyFilter(tab.getAttribute("data-filter"));
+      });
     });
   }
 })();

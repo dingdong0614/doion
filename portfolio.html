@@ -52,15 +52,29 @@
     </div>
   </section>
 
-  <section class="demo">
+  <section class="portfolio-showcase">
     <div class="wrap">
-      <div class="browser-mockup">
-        <div class="browser-bar">
-          <span class="dot dot-r"></span><span class="dot dot-y"></span><span class="dot dot-g"></span>
-          <span class="browser-url">ptholic-1.vercel.app</span>
-          <span class="browser-live-badge">LIVE</span>
-        </div>
-        <iframe class="browser-iframe" src="https://ptholic-1.vercel.app/index.html" title="피티홀릭짐 실제 사이트 미리보기" loading="lazy"></iframe>
+      <div class="filter-tabs" role="tablist" aria-label="업종별 포트폴리오 필터">
+        <button type="button" class="filter-tab is-active" data-filter="all">전체</button>
+        <button type="button" class="filter-tab" data-filter="gym">헬스장</button>
+        <button type="button" class="filter-tab" data-filter="beauty">뷰티샵</button>
+        <button type="button" class="filter-tab" data-filter="academy">학원</button>
+        <button type="button" class="filter-tab" data-filter="etc">기타</button>
+      </div>
+
+      <!-- 카드를 추가하려면 이 블록을 복사해 data-category, data-url, 썸네일, 텍스트만 바꾸면 됩니다. -->
+      <div class="portfolio-grid" id="portfolioGrid">
+        <a class="portfolio-card" data-category="gym" data-url="https://ptholic-1.vercel.app/index.html" href="https://ptholic-1.vercel.app/index.html" target="_blank" rel="noopener">
+          <div class="portfolio-thumb">
+            <img src="assets/portfolio/ptholic-thumb.png" alt="피티홀릭짐 웹사이트 스크린샷" loading="lazy" width="800" height="453">
+            <span class="portfolio-overlay">사이트 방문하기 →</span>
+          </div>
+          <div class="portfolio-meta">
+            <span class="log-tag log-tag--info">헬스장</span>
+            <h3>피티홀릭짐</h3>
+            <p>수원 율전동 PT 전문 헬스장 · 예약완벽연동형 패키지로 제작, 실제 배포되어 운영 중입니다.</p>
+          </div>
+        </a>
       </div>
 
       <div class="cta-row" style="margin-top: var(--sp-8);">
@@ -114,6 +128,8 @@
     <p>소규모 매장을 위한 웹사이트 제작·관리 대행</p>
   </div>
 </footer>
+
+<div class="fab-group" id="fabGroup"></div>
 
 <script src="js/main.js"></script>
 </body>
