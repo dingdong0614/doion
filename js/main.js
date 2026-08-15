@@ -61,23 +61,42 @@
       '</a>';
   }
 
-  /* ---------- 3. 실시간 상담 가능 여부 표시 ---------- */
+  /* ---------- 3. 실시간 상담 가능 여부 표시 ----------
+     관리자 페이지(admin.html)에서 수동으로 켜고 끌 수 있습니다. 수동 설정이 없으면
+     아래 시간표(BUSINESS_DAYS/HOURS) 기준으로 자동 판단합니다. */
   var liveStatusEl = document.getElementById("liveStatus");
   if (liveStatusEl) {
-    var renderLiveStatus = function () {
+    var scheduleIsOpen = function () {
       var now = new Date();
-      var isOpen = BUSINESS_DAYS.indexOf(now.getDay()) !== -1 &&
+      return BUSINESS_DAYS.indexOf(now.getDay()) !== -1 &&
         now.getHours() >= BUSINESS_HOURS_START && now.getHours() < BUSINESS_HOURS_END;
+    };
+
+    var renderLiveStatus = function (manualOverride) {
+      var now = new Date();
+      var isOpen = typeof manualOverride === "boolean" ? manualOverride : scheduleIsOpen();
       var hh = ("0" + now.getHours()).slice(-2);
       var mm = ("0" + now.getMinutes()).slice(-2);
 
       liveStatusEl.classList.toggle("is-live", isOpen);
-      liveStatusEl.innerHTML =
-        '<span class="live-status-dot"></span>' +
-        '<span class="live-status-text">' + (isOpen ? "지금 상담 가능" : "상담 시간 외") + " · " + hh + ":" + mm + " 기준</span>";
+      liveStatusEl.innerHTML = isOpen
+        ? '<span class="live-status-dot"></span><span class="live-status-text">지금 실시간 상담 가능 · ' + hh + ":" + mm + " 기준</span>"
+        : '<span class="live-status-dot"></span><a class="live-status-text live-status-link" href="contact.html">지금은 웹사이트로 문의해주세요</a>';
     };
-    renderLiveStatus();
-    window.setInterval(renderLiveStatus, 60000);
+
+    var refreshLiveStatus = function () {
+      fetch("/api/status", { cache: "no-store" })
+        .then(function (r) { return r.json(); })
+        .then(function (data) {
+          renderLiveStatus(data && typeof data.override === "boolean" ? data.override : null);
+        })
+        .catch(function () {
+          renderLiveStatus(null);
+        });
+    };
+
+    refreshLiveStatus();
+    window.setInterval(refreshLiveStatus, 60000);
   }
 
   /* ---------- 4. mobile nav toggle ---------- */
