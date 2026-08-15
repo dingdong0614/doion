@@ -706,7 +706,14 @@ h1, h2, h3 {
 /* ---------- footer ---------- */
 .site-footer { padding: var(--sp-7) 0; border-top: 1px solid var(--line); }
 .footer-inner { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: var(--sp-3); }
-.footer-inner p:last-child { color: var(--text-muted); font-size: 0.88rem; margin: 0; }
+.footer-meta { display: flex; flex-direction: column; gap: 4px; align-items: flex-end; text-align: right; }
+.footer-meta p { color: var(--text-muted); font-size: 0.88rem; margin: 0; }
+.footer-contact { font-size: 0.82rem !important; color: var(--text-faint) !important; }
+.footer-contact a { color: inherit; text-decoration: none; }
+.footer-contact a:hover { color: var(--accent-strong); }
+@media (max-width: 600px) {
+  .footer-meta { align-items: flex-start; text-align: left; }
+}
 
 /* ---------- portfolio grid / filter tabs ---------- */
 .portfolio-showcase { padding: var(--sp-9) 0; }
