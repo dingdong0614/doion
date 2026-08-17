@@ -451,6 +451,17 @@ h1, h2, h3 {
 }
 .hero-ctas { display: flex; gap: var(--sp-3); justify-content: center; flex-wrap: wrap; }
 
+/* 넓은 화면: 텍스트/카드를 왼쪽으로 옮겨 오른쪽에 로고·네트워크 애니메이션이
+   가려지지 않는 공간을 확보합니다. js/main.js가 이 브레이크포인트(900px)를
+   기준으로 애니메이션 위치도 함께 오른쪽으로 옮깁니다. */
+@media (min-width: 900px) {
+  .hero { text-align: left; }
+  .hero .hero-wrap { max-width: 560px; margin: 0; }
+  .hero .term-window { margin: 0 0 var(--sp-7); }
+  .hero .hero-sub { margin: 0 0 var(--sp-7); }
+  .hero .hero-ctas { justify-content: flex-start; }
+}
+
 /* ---------- problem / diagnostic log ---------- */
 .problem { padding: var(--sp-9) 0; }
 .problem h2 { font-size: clamp(1.6rem, 4vw, 2.4rem); margin-bottom: var(--sp-7); }

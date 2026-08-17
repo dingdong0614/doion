@@ -424,22 +424,25 @@
     var netPhase = "form";
     var netFormStartedAt = 0;
     var NET_FORM_MS = 1900;
+    var WIDE_BREAKPOINT = 900;
 
-    if (heroWrap) {
-      heroWrap.classList.add("is-intro-hidden");
-      window.setTimeout(function () { heroWrap.classList.remove("is-intro-hidden"); }, NET_FORM_MS + 2500);
-    }
-
-    var buildLogoTargets = function () {
+    var buildLogoTargets = function (isWide) {
       var off = document.createElement("canvas");
       off.width = netW; off.height = netH;
       var octx = off.getContext("2d");
-      var fontSize = Math.min(netW * 0.16, 170);
+
+      // 넓은 화면에서는 텍스트가 왼쪽(css의 .hero .hero-wrap 560px)에 있으므로,
+      // 로고는 그 오른쪽 여백에만 그려서 겹치지 않게 합니다.
+      var regionX0 = isWide ? 640 : 0;
+      var regionW = isWide ? Math.max(netW - regionX0 - 40, 300) : netW;
+      var centerX = regionX0 + regionW / 2;
+      var fontSize = Math.min(regionW * 0.24, 170);
+
       octx.font = "800 " + fontSize + "px Pretendard, Arial, sans-serif";
       octx.fillStyle = "#fff";
       octx.textAlign = "center";
       octx.textBaseline = "middle";
-      octx.fillText("doion", netW / 2, netH * 0.46);
+      octx.fillText("doion", centerX, netH * 0.46);
 
       var step = Math.max(3, Math.floor(fontSize / 26));
       var candidates = [];
@@ -457,7 +460,8 @@
     };
 
     var netInitNodes = function () {
-      var targets = buildLogoTargets();
+      var isWide = netW >= WIDE_BREAKPOINT;
+      var targets = buildLogoTargets(isWide);
       var count = targets.length || Math.max(30, Math.floor((netW * netH) / 28000));
       netNodes = [];
       for (var i = 0; i < count; i++) {
@@ -474,7 +478,19 @@
       }
       netPhase = targets.length ? "form" : "network";
       netFormStartedAt = Date.now();
-      if (netPhase === "network" && heroWrap) heroWrap.classList.remove("is-intro-hidden");
+
+      // 넓은 화면에서는 텍스트/카드가 로고와 겹치지 않으므로 계속 보이게 둡니다
+      // (숨겼다 갑자기 나타나는 연출 없음). 좁은 화면에서만 겹치므로 잠깐 숨깁니다.
+      if (heroWrap) {
+        if (isWide || netPhase === "network") {
+          heroWrap.classList.remove("is-intro-hidden");
+        } else {
+          heroWrap.classList.add("is-intro-hidden");
+          window.setTimeout(function () {
+            heroWrap.classList.remove("is-intro-hidden");
+          }, NET_FORM_MS + 2500);
+        }
+      }
     };
 
     var netResize = function () {
