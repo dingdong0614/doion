@@ -295,7 +295,7 @@ h1, h2, h3 {
   position: relative;
   overflow: hidden;
   background:
-    linear-gradient(180deg, var(--bg-alt) 0%, rgba(24, 30, 35, 0) 260px),
+    linear-gradient(180deg, var(--bg-alt) 0%, rgba(24, 30, 35, 0) 120px),
     linear-gradient(135deg, #E7EDFB 0%, #EAF3F1 100%);
 }
 .next-steps::before {
