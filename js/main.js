@@ -425,7 +425,9 @@
     var netFormStartedAt = 0;
     var netReleaseTriggered = false;
     var netReleaseStartedAt = 0;
-    var NET_MIN_HOLD_MS = 800;
+    var NET_MIN_HOLD_MS = 2200;
+    var netMouseMoved = false;
+    var netLastMouseX = null, netLastMouseY = null;
     var NET_RELEASE_MS = 2000;
     var NET_CONTENT_REVEAL_MS = 1900;
     var WIDE_BREAKPOINT = 900;
@@ -526,7 +528,7 @@
       // 다 모인 뒤에는 그대로 "doion" 모양을 유지합니다. 마우스가 (터치 시엔
       // 탭이) 들어오면 그때부터 서서히 퍼지기 시작해 네트워크로 풀립니다 —
       // 타이머로 갑자기 확 바뀌지 않습니다.
-      if (!netReleaseTriggered && netMouse.active && Date.now() - netFormStartedAt > NET_MIN_HOLD_MS) {
+      if (!netReleaseTriggered && netMouseMoved && Date.now() - netFormStartedAt > NET_MIN_HOLD_MS) {
         netReleaseTriggered = true;
         netReleaseStartedAt = Date.now();
         netNodes.forEach(function (n) {
@@ -636,8 +638,15 @@
     window.addEventListener("resize", netResize);
     heroSection.addEventListener("mousemove", function (e) {
       var rect = heroSection.getBoundingClientRect();
-      netMouse.x = e.clientX - rect.left;
-      netMouse.y = e.clientY - rect.top;
+      var x = e.clientX - rect.left;
+      var y = e.clientY - rect.top;
+      // 페이지 전환 직후 커서가 가만히 있어도 브라우저가 mousemove를 한 번 쏘는
+      // 경우가 있어, 실제로 움직인 거리가 있을 때만 "의도된 호버"로 인정합니다.
+      if (netLastMouseX !== null && Math.hypot(x - netLastMouseX, y - netLastMouseY) > 4) {
+        netMouseMoved = true;
+      }
+      netLastMouseX = x; netLastMouseY = y;
+      netMouse.x = x; netMouse.y = y;
       netMouse.active = true;
     });
     heroSection.addEventListener("mouseleave", function () {
@@ -649,6 +658,7 @@
       netMouse.x = t.clientX - rect.left;
       netMouse.y = t.clientY - rect.top;
       netMouse.active = true;
+      netMouseMoved = true;
     }, { passive: true });
 
     netResize();
