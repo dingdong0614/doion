@@ -421,18 +421,8 @@
     var netW, netH, netDPR;
     var netMouse = { x: -9999, y: -9999, active: false };
     var netNodes = [];
-    var netPhase = "form";
-    var netFormStartedAt = 0;
-    var netReleaseTriggered = false;
-    var netReleaseStartedAt = 0;
-    var NET_MIN_HOLD_MS = 2200;
-    var netMouseMoved = false;
-    var netLastMouseX = null, netLastMouseY = null;
-    var NET_RELEASE_MS = 2000;
-    var NET_STAGGER_MS = 600;
     var NET_CONTENT_REVEAL_MS = 1900;
     var WIDE_BREAKPOINT = 900;
-    var NET_AMBIENT_COUNT = 210;
 
     var buildLogoTargets = function (isWide) {
       var off = document.createElement("canvas");
@@ -453,8 +443,8 @@
       octx.fillText("doion", centerX, netH * 0.46);
 
       // 글자 내부 픽셀을 촘촘하게 전부 사용합니다(일부만 무작위로 골라 쓰면
-      // 획 중간중간이 비어 보여 가독성이 떨어짐). 획수가 적은 만큼 총 개수는
-      // 수백~천 개 안팎이라 이 형성 단계에서는 성능 부담도 크지 않습니다.
+      // 획 중간중간이 비어 보여 가독성이 떨어짐). 연결선을 그리지 않으므로
+      // 개수가 많아도(수백~천 개) 부담 없이 유지할 수 있습니다.
       var step = Math.max(2, Math.floor(fontSize / 34));
       var candidates = [];
       var data = octx.getImageData(0, 0, netW, netH).data;
@@ -480,19 +470,21 @@
           ty: t ? t.y : Math.random() * netH,
           vx: 0,
           vy: 0,
-          r: Math.random() * 1.5 + 1.1
+          r: Math.random() * 1.5 + 1.1,
+          // 제자리에서 계속 살짝 흔들리도록 각자 다른 위상/속도를 부여합니다.
+          wPhaseX: Math.random() * Math.PI * 2,
+          wPhaseY: Math.random() * Math.PI * 2,
+          wFreqX: 0.0006 + Math.random() * 0.0006,
+          wFreqY: 0.0006 + Math.random() * 0.0006,
+          wAmpX: 2 + Math.random() * 3,
+          wAmpY: 2 + Math.random() * 3
         });
       }
-      netPhase = targets.length ? "form" : "network";
-      netFormStartedAt = Date.now();
-      netReleaseTriggered = false;
-      netFadingNodes = [];
-      netReleaseStartedAt = 0;
 
       // 넓은 화면에서는 텍스트/카드가 로고와 겹치지 않으므로 계속 보이게 둡니다
       // (숨겼다 갑자기 나타나는 연출 없음). 좁은 화면에서만 겹치므로 잠깐 숨깁니다.
       if (heroWrap) {
-        if (isWide || netPhase === "network") {
+        if (isWide) {
           heroWrap.classList.remove("is-intro-hidden");
         } else {
           heroWrap.classList.add("is-intro-hidden");
@@ -526,98 +518,22 @@
       netCtx.fillRect(0, 0, netW, netH);
     };
 
-    var drawConnections = function (opacityMul, maxDist) {
-      if (maxDist === undefined) maxDist = 128;
-      for (var i = 0; i < netNodes.length; i++) {
-        for (var j = i + 1; j < netNodes.length; j++) {
-          var a = netNodes[i], b = netNodes[j];
-          var ddx = a.x - b.x, ddy = a.y - b.y;
-          var d = Math.hypot(ddx, ddy);
-          if (d < maxDist) {
-            var op = (1 - d / maxDist) * 0.5 * opacityMul;
-            if (op < 0.003) continue;
-            netCtx.strokeStyle = "rgba(120,160,220," + op.toFixed(3) + ")";
-            netCtx.lineWidth = 0.7;
-            netCtx.beginPath();
-            netCtx.moveTo(a.x, a.y);
-            netCtx.lineTo(b.x, b.y);
-            netCtx.stroke();
-          }
-        }
-      }
-    };
+    // "doion" 모양을 계속 유지하면서, 점 하나하나가 자기 자리 근처에서 천천히
+    // 흔들리며 살아있는 느낌을 줍니다. 마우스를 가져가면 그 주변 점들이
+    // 잠깐 밀려났다가 다시 제자리로 돌아옵니다 — 전혀 다른 네트워크 모양으로
+    // 바뀌지 않고, 처음 형태를 그대로 유지합니다.
+    var netStep = function () {
+      netCtx.clearRect(0, 0, netW, netH);
+      drawGradientWash();
 
-    var drawDots = function () {
-      netNodes.forEach(function (n) {
-        netCtx.beginPath();
-        netCtx.arc(n.x, n.y, n.r, 0, Math.PI * 2);
-        netCtx.fillStyle = "rgba(220,233,255,0.95)";
-        netCtx.fill();
-      });
-    };
-
-    var NET_FADE_MS = 550;
-    var netFadingNodes = [];
-
-    var stepForm = function () {
-      // 다 모인 뒤에는 그대로 "doion" 모양을 유지합니다. 마우스가 (터치 시엔
-      // 탭이) 들어오면 그때부터 서서히 퍼지기 시작해 네트워크로 풀립니다 —
-      // 타이머로 갑자기 확 바뀌지 않고, 연결선도 진행률에 맞춰 서서히 옅게
-      // 나타납니다. 글자를 읽으려면 점이 촘촘해야 하지만 그만큼 다 데리고
-      // 네트워크로 풀면 선 계산이 무거워지므로, 트리거 시점에 일부만 남기고
-      // 나머지는 자리에서 옅어지며 사라집니다.
-      if (!netReleaseTriggered && netMouseMoved && Date.now() - netFormStartedAt > NET_MIN_HOLD_MS) {
-        netReleaseTriggered = true;
-        netReleaseStartedAt = Date.now();
-
-        if (netNodes.length > NET_AMBIENT_COUNT) {
-          for (var i = netNodes.length - 1; i > 0; i--) {
-            var j = Math.floor(Math.random() * (i + 1));
-            var tmp = netNodes[i]; netNodes[i] = netNodes[j]; netNodes[j] = tmp;
-          }
-          netFadingNodes = netNodes.slice(NET_AMBIENT_COUNT);
-          netNodes = netNodes.slice(0, NET_AMBIENT_COUNT);
-          // 한꺼번에 사라지면 개수가 확 줄어든 게 눈에 띄므로, 해제 구간 전체에
-          // 걸쳐 하나씩 시차를 두고 옅어지도록 각자 다른 시점에 사라지기
-          // 시작하게 합니다.
-          var releaseStart = netReleaseStartedAt;
-          netFadingNodes.forEach(function (n) {
-            n.fadeStart = releaseStart + Math.random() * NET_RELEASE_MS * 0.85;
-          });
-        }
-
-        // 모든 점이 똑같은 타이밍으로 한 몸처럼 움직이면 기계적으로 보이므로,
-        // 점마다 시작 시점을 살짝 어긋나게 둬서 물결처럼 하나씩 풀려나게 합니다.
-        netNodes.forEach(function (n) {
-          n.ex = (Math.random() - 0.5) * 0.35;
-          n.ey = (Math.random() - 0.5) * 0.35;
-          n.pOffset = Math.random() * NET_STAGGER_MS;
-        });
-      }
-
-      var elapsed = netReleaseTriggered ? Date.now() - netReleaseStartedAt : 0;
-      var releaseProgress = netReleaseTriggered ? Math.min(elapsed / NET_RELEASE_MS, 1) : 0;
-      var nodeSpan = NET_RELEASE_MS - NET_STAGGER_MS;
+      var now = Date.now();
 
       netNodes.forEach(function (n) {
-        var nodeT = netReleaseTriggered
-          ? Math.min(Math.max((elapsed - n.pOffset) / nodeSpan, 0), 1)
-          : 0;
-        // ease-out: 처음엔 천천히, 갈수록 자연스럽게 풀려나도록
-        var eased = 1 - Math.pow(1 - nodeT, 3);
-        var pull = 1 - eased;
-
-        var dx = n.tx - n.x, dy = n.ty - n.y;
-        var springVx = n.vx + dx * 0.02;
-        var springVy = n.vy + dy * 0.02;
-        springVx *= 0.82; springVy *= 0.82;
-
-        if (eased > 0) {
-          n.vx = springVx * pull + n.ex * eased;
-          n.vy = springVy * pull + n.ey * eased;
-        } else {
-          n.vx = springVx; n.vy = springVy;
-        }
+        var liveTx = n.tx + Math.sin(now * n.wFreqX + n.wPhaseX) * n.wAmpX;
+        var liveTy = n.ty + Math.cos(now * n.wFreqY + n.wPhaseY) * n.wAmpY;
+        var dx = liveTx - n.x, dy = liveTy - n.y;
+        n.vx += dx * 0.02; n.vy += dy * 0.02;
+        n.vx *= 0.82; n.vy *= 0.82;
 
         if (netMouse.active) {
           var mdx = n.x - netMouse.x, mdy = n.y - netMouse.y;
@@ -630,64 +546,12 @@
         }
 
         n.x += n.vx; n.y += n.vy;
+
+        netCtx.beginPath();
+        netCtx.arc(n.x, n.y, n.r, 0, Math.PI * 2);
+        netCtx.fillStyle = "rgba(220,233,255,0.95)";
+        netCtx.fill();
       });
-
-      if (releaseProgress > 0) {
-        // 선은 진행률의 제곱으로 옅어지고, 연결 가능 거리도 함께 자라도록 해서
-        // "갑자기 그물이 나타나는" 느낌 없이 서서히 자라나게 합니다.
-        drawConnections(releaseProgress * releaseProgress, 128 * Math.pow(releaseProgress, 1.5));
-      }
-      drawDots();
-
-      if (netFadingNodes.length) {
-        var now = Date.now();
-        netFadingNodes = netFadingNodes.filter(function (n) {
-          var t = (now - n.fadeStart) / NET_FADE_MS;
-          if (t >= 1) return false;
-          netCtx.beginPath();
-          netCtx.arc(n.x, n.y, n.r, 0, Math.PI * 2);
-          netCtx.fillStyle = "rgba(220,233,255," + (0.95 * (1 - t)).toFixed(3) + ")";
-          netCtx.fill();
-          return true;
-        });
-      }
-
-      if (releaseProgress >= 1) {
-        netPhase = "network";
-      }
-    };
-
-    var stepNetwork = function () {
-      netNodes.forEach(function (n) {
-        n.x += n.vx; n.y += n.vy;
-        if (n.x < 0 || n.x > netW) n.vx *= -1;
-        if (n.y < 0 || n.y > netH) n.vy *= -1;
-
-        if (netMouse.active) {
-          var dx = n.x - netMouse.x, dy = n.y - netMouse.y;
-          var dist = Math.hypot(dx, dy);
-          var radius = 140;
-          if (dist < radius) {
-            var force = (radius - dist) / radius;
-            n.x += (dx / (dist || 1)) * force * 2.2;
-            n.y += (dy / (dist || 1)) * force * 2.2;
-          }
-        }
-      });
-
-      drawConnections(1);
-      drawDots();
-    };
-
-    var netStep = function () {
-      netCtx.clearRect(0, 0, netW, netH);
-      drawGradientWash();
-
-      if (netPhase === "form") {
-        stepForm();
-      } else {
-        stepNetwork();
-      }
 
       window.requestAnimationFrame(netStep);
     };
@@ -695,15 +559,8 @@
     window.addEventListener("resize", netResize);
     heroSection.addEventListener("mousemove", function (e) {
       var rect = heroSection.getBoundingClientRect();
-      var x = e.clientX - rect.left;
-      var y = e.clientY - rect.top;
-      // 페이지 전환 직후 커서가 가만히 있어도 브라우저가 mousemove를 한 번 쏘는
-      // 경우가 있어, 실제로 움직인 거리가 있을 때만 "의도된 호버"로 인정합니다.
-      if (netLastMouseX !== null && Math.hypot(x - netLastMouseX, y - netLastMouseY) > 4) {
-        netMouseMoved = true;
-      }
-      netLastMouseX = x; netLastMouseY = y;
-      netMouse.x = x; netMouse.y = y;
+      netMouse.x = e.clientX - rect.left;
+      netMouse.y = e.clientY - rect.top;
       netMouse.active = true;
     });
     heroSection.addEventListener("mouseleave", function () {
@@ -715,7 +572,6 @@
       netMouse.x = t.clientX - rect.left;
       netMouse.y = t.clientY - rect.top;
       netMouse.active = true;
-      netMouseMoved = true;
     }, { passive: true });
 
     netResize();
