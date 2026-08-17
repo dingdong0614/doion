@@ -420,14 +420,19 @@
     var netW, netH, netDPR;
     var netMouse = { x: -9999, y: -9999, active: false };
     var netNodes = [];
-    var netMouseMoved = false;
     var netLastMouseX = null, netLastMouseY = null;
     var netFormStartedAt = 0;
-    var netReleaseTriggered = false;
-    var netReleaseStartedAt = 0;
+    // 0 = doion 모양으로 완전히 모임, 1 = 완전히 풀려나 네트워크가 됨.
+    // 목표값(netTargetProgress)을 향해 매 프레임 조금씩 다가가며, 호버로
+    // 1을 향하고 한동안 가만히 두면(NET_IDLE_REFORM_MS) 다시 0을 향해
+    // 되돌아갑니다 — 같은 물리 로직이 양방향으로 그대로 작동합니다.
+    var netProgress = 0;
+    var netTargetProgress = 0;
+    var netLastInteractionAt = 0;
+    var netLastFrameAt = 0;
     var NET_MIN_HOLD_MS = 2200;
-    var NET_RELEASE_MS = 2200;
-    var NET_STAGGER_MS = 700;
+    var NET_TRANSITION_MS = 2200;
+    var NET_IDLE_REFORM_MS = 4000;
     var WIDE_BREAKPOINT = 900;
     var CELL = 128;
     var NET_LINE_DIST = 38;
@@ -501,12 +506,18 @@
           wFreqX: 0.0006 + Math.random() * 0.0006,
           wFreqY: 0.0006 + Math.random() * 0.0006,
           wAmpX: (2 + Math.random() * 3) * wobbleScale,
-          wAmpY: (2 + Math.random() * 3) * wobbleScale
+          wAmpY: (2 + Math.random() * 3) * wobbleScale,
+          ex: 0,
+          ey: 0,
+          // 전체가 똑같은 타이밍으로 한 몸처럼 움직이면 기계적으로 보이므로,
+          // 점마다 진행률을 살짝 어긋나게 둬서 물결처럼 하나씩 풀리고
+          // 하나씩 모이게 합니다.
+          pJitter: (Math.random() - 0.5) * 0.3
         });
       }
       netFormStartedAt = Date.now();
-      netReleaseTriggered = false;
-      netReleaseStartedAt = 0;
+      netProgress = 0;
+      netTargetProgress = 0;
     };
 
     var netResize = function () {
@@ -596,35 +607,33 @@
       drawGradientWash();
 
       var now = Date.now();
+      var dt = netLastFrameAt ? Math.min(now - netLastFrameAt, 100) : 16.7;
+      netLastFrameAt = now;
 
-      // 다 모인 뒤 얼마간은 "doion" 모양 그대로 살짝 흔들리기만 하다가,
-      // 마우스가 들어오면 그때부터 물결처럼 하나씩 시차를 두고 풀려나
-      // 네트워크로 이어집니다 — 타이머로 갑자기 바뀌지 않고, 처음 doion을
-      // 이루던 점들이 그대로 이동해서 선으로 연결됩니다. 다만 연결선 계산은
-      // 폰에서 버거우므로, 좁은(=대부분 모바일) 화면에서는 흔들리는 doion
-      // 모양을 계속 유지하고 네트워크로는 풀리지 않습니다.
-      if (netIsWide && !netReleaseTriggered && netMouseMoved && now - netFormStartedAt > NET_MIN_HOLD_MS) {
-        netReleaseTriggered = true;
-        netReleaseStartedAt = now;
-        netNodes.forEach(function (n) {
-          // 점이 많다 보니(최대 1000개 이상) 천천히 표류하면 letters 자리에
-          // 계속 몰려 있어 선이 과도하게 빽빽해집니다. 충분히 흩어지도록
-          // 확산 속도를 넉넉히 줍니다.
-          n.ex = (Math.random() - 0.5) * 1.6;
-          n.ey = (Math.random() - 0.5) * 1.6;
-          n.pOffset = Math.random() * NET_STAGGER_MS;
-        });
+      // 한동안(NET_IDLE_REFORM_MS) 마우스가 움직이지 않으면 다시 doion
+      // 모양으로 모이도록 목표를 되돌립니다. 계속 움직이는 동안은 풀린
+      // 상태를 유지합니다.
+      if (netTargetProgress >= 1 && now - netLastInteractionAt > NET_IDLE_REFORM_MS) {
+        netTargetProgress = 0;
       }
 
-      var elapsed = netReleaseTriggered ? now - netReleaseStartedAt : 0;
-      var releaseProgress = netReleaseTriggered ? Math.min(elapsed / NET_RELEASE_MS, 1) : 0;
-      var nodeSpan = NET_RELEASE_MS - NET_STAGGER_MS;
+      // netProgress를 목표값 쪽으로 일정한 속도로 움직입니다 — 늘어나는
+      // 방향(풀림)과 줄어드는 방향(다시 모임)에 같은 물리를 그대로 씁니다.
+      var wasAboveZero = netProgress > 0;
+      var step = dt / NET_TRANSITION_MS;
+      if (netProgress < netTargetProgress) netProgress = Math.min(netProgress + step, netTargetProgress);
+      else if (netProgress > netTargetProgress) netProgress = Math.max(netProgress - step, netTargetProgress);
+
+      // 완전히 다시 모이면 이전에 쓰던 확산 방향을 지워, 쉬는 동안 잔여
+      // 힘이 남아 미세하게 계속 흘러가는 일이 없도록 합니다.
+      if (netProgress === 0 && wasAboveZero) {
+        netNodes.forEach(function (n) { n.ex = 0; n.ey = 0; });
+      }
 
       netNodes.forEach(function (n) {
-        var nodeT = netReleaseTriggered
-          ? Math.min(Math.max((elapsed - n.pOffset) / nodeSpan, 0), 1)
-          : 0;
-        var eased = 1 - Math.pow(1 - nodeT, 3);
+        var localT = Math.min(Math.max(netProgress + n.pJitter, 0), 1);
+        // 대칭적인 완만한 커브(smootherstep): 풀릴 때도 모일 때도 자연스럽게
+        var eased = localT * localT * (3 - 2 * localT);
         var pull = 1 - eased;
 
         var liveTx = n.tx + Math.sin(now * n.wFreqX + n.wPhaseX) * n.wAmpX;
@@ -640,10 +649,21 @@
           n.vx = springVx; n.vy = springVy;
         }
 
-        if (netReleaseTriggered) {
-          // 벽에 닿으면 위치를 벽에 딱 붙이고 속도를 안쪽 방향으로 확실히
-          // 뒤집습니다. 매 프레임 "밖에 있으니 뒤집기"만 하면 한 번에 못
-          // 돌아온 점이 벽 밖에서 계속 방향이 뒤집히며 제자리에서 떨게 됩니다.
+        if (netProgress > 0) {
+          // 가장자리에 가까워지면 딱 부딪혀 반사되기 전에 미리 중앙 쪽으로
+          // 살짝 당겨서, 고정된 각도로 튕기는 당구공처럼 네모난 궤적을
+          // 그리며 갇힌 것처럼 보이지 않고 자연스럽게 안쪽으로 휘어 돌아오게
+          // 합니다.
+          var margin = 140;
+          if (n.x < margin) n.vx += (margin - n.x) / margin * 0.12;
+          else if (n.x > netW - margin) n.vx -= (n.x - (netW - margin)) / margin * 0.12;
+          if (n.y < margin) n.vy += (margin - n.y) / margin * 0.12;
+          else if (n.y > netH - margin) n.vy -= (n.y - (netH - margin)) / margin * 0.12;
+
+          // 그래도 실제 가장자리에 닿으면(안전장치) 위치를 벽에 딱 붙이고
+          // 속도를 안쪽으로 확실히 뒤집습니다. 매 프레임 "밖에 있으니
+          // 뒤집기"만 하면 한 번에 못 돌아온 점이 벽 밖에서 계속 방향이
+          // 뒤집히며 제자리에서 떨게 됩니다.
           if (n.x < 0) { n.x = 0; n.vx = Math.abs(n.vx); }
           else if (n.x > netW) { n.x = netW; n.vx = -Math.abs(n.vx); }
           if (n.y < 0) { n.y = 0; n.vy = Math.abs(n.vy); }
@@ -653,20 +673,20 @@
         if (netMouse.active) {
           var mdx = n.x - netMouse.x, mdy = n.y - netMouse.y;
           var mdist = Math.hypot(mdx, mdy);
-          var radius = releaseProgress >= 1 ? 140 : 70;
+          var radius = 70 + 70 * eased;
           if (mdist < radius) {
             var f = (radius - mdist) / radius;
-            n.vx += (mdx / (mdist || 1)) * f * (releaseProgress >= 1 ? 2.2 : 3.2);
-            n.vy += (mdy / (mdist || 1)) * f * (releaseProgress >= 1 ? 2.2 : 3.2);
+            n.vx += (mdx / (mdist || 1)) * f * (3.2 - eased);
+            n.vy += (mdy / (mdist || 1)) * f * (3.2 - eased);
           }
         }
 
         n.x += n.vx; n.y += n.vy;
       });
 
-      if (releaseProgress > 0) {
-        var opacityMul = releaseProgress >= 1 ? 1 : releaseProgress * releaseProgress;
-        var maxDist = releaseProgress >= 1 ? NET_LINE_DIST : NET_LINE_DIST * Math.pow(releaseProgress, 1.5);
+      if (netProgress > 0) {
+        var opacityMul = netProgress * netProgress;
+        var maxDist = NET_LINE_DIST * Math.pow(netProgress, 1.5);
         drawConnections(opacityMul, maxDist);
       }
       drawDots();
@@ -682,7 +702,18 @@
       // 페이지 전환 직후 커서가 가만히 있어도 브라우저가 mousemove를 한 번 쏘는
       // 경우가 있어, 실제로 움직인 거리가 있을 때만 "의도된 호버"로 인정합니다.
       if (netLastMouseX !== null && Math.hypot(x - netLastMouseX, y - netLastMouseY) > 4) {
-        netMouseMoved = true;
+        netLastInteractionAt = Date.now();
+        if (netIsWide && netLastInteractionAt - netFormStartedAt > NET_MIN_HOLD_MS) {
+          if (netTargetProgress === 0) {
+            // 새로 풀려날 때마다 흩어지는 방향을 다시 무작위로 정해 매번
+            // 다른 모습으로 퍼지게 합니다.
+            netNodes.forEach(function (n) {
+              n.ex = (Math.random() - 0.5) * 1.6;
+              n.ey = (Math.random() - 0.5) * 1.6;
+            });
+          }
+          netTargetProgress = 1;
+        }
       }
       netLastMouseX = x; netLastMouseY = y;
       netMouse.x = x; netMouse.y = y;
@@ -697,7 +728,6 @@
       netMouse.x = t.clientX - rect.left;
       netMouse.y = t.clientY - rect.top;
       netMouse.active = true;
-      netMouseMoved = true;
     }, { passive: true });
 
     netResize();
