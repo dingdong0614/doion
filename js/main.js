@@ -199,7 +199,10 @@
     });
   }
 
-  /* ---------- 6. stat counter (scroll count-up) ---------- */
+  /* ---------- 6. stat counter (scroll count-up) ----------
+     실제 수치는 관리자 페이지(admin.html)에서 수정할 수 있습니다. /api/stats에서
+     불러온 값으로 data-target을 갱신한 뒤 카운트업을 시작하며, KV 미연동/조회
+     실패 시에는 아래 HTML에 적힌 기본값을 그대로 사용합니다. */
   var statEls = document.querySelectorAll(".stat-number[data-target]");
 
   var renderStat = function (el, value) {
@@ -207,36 +210,55 @@
     el.textContent = value + suffix;
   };
 
-  if (statEls.length && !prefersReducedMotion && "IntersectionObserver" in window) {
-    var animateStat = function (el) {
-      var target = parseInt(el.getAttribute("data-target"), 10) || 0;
-      var duration = 1400;
-      var startTime = null;
+  var setupStatCounters = function () {
+    if (statEls.length && !prefersReducedMotion && "IntersectionObserver" in window) {
+      var animateStat = function (el) {
+        var target = parseInt(el.getAttribute("data-target"), 10) || 0;
+        var duration = 1400;
+        var startTime = null;
 
-      var step = function (ts) {
-        if (startTime === null) startTime = ts;
-        var progress = Math.min((ts - startTime) / duration, 1);
-        var eased = 1 - Math.pow(1 - progress, 3);
-        renderStat(el, Math.round(target * eased));
-        if (progress < 1) window.requestAnimationFrame(step);
+        var step = function (ts) {
+          if (startTime === null) startTime = ts;
+          var progress = Math.min((ts - startTime) / duration, 1);
+          var eased = 1 - Math.pow(1 - progress, 3);
+          renderStat(el, Math.round(target * eased));
+          if (progress < 1) window.requestAnimationFrame(step);
+        };
+        window.requestAnimationFrame(step);
       };
-      window.requestAnimationFrame(step);
-    };
 
-    var statObserver = new IntersectionObserver(function (entries, obs) {
-      entries.forEach(function (entry) {
-        if (entry.isIntersecting) {
-          animateStat(entry.target);
-          obs.unobserve(entry.target);
-        }
+      var statObserver = new IntersectionObserver(function (entries, obs) {
+        entries.forEach(function (entry) {
+          if (entry.isIntersecting) {
+            animateStat(entry.target);
+            obs.unobserve(entry.target);
+          }
+        });
+      }, { threshold: 0.4 });
+
+      statEls.forEach(function (el) { statObserver.observe(el); });
+    } else {
+      statEls.forEach(function (el) {
+        renderStat(el, parseInt(el.getAttribute("data-target"), 10) || 0);
       });
-    }, { threshold: 0.4 });
+    }
+  };
 
-    statEls.forEach(function (el) { statObserver.observe(el); });
-  } else {
-    statEls.forEach(function (el) {
-      renderStat(el, parseInt(el.getAttribute("data-target"), 10) || 0);
-    });
+  if (statEls.length) {
+    fetch("/api/stats", { cache: "no-store" })
+      .then(function (r) { return r.json(); })
+      .then(function (data) {
+        if (data && data.configured !== false) {
+          statEls.forEach(function (el) {
+            var key = el.getAttribute("data-stat");
+            if (key && typeof data[key] === "number") {
+              el.setAttribute("data-target", data[key]);
+            }
+          });
+        }
+      })
+      .catch(function () {})
+      .then(setupStatCounters);
   }
 
   /* ---------- 7. portfolio filter tabs ---------- */

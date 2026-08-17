@@ -91,20 +91,20 @@
     </div>
   </section>
 
-  <!-- STATS (실적 지표: 아래 data-target 숫자만 바꾸면 반영됩니다. 아직 확정된 실제 값이 아니라면 placeholder입니다.) -->
+  <!-- STATS (실적 지표: 관리자 페이지(admin.html)에서 수정 가능. data-target은 KV 미연동 시 기본값입니다.) -->
   <section class="stats">
     <div class="wrap">
       <div class="stats-grid">
         <div class="stat-card">
-          <p class="stat-number" data-target="12" data-suffix="개">0</p>
+          <p class="stat-number" data-stat="stores" data-target="12" data-suffix="개">0</p>
           <p class="stat-label">누적 제작 매장</p>
         </div>
         <div class="stat-card">
-          <p class="stat-number" data-target="14" data-suffix="일">0</p>
+          <p class="stat-number" data-stat="days" data-target="14" data-suffix="일">0</p>
           <p class="stat-label">평균 제작 기간</p>
         </div>
         <div class="stat-card">
-          <p class="stat-number" data-target="20" data-suffix="개">0</p>
+          <p class="stat-number" data-stat="tags" data-target="20" data-suffix="개">0</p>
           <p class="stat-label">설치한 NFC/QR 태그</p>
         </div>
       </div>
