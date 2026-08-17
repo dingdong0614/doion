@@ -450,7 +450,7 @@
       octx.textBaseline = "middle";
       octx.fillText("doion", centerX, netH * 0.46);
 
-      var step = Math.max(3, Math.floor(fontSize / 26));
+      var step = Math.max(2, Math.floor(fontSize / 34));
       var candidates = [];
       var data = octx.getImageData(0, 0, netW, netH).data;
       for (var y = 0; y < netH; y += step) {
@@ -462,7 +462,7 @@
         var j = Math.floor(Math.random() * (i + 1));
         var tmp = candidates[i]; candidates[i] = candidates[j]; candidates[j] = tmp;
       }
-      return candidates.slice(0, 280);
+      return candidates.slice(0, 420);
     };
 
     var netInitNodes = function () {
@@ -479,7 +479,7 @@
           ty: t ? t.y : Math.random() * netH,
           vx: 0,
           vy: 0,
-          r: Math.random() * 1.4 + 0.9
+          r: Math.random() * 1.5 + 1.1
         });
       }
       netPhase = targets.length ? "form" : "network";
@@ -549,7 +549,7 @@
       netNodes.forEach(function (n) {
         netCtx.beginPath();
         netCtx.arc(n.x, n.y, n.r, 0, Math.PI * 2);
-        netCtx.fillStyle = "rgba(190,215,255,0.85)";
+        netCtx.fillStyle = "rgba(220,233,255,0.95)";
         netCtx.fill();
       });
     };
