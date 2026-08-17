@@ -639,8 +639,8 @@
         var liveTx = n.tx + Math.sin(now * n.wFreqX + n.wPhaseX) * n.wAmpX;
         var liveTy = n.ty + Math.cos(now * n.wFreqY + n.wPhaseY) * n.wAmpY;
         var dx = liveTx - n.x, dy = liveTy - n.y;
-        var springVx = (n.vx + dx * 0.005) * 0.9;
-        var springVy = (n.vy + dy * 0.005) * 0.9;
+        var springVx = (n.vx + dx * 0.002) * 0.93;
+        var springVy = (n.vy + dy * 0.002) * 0.93;
 
         if (eased > 0) {
           n.vx = springVx * pull + n.ex * eased;
