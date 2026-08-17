@@ -313,7 +313,7 @@
   }
 
   /* ---------- 9. 스크롤 리빌: 카드가 뷰포트에 들어오면 순차적으로 페이드인 ---------- */
-  var revealEls = document.querySelectorAll(".stat-card, .log-card, .spec-panel, .portfolio-card");
+  var revealEls = document.querySelectorAll(".stat-card, .log-card, .spec-panel, .portfolio-card, .doc-row");
   if (revealEls.length && !prefersReducedMotion && "IntersectionObserver" in window) {
     var revealGroups = [];
     var revealDelay = function (el) {

@@ -518,6 +518,79 @@ h1, h2, h3 {
   border-color: rgba(1,148,140,0.32);
 }
 
+/* 문제 진단 카드: 배지 대신 큼직한 번호로 리포트 항목 같은 느낌을 냄 */
+#problem .log-no {
+  display: block;
+  font-family: var(--font-mono);
+  font-size: 2.4rem;
+  font-weight: 800;
+  color: var(--line-strong);
+  line-height: 1;
+  margin-bottom: var(--sp-4);
+}
+
+/* WHY DOION 카드: 번호+태그 배지 대신 체크마크로 "확인된 장점" 느낌을 냄 */
+.merit-check {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: rgba(1,148,140,0.14);
+  border: 1px solid rgba(1,148,140,0.32);
+  color: var(--teal);
+  font-weight: 700;
+  font-size: 1rem;
+  margin-bottom: var(--sp-4);
+}
+
+/* ---------- 업종별 제안서: 카드 그리드 대신 문서 목록 형태 ---------- */
+.doc-list { display: flex; flex-direction: column; gap: var(--sp-3); margin-top: var(--sp-7); }
+.doc-row {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-5);
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: var(--sp-5);
+  text-decoration: none;
+  color: inherit;
+  transition: border-color 0.2s var(--ease), transform 0.2s var(--ease);
+}
+.doc-row:hover { border-color: var(--line-strong); transform: translateX(4px); }
+.doc-icon {
+  flex-shrink: 0;
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 10px;
+  background: rgba(211,80,50,0.12);
+  border: 1px solid rgba(211,80,50,0.32);
+  color: var(--orange);
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  font-weight: 700;
+}
+.doc-info { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 4px; }
+.doc-title { font-size: 1.05rem; font-weight: 700; }
+.doc-desc { color: var(--text-muted); font-size: 0.9rem; line-height: 1.55; }
+.doc-action {
+  flex-shrink: 0;
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--teal);
+  white-space: nowrap;
+}
+@media (max-width: 640px) {
+  .doc-row { flex-wrap: wrap; }
+  .doc-action { margin-left: 62px; }
+}
+
 /* ---------- pricing / spec sheet ---------- */
 .pricing { padding: var(--sp-9) 0; background: var(--bg-alt); }
 .pricing h2 { font-size: clamp(1.6rem, 4vw, 2.4rem); }
