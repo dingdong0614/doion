@@ -474,8 +474,11 @@
       return candidates;
     };
 
+    var netIsWide = false;
+
     var netInitNodes = function () {
       var isWide = netW >= WIDE_BREAKPOINT;
+      netIsWide = isWide;
       var targets = buildLogoTargets(isWide);
       var count = targets.length || Math.max(30, Math.floor((netW * netH) / 28000));
       netNodes = [];
@@ -582,10 +585,12 @@
       var now = Date.now();
 
       // 다 모인 뒤 얼마간은 "doion" 모양 그대로 살짝 흔들리기만 하다가,
-      // 마우스가 (터치 시엔 탭이) 들어오면 그때부터 물결처럼 하나씩 시차를
-      // 두고 풀려나 네트워크로 이어집니다 — 타이머로 갑자기 바뀌지 않고,
-      // 처음 doion을 이루던 점들이 그대로 이동해서 선으로 연결됩니다.
-      if (!netReleaseTriggered && netMouseMoved && now - netFormStartedAt > NET_MIN_HOLD_MS) {
+      // 마우스가 들어오면 그때부터 물결처럼 하나씩 시차를 두고 풀려나
+      // 네트워크로 이어집니다 — 타이머로 갑자기 바뀌지 않고, 처음 doion을
+      // 이루던 점들이 그대로 이동해서 선으로 연결됩니다. 다만 연결선 계산은
+      // 폰에서 버거우므로, 좁은(=대부분 모바일) 화면에서는 흔들리는 doion
+      // 모양을 계속 유지하고 네트워크로는 풀리지 않습니다.
+      if (netIsWide && !netReleaseTriggered && netMouseMoved && now - netFormStartedAt > NET_MIN_HOLD_MS) {
         netReleaseTriggered = true;
         netReleaseStartedAt = now;
         netNodes.forEach(function (n) {
@@ -623,8 +628,13 @@
         }
 
         if (netReleaseTriggered) {
-          if (n.x < 0 || n.x > netW) n.vx *= -1;
-          if (n.y < 0 || n.y > netH) n.vy *= -1;
+          // 벽에 닿으면 위치를 벽에 딱 붙이고 속도를 안쪽 방향으로 확실히
+          // 뒤집습니다. 매 프레임 "밖에 있으니 뒤집기"만 하면 한 번에 못
+          // 돌아온 점이 벽 밖에서 계속 방향이 뒤집히며 제자리에서 떨게 됩니다.
+          if (n.x < 0) { n.x = 0; n.vx = Math.abs(n.vx); }
+          else if (n.x > netW) { n.x = netW; n.vx = -Math.abs(n.vx); }
+          if (n.y < 0) { n.y = 0; n.vy = Math.abs(n.vy); }
+          else if (n.y > netH) { n.y = netH; n.vy = -Math.abs(n.vy); }
         }
 
         if (netMouse.active) {
