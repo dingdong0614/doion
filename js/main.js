@@ -423,7 +423,11 @@
     var netNodes = [];
     var netPhase = "form";
     var netFormStartedAt = 0;
-    var NET_FORM_MS = 1900;
+    var netReleaseTriggered = false;
+    var netReleaseStartedAt = 0;
+    var NET_MIN_HOLD_MS = 800;
+    var NET_RELEASE_MS = 2000;
+    var NET_CONTENT_REVEAL_MS = 1900;
     var WIDE_BREAKPOINT = 900;
 
     var buildLogoTargets = function (isWide) {
@@ -478,6 +482,8 @@
       }
       netPhase = targets.length ? "form" : "network";
       netFormStartedAt = Date.now();
+      netReleaseTriggered = false;
+      netReleaseStartedAt = 0;
 
       // 넓은 화면에서는 텍스트/카드가 로고와 겹치지 않으므로 계속 보이게 둡니다
       // (숨겼다 갑자기 나타나는 연출 없음). 좁은 화면에서만 겹치므로 잠깐 숨깁니다.
@@ -488,7 +494,7 @@
           heroWrap.classList.add("is-intro-hidden");
           window.setTimeout(function () {
             heroWrap.classList.remove("is-intro-hidden");
-          }, NET_FORM_MS + 2500);
+          }, NET_CONTENT_REVEAL_MS);
         }
       }
     };
@@ -517,10 +523,35 @@
     };
 
     var stepForm = function () {
+      // 다 모인 뒤에는 그대로 "doion" 모양을 유지합니다. 마우스가 (터치 시엔
+      // 탭이) 들어오면 그때부터 서서히 퍼지기 시작해 네트워크로 풀립니다 —
+      // 타이머로 갑자기 확 바뀌지 않습니다.
+      if (!netReleaseTriggered && netMouse.active && Date.now() - netFormStartedAt > NET_MIN_HOLD_MS) {
+        netReleaseTriggered = true;
+        netReleaseStartedAt = Date.now();
+        netNodes.forEach(function (n) {
+          n.ex = (Math.random() - 0.5) * 0.35;
+          n.ey = (Math.random() - 0.5) * 0.35;
+        });
+      }
+
+      var releaseProgress = netReleaseTriggered
+        ? Math.min((Date.now() - netReleaseStartedAt) / NET_RELEASE_MS, 1)
+        : 0;
+      var pull = 1 - releaseProgress;
+
       netNodes.forEach(function (n) {
         var dx = n.tx - n.x, dy = n.ty - n.y;
-        n.vx += dx * 0.02; n.vy += dy * 0.02;
-        n.vx *= 0.82; n.vy *= 0.82;
+        var springVx = n.vx + dx * 0.02;
+        var springVy = n.vy + dy * 0.02;
+        springVx *= 0.82; springVy *= 0.82;
+
+        if (releaseProgress > 0) {
+          n.vx = springVx * pull + n.ex * releaseProgress;
+          n.vy = springVy * pull + n.ey * releaseProgress;
+        } else {
+          n.vx = springVx; n.vy = springVy;
+        }
 
         if (netMouse.active) {
           var mdx = n.x - netMouse.x, mdy = n.y - netMouse.y;
@@ -540,13 +571,8 @@
         netCtx.fill();
       });
 
-      if (Date.now() - netFormStartedAt > NET_FORM_MS) {
+      if (releaseProgress >= 1) {
         netPhase = "network";
-        if (heroWrap) heroWrap.classList.remove("is-intro-hidden");
-        netNodes.forEach(function (n) {
-          n.vx = (Math.random() - 0.5) * 0.35;
-          n.vy = (Math.random() - 0.5) * 0.35;
-        });
       }
     };
 
