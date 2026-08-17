@@ -524,10 +524,41 @@
       netCtx.fillRect(0, 0, netW, netH);
     };
 
+    var drawConnections = function (opacityMul, maxDist) {
+      if (maxDist === undefined) maxDist = 128;
+      for (var i = 0; i < netNodes.length; i++) {
+        for (var j = i + 1; j < netNodes.length; j++) {
+          var a = netNodes[i], b = netNodes[j];
+          var ddx = a.x - b.x, ddy = a.y - b.y;
+          var d = Math.hypot(ddx, ddy);
+          if (d < maxDist) {
+            var op = (1 - d / maxDist) * 0.5 * opacityMul;
+            if (op < 0.003) continue;
+            netCtx.strokeStyle = "rgba(120,160,220," + op.toFixed(3) + ")";
+            netCtx.lineWidth = 0.7;
+            netCtx.beginPath();
+            netCtx.moveTo(a.x, a.y);
+            netCtx.lineTo(b.x, b.y);
+            netCtx.stroke();
+          }
+        }
+      }
+    };
+
+    var drawDots = function () {
+      netNodes.forEach(function (n) {
+        netCtx.beginPath();
+        netCtx.arc(n.x, n.y, n.r, 0, Math.PI * 2);
+        netCtx.fillStyle = "rgba(190,215,255,0.85)";
+        netCtx.fill();
+      });
+    };
+
     var stepForm = function () {
       // 다 모인 뒤에는 그대로 "doion" 모양을 유지합니다. 마우스가 (터치 시엔
       // 탭이) 들어오면 그때부터 서서히 퍼지기 시작해 네트워크로 풀립니다 —
-      // 타이머로 갑자기 확 바뀌지 않습니다.
+      // 타이머로 갑자기 확 바뀌지 않고, 연결선도 진행률에 맞춰 서서히 옅게
+      // 나타납니다(전환 순간 선이 팍 생기지 않도록).
       if (!netReleaseTriggered && netMouseMoved && Date.now() - netFormStartedAt > NET_MIN_HOLD_MS) {
         netReleaseTriggered = true;
         netReleaseStartedAt = Date.now();
@@ -566,12 +597,14 @@
         }
 
         n.x += n.vx; n.y += n.vy;
-
-        netCtx.beginPath();
-        netCtx.arc(n.x, n.y, n.r, 0, Math.PI * 2);
-        netCtx.fillStyle = "rgba(190,215,255,0.85)";
-        netCtx.fill();
       });
+
+      if (releaseProgress > 0) {
+        // 선은 진행률의 제곱으로 옅어지고, 연결 가능 거리도 함께 자라도록 해서
+        // "갑자기 그물이 나타나는" 느낌 없이 서서히 자라나게 합니다.
+        drawConnections(releaseProgress * releaseProgress, 128 * Math.pow(releaseProgress, 1.5));
+      }
+      drawDots();
 
       if (releaseProgress >= 1) {
         netPhase = "network";
@@ -596,30 +629,8 @@
         }
       });
 
-      for (var i = 0; i < netNodes.length; i++) {
-        for (var j = i + 1; j < netNodes.length; j++) {
-          var a = netNodes[i], b = netNodes[j];
-          var ddx = a.x - b.x, ddy = a.y - b.y;
-          var d = Math.hypot(ddx, ddy);
-          var maxDist = 128;
-          if (d < maxDist) {
-            var op = (1 - d / maxDist) * 0.5;
-            netCtx.strokeStyle = "rgba(120,160,220," + op.toFixed(3) + ")";
-            netCtx.lineWidth = 0.7;
-            netCtx.beginPath();
-            netCtx.moveTo(a.x, a.y);
-            netCtx.lineTo(b.x, b.y);
-            netCtx.stroke();
-          }
-        }
-      }
-
-      netNodes.forEach(function (n) {
-        netCtx.beginPath();
-        netCtx.arc(n.x, n.y, n.r, 0, Math.PI * 2);
-        netCtx.fillStyle = "rgba(190,215,255,0.85)";
-        netCtx.fill();
-      });
+      drawConnections(1);
+      drawDots();
     };
 
     var netStep = function () {
