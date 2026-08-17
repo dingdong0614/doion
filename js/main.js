@@ -416,26 +416,32 @@
   var heroCanvas = document.getElementById("heroNetwork");
   if (heroCanvas && !prefersReducedMotion) {
     var heroSection = document.querySelector(".hero");
+    var heroWrap = heroSection.querySelector(".hero-wrap");
     var netCtx = heroCanvas.getContext("2d");
     var netW, netH, netDPR;
     var netMouse = { x: -9999, y: -9999, active: false };
     var netNodes = [];
     var netPhase = "form";
     var netFormStartedAt = 0;
-    var NET_FORM_MS = 2600;
+    var NET_FORM_MS = 1900;
 
-    var buildLogoTargets = function (count) {
+    if (heroWrap) {
+      heroWrap.classList.add("is-intro-hidden");
+      window.setTimeout(function () { heroWrap.classList.remove("is-intro-hidden"); }, NET_FORM_MS + 2500);
+    }
+
+    var buildLogoTargets = function () {
       var off = document.createElement("canvas");
       off.width = netW; off.height = netH;
       var octx = off.getContext("2d");
-      var fontSize = Math.min(netW * 0.14, 150);
+      var fontSize = Math.min(netW * 0.16, 170);
       octx.font = "800 " + fontSize + "px Pretendard, Arial, sans-serif";
       octx.fillStyle = "#fff";
       octx.textAlign = "center";
       octx.textBaseline = "middle";
-      octx.fillText("doion", netW / 2, netH * 0.42);
+      octx.fillText("doion", netW / 2, netH * 0.46);
 
-      var step = Math.max(4, Math.floor(fontSize / 18));
+      var step = Math.max(3, Math.floor(fontSize / 26));
       var candidates = [];
       var data = octx.getImageData(0, 0, netW, netH).data;
       for (var y = 0; y < netH; y += step) {
@@ -447,15 +453,15 @@
         var j = Math.floor(Math.random() * (i + 1));
         var tmp = candidates[i]; candidates[i] = candidates[j]; candidates[j] = tmp;
       }
-      return candidates.slice(0, count);
+      return candidates.slice(0, 280);
     };
 
     var netInitNodes = function () {
-      var count = Math.max(30, Math.floor((netW * netH) / 28000));
-      var targets = buildLogoTargets(count);
+      var targets = buildLogoTargets();
+      var count = targets.length || Math.max(30, Math.floor((netW * netH) / 28000));
       netNodes = [];
       for (var i = 0; i < count; i++) {
-        var t = targets[i % (targets.length || 1)];
+        var t = targets[i];
         netNodes.push({
           x: Math.random() * netW,
           y: Math.random() * netH,
@@ -463,11 +469,12 @@
           ty: t ? t.y : Math.random() * netH,
           vx: 0,
           vy: 0,
-          r: Math.random() * 1.6 + 1.1
+          r: Math.random() * 1.4 + 0.9
         });
       }
       netPhase = targets.length ? "form" : "network";
       netFormStartedAt = Date.now();
+      if (netPhase === "network" && heroWrap) heroWrap.classList.remove("is-intro-hidden");
     };
 
     var netResize = function () {
@@ -519,6 +526,7 @@
 
       if (Date.now() - netFormStartedAt > NET_FORM_MS) {
         netPhase = "network";
+        if (heroWrap) heroWrap.classList.remove("is-intro-hidden");
         netNodes.forEach(function (n) {
           n.vx = (Math.random() - 0.5) * 0.35;
           n.vy = (Math.random() - 0.5) * 0.35;
