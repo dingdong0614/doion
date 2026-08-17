@@ -96,9 +96,20 @@ h1, h2, h3 {
   font-family: var(--font-mono);
   font-size: 0.8rem;
   font-weight: 600;
-  letter-spacing: 0.06em;
+  letter-spacing: 0.08em;
   color: var(--teal);
   margin: 0 0 var(--sp-3);
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+.eyebrow::before {
+  content: "";
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: currentColor;
+  flex-shrink: 0;
 }
 
 /* ---------- light section scope ---------- */
@@ -372,10 +383,13 @@ h1, h2, h3 {
   padding: var(--sp-3) var(--sp-4);
   border-bottom: 1px solid var(--line);
 }
-.dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; }
-.dot-r { background: var(--error); }
-.dot-y { background: var(--amber); }
-.dot-g { background: var(--success); }
+.term-brand-dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  display: inline-block;
+  background: var(--accent);
+  box-shadow: 0 0 0 3px rgba(70,117,219,0.18);
+}
 .term-path {
   font-family: var(--font-mono);
   font-size: 0.78rem;
