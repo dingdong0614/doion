@@ -431,6 +431,7 @@
     var NET_RELEASE_MS = 2000;
     var NET_CONTENT_REVEAL_MS = 1900;
     var WIDE_BREAKPOINT = 900;
+    var NET_AMBIENT_COUNT = 170;
 
     var buildLogoTargets = function (isWide) {
       var off = document.createElement("canvas");
@@ -450,6 +451,9 @@
       octx.textBaseline = "middle";
       octx.fillText("doion", centerX, netH * 0.46);
 
+      // 글자 내부 픽셀을 촘촘하게 전부 사용합니다(일부만 무작위로 골라 쓰면
+      // 획 중간중간이 비어 보여 가독성이 떨어짐). 획수가 적은 만큼 총 개수는
+      // 수백~천 개 안팎이라 이 형성 단계에서는 성능 부담도 크지 않습니다.
       var step = Math.max(2, Math.floor(fontSize / 34));
       var candidates = [];
       var data = octx.getImageData(0, 0, netW, netH).data;
@@ -458,11 +462,7 @@
           if (data[(y * netW + x) * 4 + 3] > 128) candidates.push({ x: x, y: y });
         }
       }
-      for (var i = candidates.length - 1; i > 0; i--) {
-        var j = Math.floor(Math.random() * (i + 1));
-        var tmp = candidates[i]; candidates[i] = candidates[j]; candidates[j] = tmp;
-      }
-      return candidates.slice(0, 420);
+      return candidates;
     };
 
     var netInitNodes = function () {
@@ -485,6 +485,7 @@
       netPhase = targets.length ? "form" : "network";
       netFormStartedAt = Date.now();
       netReleaseTriggered = false;
+      netFadingNodes = [];
       netReleaseStartedAt = 0;
 
       // 넓은 화면에서는 텍스트/카드가 로고와 겹치지 않으므로 계속 보이게 둡니다
@@ -554,14 +555,31 @@
       });
     };
 
+    var NET_FADE_MS = 550;
+    var netFadingNodes = [];
+
     var stepForm = function () {
       // 다 모인 뒤에는 그대로 "doion" 모양을 유지합니다. 마우스가 (터치 시엔
       // 탭이) 들어오면 그때부터 서서히 퍼지기 시작해 네트워크로 풀립니다 —
       // 타이머로 갑자기 확 바뀌지 않고, 연결선도 진행률에 맞춰 서서히 옅게
-      // 나타납니다(전환 순간 선이 팍 생기지 않도록).
+      // 나타납니다. 글자를 읽으려면 점이 촘촘해야 하지만 그만큼 다 데리고
+      // 네트워크로 풀면 선 계산이 무거워지므로, 트리거 시점에 일부만 남기고
+      // 나머지는 자리에서 옅어지며 사라집니다.
       if (!netReleaseTriggered && netMouseMoved && Date.now() - netFormStartedAt > NET_MIN_HOLD_MS) {
         netReleaseTriggered = true;
         netReleaseStartedAt = Date.now();
+
+        if (netNodes.length > NET_AMBIENT_COUNT) {
+          for (var i = netNodes.length - 1; i > 0; i--) {
+            var j = Math.floor(Math.random() * (i + 1));
+            var tmp = netNodes[i]; netNodes[i] = netNodes[j]; netNodes[j] = tmp;
+          }
+          netFadingNodes = netNodes.slice(NET_AMBIENT_COUNT);
+          netNodes = netNodes.slice(0, NET_AMBIENT_COUNT);
+          var fadeStart = Date.now();
+          netFadingNodes.forEach(function (n) { n.fadeStart = fadeStart; });
+        }
+
         netNodes.forEach(function (n) {
           n.ex = (Math.random() - 0.5) * 0.35;
           n.ey = (Math.random() - 0.5) * 0.35;
@@ -605,6 +623,19 @@
         drawConnections(releaseProgress * releaseProgress, 128 * Math.pow(releaseProgress, 1.5));
       }
       drawDots();
+
+      if (netFadingNodes.length) {
+        var now = Date.now();
+        netFadingNodes = netFadingNodes.filter(function (n) {
+          var t = (now - n.fadeStart) / NET_FADE_MS;
+          if (t >= 1) return false;
+          netCtx.beginPath();
+          netCtx.arc(n.x, n.y, n.r, 0, Math.PI * 2);
+          netCtx.fillStyle = "rgba(220,233,255," + (0.95 * (1 - t)).toFixed(3) + ")";
+          netCtx.fill();
+          return true;
+        });
+      }
 
       if (releaseProgress >= 1) {
         netPhase = "network";
