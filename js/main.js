@@ -451,8 +451,8 @@
       } else {
         regionW = netW;
         centerX = netW / 2;
-        fontSize = Math.min(regionW * 0.18, 64);
-        centerY = 95;
+        fontSize = Math.min(regionW * 0.24, 92);
+        centerY = 100;
       }
 
       octx.font = "800 " + fontSize + "px Pretendard, Arial, sans-serif";
@@ -481,6 +481,9 @@
       netIsWide = isWide;
       var targets = buildLogoTargets(isWide);
       var count = targets.length || Math.max(30, Math.floor((netW * netH) / 28000));
+      // 모바일에서는 글자가 작아서(넓은 화면보다 폰트가 훨씬 작음) 흔들림
+      // 폭이 크면 획이 뭉개져 잘 안 읽힙니다. 화면이 좁을수록 흔들림을 줄입니다.
+      var wobbleScale = isWide ? 1 : 0.4;
       netNodes = [];
       for (var i = 0; i < count; i++) {
         var t = targets[i];
@@ -497,8 +500,8 @@
           wPhaseY: Math.random() * Math.PI * 2,
           wFreqX: 0.0006 + Math.random() * 0.0006,
           wFreqY: 0.0006 + Math.random() * 0.0006,
-          wAmpX: 2 + Math.random() * 3,
-          wAmpY: 2 + Math.random() * 3
+          wAmpX: (2 + Math.random() * 3) * wobbleScale,
+          wAmpY: (2 + Math.random() * 3) * wobbleScale
         });
       }
       netFormStartedAt = Date.now();
