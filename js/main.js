@@ -429,6 +429,7 @@
     var netMouseMoved = false;
     var netLastMouseX = null, netLastMouseY = null;
     var NET_RELEASE_MS = 2000;
+    var NET_STAGGER_MS = 600;
     var NET_CONTENT_REVEAL_MS = 1900;
     var WIDE_BREAKPOINT = 900;
     var NET_AMBIENT_COUNT = 210;
@@ -585,26 +586,35 @@
           });
         }
 
+        // 모든 점이 똑같은 타이밍으로 한 몸처럼 움직이면 기계적으로 보이므로,
+        // 점마다 시작 시점을 살짝 어긋나게 둬서 물결처럼 하나씩 풀려나게 합니다.
         netNodes.forEach(function (n) {
           n.ex = (Math.random() - 0.5) * 0.35;
           n.ey = (Math.random() - 0.5) * 0.35;
+          n.pOffset = Math.random() * NET_STAGGER_MS;
         });
       }
 
-      var releaseProgress = netReleaseTriggered
-        ? Math.min((Date.now() - netReleaseStartedAt) / NET_RELEASE_MS, 1)
-        : 0;
-      var pull = 1 - releaseProgress;
+      var elapsed = netReleaseTriggered ? Date.now() - netReleaseStartedAt : 0;
+      var releaseProgress = netReleaseTriggered ? Math.min(elapsed / NET_RELEASE_MS, 1) : 0;
+      var nodeSpan = NET_RELEASE_MS - NET_STAGGER_MS;
 
       netNodes.forEach(function (n) {
+        var nodeT = netReleaseTriggered
+          ? Math.min(Math.max((elapsed - n.pOffset) / nodeSpan, 0), 1)
+          : 0;
+        // ease-out: 처음엔 천천히, 갈수록 자연스럽게 풀려나도록
+        var eased = 1 - Math.pow(1 - nodeT, 3);
+        var pull = 1 - eased;
+
         var dx = n.tx - n.x, dy = n.ty - n.y;
         var springVx = n.vx + dx * 0.02;
         var springVy = n.vy + dy * 0.02;
         springVx *= 0.82; springVy *= 0.82;
 
-        if (releaseProgress > 0) {
-          n.vx = springVx * pull + n.ex * releaseProgress;
-          n.vy = springVy * pull + n.ey * releaseProgress;
+        if (eased > 0) {
+          n.vx = springVx * pull + n.ex * eased;
+          n.vy = springVy * pull + n.ey * eased;
         } else {
           n.vx = springVx; n.vy = springVy;
         }
