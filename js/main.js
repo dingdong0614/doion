@@ -416,35 +416,53 @@
   var heroCanvas = document.getElementById("heroNetwork");
   if (heroCanvas && !prefersReducedMotion) {
     var heroSection = document.querySelector(".hero");
-    var heroWrap = heroSection.querySelector(".hero-wrap");
     var netCtx = heroCanvas.getContext("2d");
     var netW, netH, netDPR;
     var netMouse = { x: -9999, y: -9999, active: false };
     var netNodes = [];
-    var NET_CONTENT_REVEAL_MS = 1900;
+    var netMouseMoved = false;
+    var netLastMouseX = null, netLastMouseY = null;
+    var netFormStartedAt = 0;
+    var netReleaseTriggered = false;
+    var netReleaseStartedAt = 0;
+    var NET_MIN_HOLD_MS = 2200;
+    var NET_RELEASE_MS = 2200;
+    var NET_STAGGER_MS = 700;
     var WIDE_BREAKPOINT = 900;
+    var CELL = 128;
+    var NET_LINE_DIST = 38;
 
     var buildLogoTargets = function (isWide) {
       var off = document.createElement("canvas");
       off.width = netW; off.height = netH;
       var octx = off.getContext("2d");
 
-      // 넓은 화면에서는 텍스트가 왼쪽(css의 .hero .hero-wrap 560px)에 있으므로,
-      // 로고는 그 오른쪽 여백에만 그려서 겹치지 않게 합니다.
-      var regionX0 = isWide ? 640 : 0;
-      var regionW = isWide ? Math.max(netW - regionX0 - 40, 300) : netW;
-      var centerX = regionX0 + regionW / 2;
-      var fontSize = Math.min(regionW * 0.24, 170);
+      // 넓은 화면에서는 텍스트가 왼쪽(css의 .hero .hero-wrap 560px)에 있으므로
+      // 로고는 그 오른쪽 여백에 그리고, 좁은 화면에서는 카드가 화면 전체를
+      // 차지하므로 카드보다 위쪽(css에서 미리 넓혀둔 상단 여백)에 작게 그려서
+      // 어느 화면에서도 카드에 가려지지 않게 합니다.
+      var centerX, centerY, fontSize, regionW;
+      if (isWide) {
+        var regionX0 = 640;
+        regionW = Math.max(netW - regionX0 - 40, 300);
+        centerX = regionX0 + regionW / 2;
+        fontSize = Math.min(regionW * 0.24, 170);
+        centerY = netH * 0.46;
+      } else {
+        regionW = netW;
+        centerX = netW / 2;
+        fontSize = Math.min(regionW * 0.18, 64);
+        centerY = 95;
+      }
 
       octx.font = "800 " + fontSize + "px Pretendard, Arial, sans-serif";
       octx.fillStyle = "#fff";
       octx.textAlign = "center";
       octx.textBaseline = "middle";
-      octx.fillText("doion", centerX, netH * 0.46);
+      octx.fillText("doion", centerX, centerY);
 
       // 글자 내부 픽셀을 촘촘하게 전부 사용합니다(일부만 무작위로 골라 쓰면
-      // 획 중간중간이 비어 보여 가독성이 떨어짐). 연결선을 그리지 않으므로
-      // 개수가 많아도(수백~천 개) 부담 없이 유지할 수 있습니다.
+      // 획 중간중간이 비어 보여 가독성이 떨어짐).
       var step = Math.max(2, Math.floor(fontSize / 34));
       var candidates = [];
       var data = octx.getImageData(0, 0, netW, netH).data;
@@ -471,7 +489,7 @@
           vx: 0,
           vy: 0,
           r: Math.random() * 1.5 + 1.1,
-          // 제자리에서 계속 살짝 흔들리도록 각자 다른 위상/속도를 부여합니다.
+          // 다 모인 뒤 제자리에서 계속 살짝 흔들리도록 각자 다른 위상/속도를 부여합니다.
           wPhaseX: Math.random() * Math.PI * 2,
           wPhaseY: Math.random() * Math.PI * 2,
           wFreqX: 0.0006 + Math.random() * 0.0006,
@@ -480,19 +498,9 @@
           wAmpY: 2 + Math.random() * 3
         });
       }
-
-      // 넓은 화면에서는 텍스트/카드가 로고와 겹치지 않으므로 계속 보이게 둡니다
-      // (숨겼다 갑자기 나타나는 연출 없음). 좁은 화면에서만 겹치므로 잠깐 숨깁니다.
-      if (heroWrap) {
-        if (isWide) {
-          heroWrap.classList.remove("is-intro-hidden");
-        } else {
-          heroWrap.classList.add("is-intro-hidden");
-          window.setTimeout(function () {
-            heroWrap.classList.remove("is-intro-hidden");
-          }, NET_CONTENT_REVEAL_MS);
-        }
-      }
+      netFormStartedAt = Date.now();
+      netReleaseTriggered = false;
+      netReleaseStartedAt = 0;
     };
 
     var netResize = function () {
@@ -518,40 +526,127 @@
       netCtx.fillRect(0, 0, netW, netH);
     };
 
-    // "doion" 모양을 계속 유지하면서, 점 하나하나가 자기 자리 근처에서 천천히
-    // 흔들리며 살아있는 느낌을 줍니다. 마우스를 가져가면 그 주변 점들이
-    // 잠깐 밀려났다가 다시 제자리로 돌아옵니다 — 전혀 다른 네트워크 모양으로
-    // 바뀌지 않고, 처음 형태를 그대로 유지합니다.
+    // 점이 많아지면(최대 1000개 이상) 모든 쌍을 다 검사하는 방식은 느려지므로,
+    // 화면을 128px 격자로 나눠 각 점은 바로 옆 칸에 있는 점하고만 거리를
+    // 비교합니다 — 결과(가까운 점끼리만 선으로 연결)는 같지만 훨씬 빠릅니다.
+    var NEIGHBOR_OFFSETS = [[0, 0], [1, 0], [0, 1], [1, 1], [-1, 1]];
+    var drawConnections = function (opacityMul, maxDist) {
+      if (maxDist === undefined) maxDist = CELL;
+      var grid = {};
+      for (var i = 0; i < netNodes.length; i++) {
+        var n = netNodes[i];
+        var key = Math.floor(n.x / CELL) + "_" + Math.floor(n.y / CELL);
+        (grid[key] || (grid[key] = [])).push(i);
+      }
+      Object.keys(grid).forEach(function (key) {
+        var parts = key.split("_");
+        var cx = parseInt(parts[0], 10), cy = parseInt(parts[1], 10);
+        var cellIdxs = grid[key];
+        NEIGHBOR_OFFSETS.forEach(function (off) {
+          var otherIdxs = grid[(cx + off[0]) + "_" + (cy + off[1])];
+          if (!otherIdxs) return;
+          var sameCell = off[0] === 0 && off[1] === 0;
+          for (var a = 0; a < cellIdxs.length; a++) {
+            var startB = sameCell ? a + 1 : 0;
+            for (var b = startB; b < otherIdxs.length; b++) {
+              var na = netNodes[cellIdxs[a]], nb = netNodes[otherIdxs[b]];
+              var d = Math.hypot(na.x - nb.x, na.y - nb.y);
+              if (d >= maxDist) continue;
+              var op = (1 - d / maxDist) * 0.5 * opacityMul;
+              if (op < 0.003) continue;
+              netCtx.strokeStyle = "rgba(120,160,220," + op.toFixed(3) + ")";
+              netCtx.lineWidth = 0.7;
+              netCtx.beginPath();
+              netCtx.moveTo(na.x, na.y);
+              netCtx.lineTo(nb.x, nb.y);
+              netCtx.stroke();
+            }
+          }
+        });
+      });
+    };
+
+    var drawDots = function () {
+      netNodes.forEach(function (n) {
+        netCtx.beginPath();
+        netCtx.arc(n.x, n.y, n.r, 0, Math.PI * 2);
+        netCtx.fillStyle = "rgba(220,233,255,0.95)";
+        netCtx.fill();
+      });
+    };
+
     var netStep = function () {
       netCtx.clearRect(0, 0, netW, netH);
       drawGradientWash();
 
       var now = Date.now();
 
+      // 다 모인 뒤 얼마간은 "doion" 모양 그대로 살짝 흔들리기만 하다가,
+      // 마우스가 (터치 시엔 탭이) 들어오면 그때부터 물결처럼 하나씩 시차를
+      // 두고 풀려나 네트워크로 이어집니다 — 타이머로 갑자기 바뀌지 않고,
+      // 처음 doion을 이루던 점들이 그대로 이동해서 선으로 연결됩니다.
+      if (!netReleaseTriggered && netMouseMoved && now - netFormStartedAt > NET_MIN_HOLD_MS) {
+        netReleaseTriggered = true;
+        netReleaseStartedAt = now;
+        netNodes.forEach(function (n) {
+          // 점이 많다 보니(최대 1000개 이상) 천천히 표류하면 letters 자리에
+          // 계속 몰려 있어 선이 과도하게 빽빽해집니다. 충분히 흩어지도록
+          // 확산 속도를 넉넉히 줍니다.
+          n.ex = (Math.random() - 0.5) * 1.6;
+          n.ey = (Math.random() - 0.5) * 1.6;
+          n.pOffset = Math.random() * NET_STAGGER_MS;
+        });
+      }
+
+      var elapsed = netReleaseTriggered ? now - netReleaseStartedAt : 0;
+      var releaseProgress = netReleaseTriggered ? Math.min(elapsed / NET_RELEASE_MS, 1) : 0;
+      var nodeSpan = NET_RELEASE_MS - NET_STAGGER_MS;
+
       netNodes.forEach(function (n) {
+        var nodeT = netReleaseTriggered
+          ? Math.min(Math.max((elapsed - n.pOffset) / nodeSpan, 0), 1)
+          : 0;
+        var eased = 1 - Math.pow(1 - nodeT, 3);
+        var pull = 1 - eased;
+
         var liveTx = n.tx + Math.sin(now * n.wFreqX + n.wPhaseX) * n.wAmpX;
         var liveTy = n.ty + Math.cos(now * n.wFreqY + n.wPhaseY) * n.wAmpY;
         var dx = liveTx - n.x, dy = liveTy - n.y;
-        n.vx += dx * 0.02; n.vy += dy * 0.02;
-        n.vx *= 0.82; n.vy *= 0.82;
+        var springVx = (n.vx + dx * 0.02) * 0.82;
+        var springVy = (n.vy + dy * 0.02) * 0.82;
+
+        if (eased > 0) {
+          n.vx = springVx * pull + n.ex * eased;
+          n.vy = springVy * pull + n.ey * eased;
+        } else {
+          n.vx = springVx; n.vy = springVy;
+        }
+
+        if (netReleaseTriggered) {
+          if (n.x < 0 || n.x > netW) n.vx *= -1;
+          if (n.y < 0 || n.y > netH) n.vy *= -1;
+        }
 
         if (netMouse.active) {
           var mdx = n.x - netMouse.x, mdy = n.y - netMouse.y;
           var mdist = Math.hypot(mdx, mdy);
-          if (mdist < 70) {
-            var f = (70 - mdist) / 70;
-            n.vx += (mdx / (mdist || 1)) * f * 3.2;
-            n.vy += (mdy / (mdist || 1)) * f * 3.2;
+          var radius = releaseProgress >= 1 ? 140 : 70;
+          if (mdist < radius) {
+            var f = (radius - mdist) / radius;
+            n.vx += (mdx / (mdist || 1)) * f * (releaseProgress >= 1 ? 2.2 : 3.2);
+            n.vy += (mdy / (mdist || 1)) * f * (releaseProgress >= 1 ? 2.2 : 3.2);
           }
         }
 
         n.x += n.vx; n.y += n.vy;
-
-        netCtx.beginPath();
-        netCtx.arc(n.x, n.y, n.r, 0, Math.PI * 2);
-        netCtx.fillStyle = "rgba(220,233,255,0.95)";
-        netCtx.fill();
       });
+
+      if (releaseProgress > 0) {
+        var opacityMul = releaseProgress >= 1 ? 1 : releaseProgress * releaseProgress;
+        var maxDist = releaseProgress >= 1 ? NET_LINE_DIST : NET_LINE_DIST * Math.pow(releaseProgress, 1.5);
+        drawConnections(opacityMul, maxDist);
+      }
+      drawDots();
 
       window.requestAnimationFrame(netStep);
     };
@@ -559,8 +654,15 @@
     window.addEventListener("resize", netResize);
     heroSection.addEventListener("mousemove", function (e) {
       var rect = heroSection.getBoundingClientRect();
-      netMouse.x = e.clientX - rect.left;
-      netMouse.y = e.clientY - rect.top;
+      var x = e.clientX - rect.left;
+      var y = e.clientY - rect.top;
+      // 페이지 전환 직후 커서가 가만히 있어도 브라우저가 mousemove를 한 번 쏘는
+      // 경우가 있어, 실제로 움직인 거리가 있을 때만 "의도된 호버"로 인정합니다.
+      if (netLastMouseX !== null && Math.hypot(x - netLastMouseX, y - netLastMouseY) > 4) {
+        netMouseMoved = true;
+      }
+      netLastMouseX = x; netLastMouseY = y;
+      netMouse.x = x; netMouse.y = y;
       netMouse.active = true;
     });
     heroSection.addEventListener("mouseleave", function () {
@@ -572,6 +674,7 @@
       netMouse.x = t.clientX - rect.left;
       netMouse.y = t.clientY - rect.top;
       netMouse.active = true;
+      netMouseMoved = true;
     }, { passive: true });
 
     netResize();
