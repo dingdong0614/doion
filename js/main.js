@@ -408,10 +408,11 @@
     });
   }
 
-  /* ---------- 12. 히어로 인터랙티브 네트워크 배경 (캔버스) ----------
-     정적 이미지/영상 대신 캔버스로 점-선 네트워크를 실시간 렌더링합니다.
-     마우스가 지나가면 점들이 밀려나듯 반응합니다 — doion이 "매장들을
-     연결하는 시스템"이라는 컨셉과 맞닿아 있는 연출입니다. */
+  /* ---------- 12. 히어로 인터랙티브 배경: 점들이 로고로 모였다가 네트워크로 풀어짐 (캔버스) ----------
+     페이지가 열리면 흩어져 있던 점들이 잠깐 "doion" 워드마크로 모였다가(브랜드 각인),
+     곧 흩어지며 서로 연결되는 점-선 네트워크로 풀립니다 — "점 하나하나가 모여 브랜드가
+     되고, 그 브랜드는 매장들을 연결하는 네트워크가 된다"는 하나의 흐름으로 통합한 연출입니다.
+     마우스가 지나가면 두 단계 모두에서 점들이 반응합니다. */
   var heroCanvas = document.getElementById("heroNetwork");
   if (heroCanvas && !prefersReducedMotion) {
     var heroSection = document.querySelector(".hero");
@@ -419,19 +420,54 @@
     var netW, netH, netDPR;
     var netMouse = { x: -9999, y: -9999, active: false };
     var netNodes = [];
+    var netPhase = "form";
+    var netFormStartedAt = 0;
+    var NET_FORM_MS = 2600;
+
+    var buildLogoTargets = function (count) {
+      var off = document.createElement("canvas");
+      off.width = netW; off.height = netH;
+      var octx = off.getContext("2d");
+      var fontSize = Math.min(netW * 0.14, 150);
+      octx.font = "800 " + fontSize + "px Pretendard, Arial, sans-serif";
+      octx.fillStyle = "#fff";
+      octx.textAlign = "center";
+      octx.textBaseline = "middle";
+      octx.fillText("doion", netW / 2, netH * 0.42);
+
+      var step = Math.max(4, Math.floor(fontSize / 18));
+      var candidates = [];
+      var data = octx.getImageData(0, 0, netW, netH).data;
+      for (var y = 0; y < netH; y += step) {
+        for (var x = 0; x < netW; x += step) {
+          if (data[(y * netW + x) * 4 + 3] > 128) candidates.push({ x: x, y: y });
+        }
+      }
+      for (var i = candidates.length - 1; i > 0; i--) {
+        var j = Math.floor(Math.random() * (i + 1));
+        var tmp = candidates[i]; candidates[i] = candidates[j]; candidates[j] = tmp;
+      }
+      return candidates.slice(0, count);
+    };
 
     var netInitNodes = function () {
       var count = Math.max(30, Math.floor((netW * netH) / 28000));
+      var targets = buildLogoTargets(count);
       netNodes = [];
       for (var i = 0; i < count; i++) {
+        var t = targets[i % (targets.length || 1)];
         netNodes.push({
           x: Math.random() * netW,
           y: Math.random() * netH,
-          vx: (Math.random() - 0.5) * 0.35,
-          vy: (Math.random() - 0.5) * 0.35,
+          tx: t ? t.x : Math.random() * netW,
+          ty: t ? t.y : Math.random() * netH,
+          vx: 0,
+          vy: 0,
           r: Math.random() * 1.6 + 1.1
         });
       }
+      netPhase = targets.length ? "form" : "network";
+      netFormStartedAt = Date.now();
     };
 
     var netResize = function () {
@@ -446,9 +482,7 @@
       netInitNodes();
     };
 
-    var netStep = function () {
-      netCtx.clearRect(0, 0, netW, netH);
-
+    var drawGradientWash = function () {
       var t = Date.now() / 6000;
       var gx = netW * 0.5 + Math.sin(t) * netW * 0.25;
       var gy = netH * 0.35 + Math.cos(t * 0.8) * netH * 0.2;
@@ -457,7 +491,42 @@
       grad.addColorStop(1, "rgba(70,117,219,0)");
       netCtx.fillStyle = grad;
       netCtx.fillRect(0, 0, netW, netH);
+    };
 
+    var stepForm = function () {
+      netNodes.forEach(function (n) {
+        var dx = n.tx - n.x, dy = n.ty - n.y;
+        n.vx += dx * 0.02; n.vy += dy * 0.02;
+        n.vx *= 0.82; n.vy *= 0.82;
+
+        if (netMouse.active) {
+          var mdx = n.x - netMouse.x, mdy = n.y - netMouse.y;
+          var mdist = Math.hypot(mdx, mdy);
+          if (mdist < 70) {
+            var f = (70 - mdist) / 70;
+            n.vx += (mdx / (mdist || 1)) * f * 3.2;
+            n.vy += (mdy / (mdist || 1)) * f * 3.2;
+          }
+        }
+
+        n.x += n.vx; n.y += n.vy;
+
+        netCtx.beginPath();
+        netCtx.arc(n.x, n.y, n.r, 0, Math.PI * 2);
+        netCtx.fillStyle = "rgba(190,215,255,0.85)";
+        netCtx.fill();
+      });
+
+      if (Date.now() - netFormStartedAt > NET_FORM_MS) {
+        netPhase = "network";
+        netNodes.forEach(function (n) {
+          n.vx = (Math.random() - 0.5) * 0.35;
+          n.vy = (Math.random() - 0.5) * 0.35;
+        });
+      }
+    };
+
+    var stepNetwork = function () {
       netNodes.forEach(function (n) {
         n.x += n.vx; n.y += n.vy;
         if (n.x < 0 || n.x > netW) n.vx *= -1;
@@ -499,6 +568,17 @@
         netCtx.fillStyle = "rgba(190,215,255,0.85)";
         netCtx.fill();
       });
+    };
+
+    var netStep = function () {
+      netCtx.clearRect(0, 0, netW, netH);
+      drawGradientWash();
+
+      if (netPhase === "form") {
+        stepForm();
+      } else {
+        stepNetwork();
+      }
 
       window.requestAnimationFrame(netStep);
     };
