@@ -510,15 +510,25 @@
     };
 
     var netResize = function () {
+      var newW = heroSection.clientWidth;
+      var newH = heroSection.clientHeight;
+      // 모바일에서 스크롤하면 주소창이 접혔다 펴지면서 뷰포트 높이만 바뀌어도
+      // resize 이벤트가 뜹니다. 그때마다 점을 처음부터 다시 만들면 스크롤해서
+      // 위로 올라올 때마다 애니메이션이 리셋된 것처럼 보이므로, 폭이 실제로
+      // 바뀌었을 때만(=진짜 리사이즈/회전) 다시 만듭니다.
+      var isFirstRun = netNodes.length === 0;
+      var widthChanged = isFirstRun || Math.abs(newW - netW) > 4;
+
       netDPR = Math.min(window.devicePixelRatio || 1, 2);
-      netW = heroSection.clientWidth;
-      netH = heroSection.clientHeight;
+      netW = newW;
+      netH = newH;
       heroCanvas.width = netW * netDPR;
       heroCanvas.height = netH * netDPR;
       heroCanvas.style.width = netW + "px";
       heroCanvas.style.height = netH + "px";
       netCtx.setTransform(netDPR, 0, 0, netDPR, 0, 0);
-      netInitNodes();
+
+      if (widthChanged) netInitNodes();
     };
 
     var drawGradientWash = function () {
