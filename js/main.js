@@ -431,7 +431,7 @@
     var NET_RELEASE_MS = 2000;
     var NET_CONTENT_REVEAL_MS = 1900;
     var WIDE_BREAKPOINT = 900;
-    var NET_AMBIENT_COUNT = 170;
+    var NET_AMBIENT_COUNT = 210;
 
     var buildLogoTargets = function (isWide) {
       var off = document.createElement("canvas");
@@ -576,8 +576,13 @@
           }
           netFadingNodes = netNodes.slice(NET_AMBIENT_COUNT);
           netNodes = netNodes.slice(0, NET_AMBIENT_COUNT);
-          var fadeStart = Date.now();
-          netFadingNodes.forEach(function (n) { n.fadeStart = fadeStart; });
+          // 한꺼번에 사라지면 개수가 확 줄어든 게 눈에 띄므로, 해제 구간 전체에
+          // 걸쳐 하나씩 시차를 두고 옅어지도록 각자 다른 시점에 사라지기
+          // 시작하게 합니다.
+          var releaseStart = netReleaseStartedAt;
+          netFadingNodes.forEach(function (n) {
+            n.fadeStart = releaseStart + Math.random() * NET_RELEASE_MS * 0.85;
+          });
         }
 
         netNodes.forEach(function (n) {
