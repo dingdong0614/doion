@@ -407,4 +407,121 @@
       });
     });
   }
+
+  /* ---------- 12. 히어로 인터랙티브 네트워크 배경 (캔버스) ----------
+     정적 이미지/영상 대신 캔버스로 점-선 네트워크를 실시간 렌더링합니다.
+     마우스가 지나가면 점들이 밀려나듯 반응합니다 — doion이 "매장들을
+     연결하는 시스템"이라는 컨셉과 맞닿아 있는 연출입니다. */
+  var heroCanvas = document.getElementById("heroNetwork");
+  if (heroCanvas && !prefersReducedMotion) {
+    var heroSection = document.querySelector(".hero");
+    var netCtx = heroCanvas.getContext("2d");
+    var netW, netH, netDPR;
+    var netMouse = { x: -9999, y: -9999, active: false };
+    var netNodes = [];
+
+    var netInitNodes = function () {
+      var count = Math.max(30, Math.floor((netW * netH) / 28000));
+      netNodes = [];
+      for (var i = 0; i < count; i++) {
+        netNodes.push({
+          x: Math.random() * netW,
+          y: Math.random() * netH,
+          vx: (Math.random() - 0.5) * 0.35,
+          vy: (Math.random() - 0.5) * 0.35,
+          r: Math.random() * 1.6 + 1.1
+        });
+      }
+    };
+
+    var netResize = function () {
+      netDPR = Math.min(window.devicePixelRatio || 1, 2);
+      netW = heroSection.clientWidth;
+      netH = heroSection.clientHeight;
+      heroCanvas.width = netW * netDPR;
+      heroCanvas.height = netH * netDPR;
+      heroCanvas.style.width = netW + "px";
+      heroCanvas.style.height = netH + "px";
+      netCtx.setTransform(netDPR, 0, 0, netDPR, 0, 0);
+      netInitNodes();
+    };
+
+    var netStep = function () {
+      netCtx.clearRect(0, 0, netW, netH);
+
+      var t = Date.now() / 6000;
+      var gx = netW * 0.5 + Math.sin(t) * netW * 0.25;
+      var gy = netH * 0.35 + Math.cos(t * 0.8) * netH * 0.2;
+      var grad = netCtx.createRadialGradient(gx, gy, 0, gx, gy, Math.max(netW, netH) * 0.7);
+      grad.addColorStop(0, "rgba(70,117,219,0.16)");
+      grad.addColorStop(1, "rgba(70,117,219,0)");
+      netCtx.fillStyle = grad;
+      netCtx.fillRect(0, 0, netW, netH);
+
+      netNodes.forEach(function (n) {
+        n.x += n.vx; n.y += n.vy;
+        if (n.x < 0 || n.x > netW) n.vx *= -1;
+        if (n.y < 0 || n.y > netH) n.vy *= -1;
+
+        if (netMouse.active) {
+          var dx = n.x - netMouse.x, dy = n.y - netMouse.y;
+          var dist = Math.hypot(dx, dy);
+          var radius = 140;
+          if (dist < radius) {
+            var force = (radius - dist) / radius;
+            n.x += (dx / (dist || 1)) * force * 2.2;
+            n.y += (dy / (dist || 1)) * force * 2.2;
+          }
+        }
+      });
+
+      for (var i = 0; i < netNodes.length; i++) {
+        for (var j = i + 1; j < netNodes.length; j++) {
+          var a = netNodes[i], b = netNodes[j];
+          var ddx = a.x - b.x, ddy = a.y - b.y;
+          var d = Math.hypot(ddx, ddy);
+          var maxDist = 128;
+          if (d < maxDist) {
+            var op = (1 - d / maxDist) * 0.5;
+            netCtx.strokeStyle = "rgba(120,160,220," + op.toFixed(3) + ")";
+            netCtx.lineWidth = 0.7;
+            netCtx.beginPath();
+            netCtx.moveTo(a.x, a.y);
+            netCtx.lineTo(b.x, b.y);
+            netCtx.stroke();
+          }
+        }
+      }
+
+      netNodes.forEach(function (n) {
+        netCtx.beginPath();
+        netCtx.arc(n.x, n.y, n.r, 0, Math.PI * 2);
+        netCtx.fillStyle = "rgba(190,215,255,0.85)";
+        netCtx.fill();
+      });
+
+      window.requestAnimationFrame(netStep);
+    };
+
+    window.addEventListener("resize", netResize);
+    heroSection.addEventListener("mousemove", function (e) {
+      var rect = heroSection.getBoundingClientRect();
+      netMouse.x = e.clientX - rect.left;
+      netMouse.y = e.clientY - rect.top;
+      netMouse.active = true;
+    });
+    heroSection.addEventListener("mouseleave", function () {
+      netMouse.active = false;
+    });
+    heroSection.addEventListener("touchmove", function (e) {
+      var rect = heroSection.getBoundingClientRect();
+      var t = e.touches[0];
+      netMouse.x = t.clientX - rect.left;
+      netMouse.y = t.clientY - rect.top;
+      netMouse.active = true;
+    }, { passive: true });
+
+    netResize();
+    netStep();
+  }
 })();
