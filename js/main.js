@@ -289,4 +289,122 @@
       });
     });
   }
+
+  /* ---------- 8. 히어로 터미널 체크리스트 순차 등장 ---------- */
+  var termChecklist = document.querySelector(".term-checklist");
+  if (termChecklist) {
+    if (!prefersReducedMotion && "IntersectionObserver" in window) {
+      var termItems = termChecklist.querySelectorAll("li");
+      termItems.forEach(function (li, i) {
+        li.style.transitionDelay = (i * 160) + "ms";
+      });
+      var termObserver = new IntersectionObserver(function (entries, obs) {
+        entries.forEach(function (entry) {
+          if (entry.isIntersecting) {
+            termChecklist.classList.add("is-animated");
+            obs.unobserve(entry.target);
+          }
+        });
+      }, { threshold: 0.3 });
+      termObserver.observe(termChecklist);
+    } else {
+      termChecklist.classList.add("is-animated");
+    }
+  }
+
+  /* ---------- 9. 스크롤 리빌: 카드가 뷰포트에 들어오면 순차적으로 페이드인 ---------- */
+  var revealEls = document.querySelectorAll(".stat-card, .log-card, .spec-panel, .portfolio-card");
+  if (revealEls.length && !prefersReducedMotion && "IntersectionObserver" in window) {
+    var revealGroups = [];
+    var revealDelay = function (el) {
+      var group = null;
+      for (var i = 0; i < revealGroups.length; i++) {
+        if (revealGroups[i].parent === el.parentElement) { group = revealGroups[i]; break; }
+      }
+      if (!group) {
+        group = { parent: el.parentElement, count: 0 };
+        revealGroups.push(group);
+      }
+      var delay = Math.min(group.count * 70, 420);
+      group.count++;
+      return delay;
+    };
+
+    var revealObserver = new IntersectionObserver(function (entries, obs) {
+      entries.forEach(function (entry) {
+        if (entry.isIntersecting) {
+          entry.target.classList.add("is-visible");
+          obs.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.15 });
+
+    revealEls.forEach(function (el) {
+      el.classList.add("reveal");
+      el.style.transitionDelay = revealDelay(el) + "ms";
+      revealObserver.observe(el);
+    });
+  }
+
+  /* ---------- 10. 3D 틸트 + 글레어 카드 (데스크톱 전용) ---------- */
+  var canHover = window.matchMedia("(hover: hover) and (pointer: fine)").matches;
+
+  var initTiltCards = function (selector, withGlare) {
+    var cards = document.querySelectorAll(selector);
+    if (!cards.length || prefersReducedMotion || !canHover) return;
+
+    cards.forEach(function (card) {
+      card.classList.add("tilt-card");
+      var glare = null;
+      if (withGlare) {
+        glare = document.createElement("span");
+        glare.className = "tilt-glare";
+        glare.setAttribute("aria-hidden", "true");
+        card.appendChild(glare);
+      }
+
+      var maxTilt = 7;
+
+      card.addEventListener("mousemove", function (e) {
+        var rect = card.getBoundingClientRect();
+        var px = (e.clientX - rect.left) / rect.width;
+        var py = (e.clientY - rect.top) / rect.height;
+        var rotateY = (px - 0.5) * maxTilt * 2;
+        var rotateX = (0.5 - py) * maxTilt * 2;
+        card.style.transform =
+          "perspective(800px) rotateX(" + rotateX.toFixed(2) + "deg) rotateY(" + rotateY.toFixed(2) + "deg) translateY(-4px)";
+        if (glare) {
+          card.style.setProperty("--mx", (px * 100).toFixed(1) + "%");
+          card.style.setProperty("--my", (py * 100).toFixed(1) + "%");
+        }
+        card.classList.add("is-tilting");
+      });
+
+      card.addEventListener("mouseleave", function () {
+        card.style.transform = "";
+        card.classList.remove("is-tilting");
+      });
+    });
+  };
+
+  initTiltCards(".log-card", true);
+  initTiltCards(".spec-panel", true);
+  initTiltCards(".portfolio-card", false);
+
+  /* ---------- 11. 매그네틱 CTA 버튼 (데스크톱 전용) ---------- */
+  if (!prefersReducedMotion && canHover) {
+    var magnetButtons = document.querySelectorAll(".btn-magnetic");
+    magnetButtons.forEach(function (btn) {
+      var strength = 0.35;
+      btn.addEventListener("mousemove", function (e) {
+        var rect = btn.getBoundingClientRect();
+        var relX = e.clientX - (rect.left + rect.width / 2);
+        var relY = e.clientY - (rect.top + rect.height / 2);
+        btn.style.transform = "translate(" + (relX * strength).toFixed(1) + "px, " + (relY * strength).toFixed(1) + "px)";
+      });
+      btn.addEventListener("mouseleave", function () {
+        btn.style.transform = "";
+      });
+    });
+  }
 })();

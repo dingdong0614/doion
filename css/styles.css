@@ -922,6 +922,42 @@ h1, h2, h3 {
   .live-status { font-size: 0.72rem; padding: 6px 12px; }
 }
 
+/* ---------- 히어로 터미널: 체크리스트 순차 등장 (js/main.js에서 is-animated 부여) ---------- */
+.term-checklist li {
+  opacity: 0;
+  transform: translateX(-10px);
+  transition: opacity 0.4s var(--ease), transform 0.4s var(--ease);
+}
+.term-checklist.is-animated li { opacity: 1; transform: translateX(0); }
+
+/* ---------- 스크롤 리빌: 카드가 화면에 들어올 때 순차적으로 페이드인 (js/main.js) ---------- */
+.reveal {
+  opacity: 0;
+  transform: translateY(28px);
+  transition: opacity 0.6s var(--ease), transform 0.6s var(--ease);
+}
+.reveal.is-visible { opacity: 1; transform: translateY(0); }
+
+/* ---------- 3D 틸트 + 글레어 카드 (js/main.js가 마우스 위치에 따라 회전/하이라이트 적용) ---------- */
+.tilt-card { position: relative; }
+.log-card { overflow: hidden; }
+.tilt-glare {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.25s var(--ease);
+  background: radial-gradient(circle at var(--mx, 50%) var(--my, 50%), rgba(255,255,255,0.22), transparent 55%);
+  z-index: 2;
+}
+.tilt-card.is-tilting .tilt-glare { opacity: 1; }
+.spec-panel { transition: transform 0.2s var(--ease), border-color 0.2s var(--ease), box-shadow 0.2s var(--ease); }
+.spec-panel:hover { transform: translateY(-4px); }
+.spec-panel:not(.spec-popular):hover { border-color: var(--line-strong); }
+
+/* ---------- 매그네틱 CTA 버튼 (js/main.js가 커서 방향으로 살짝 끌어당김) ---------- */
+.btn-magnetic { transition: transform 0.15s ease-out, background 0.18s var(--ease), box-shadow 0.18s var(--ease); }
+
 /* ---------- responsive ---------- */
 @media (max-width: 860px) {
   .log-grid, .spec-row, .portfolio-grid, .stats-grid { grid-template-columns: 1fr; }
