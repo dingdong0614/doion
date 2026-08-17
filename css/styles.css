@@ -491,6 +491,16 @@ h1, h2, h3 {
 /* ---------- pricing / spec sheet ---------- */
 .pricing { padding: var(--sp-9) 0; background: var(--bg-alt); }
 .pricing h2 { font-size: clamp(1.6rem, 4vw, 2.4rem); }
+.pricing:not(.section--light):not(.addons) { position: relative; }
+.pricing:not(.section--light):not(.addons) .wrap { position: relative; z-index: 1; }
+.pricing:not(.section--light):not(.addons)::after {
+  content: "";
+  position: absolute;
+  left: 0; right: 0; bottom: 0;
+  height: 110px;
+  background: linear-gradient(180deg, transparent 0%, #E7EDFB 100%);
+  pointer-events: none;
+}
 .spec-row {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
