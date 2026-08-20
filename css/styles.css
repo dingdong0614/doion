@@ -190,6 +190,11 @@ h1, h2, h3 {
   backdrop-filter: blur(10px);
   border-bottom: 1px solid var(--line);
 }
+/* 저사양 모바일에서는 스크롤마다 backdrop-filter를 다시 샘플링하는 비용이
+   커서(GPU 합성 부담) 블러 없이 불투명도만 높인 배경으로 대체합니다. */
+@media (max-width: 760px) {
+  .nav { background: rgba(19, 24, 28, 0.96); backdrop-filter: none; }
+}
 .nav-inner {
   display: flex; align-items: center; justify-content: space-between;
   gap: var(--sp-5);

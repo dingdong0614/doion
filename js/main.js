@@ -437,6 +437,15 @@
     var CELL = 128;
     var NET_LINE_DIST = 38;
 
+    // 저사양 기기 최적화: 화면 밖/탭 비활성 시 애니메이션을 완전히 멈추고
+    // (배터리·발열 방지), 좁은 화면(대부분 저사양 모바일)에서는 캔버스
+    // 해상도와 프레임 빈도를 낮춰 렌더링 부담을 줄입니다.
+    var netRunning = true;
+    var netHeroVisible = true;
+    var netPageVisible = !document.hidden;
+    var netFrameSkip = false;
+    var netFrameToggle = false;
+
     var buildLogoTargets = function (isWide) {
       var off = document.createElement("canvas");
       off.width = netW; off.height = netH;
@@ -529,8 +538,12 @@
       // 바뀌었을 때만(=진짜 리사이즈/회전) 다시 만듭니다.
       var isFirstRun = netNodes.length === 0;
       var widthChanged = isFirstRun || Math.abs(newW - netW) > 4;
+      var isWideNow = newW >= WIDE_BREAKPOINT;
 
-      netDPR = Math.min(window.devicePixelRatio || 1, 2);
+      // 좁은 화면(대부분 저사양 모바일)에서는 캔버스 픽셀 밀도를 낮추고
+      // 한 프레임씩 건너뛰어 GPU/CPU 부담을 크게 줄입니다.
+      netDPR = Math.min(window.devicePixelRatio || 1, isWideNow ? 2 : 1.5);
+      netFrameSkip = !isWideNow;
       netW = newW;
       netH = newH;
       heroCanvas.width = netW * netDPR;
@@ -603,6 +616,12 @@
     };
 
     var netStep = function () {
+      if (!netRunning) return;
+      if (netFrameSkip) {
+        netFrameToggle = !netFrameToggle;
+        if (netFrameToggle) { window.requestAnimationFrame(netStep); return; }
+      }
+
       netCtx.clearRect(0, 0, netW, netH);
       drawGradientWash();
 
@@ -691,8 +710,34 @@
       }
       drawDots();
 
-      window.requestAnimationFrame(netStep);
+      if (netRunning) window.requestAnimationFrame(netStep);
     };
+
+    // 히어로 섹션이 화면 밖으로 스크롤되거나 탭이 비활성화되면 루프를
+    // 완전히 멈춰 배터리·CPU를 아낍니다. 다시 보이면 이어서 재개합니다.
+    var netSyncRunning = function () {
+      var shouldRun = netHeroVisible && netPageVisible;
+      if (shouldRun && !netRunning) {
+        netRunning = true;
+        netLastFrameAt = 0;
+        window.requestAnimationFrame(netStep);
+      } else if (!shouldRun) {
+        netRunning = false;
+      }
+    };
+
+    if ("IntersectionObserver" in window) {
+      var netVisibilityObserver = new IntersectionObserver(function (entries) {
+        netHeroVisible = entries[0].isIntersecting;
+        netSyncRunning();
+      }, { threshold: 0 });
+      netVisibilityObserver.observe(heroSection);
+    }
+
+    document.addEventListener("visibilitychange", function () {
+      netPageVisible = !document.hidden;
+      netSyncRunning();
+    });
 
     window.addEventListener("resize", netResize);
     heroSection.addEventListener("mousemove", function (e) {
