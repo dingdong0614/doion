@@ -432,7 +432,9 @@
     var netLastFrameAt = 0;
     var NET_MIN_HOLD_MS = 2200;
     var NET_TRANSITION_MS = 2200;
-    var NET_IDLE_REFORM_MS = 4000;
+    // 다시 모이는(reform) 속도는 요청에 따라 원래(2200ms)의 절반으로.
+    var NET_REFORM_MS = 1100;
+    var NET_IDLE_REFORM_MS = 2000;
     var WIDE_BREAKPOINT = 900;
     var CELL = 128;
     var NET_LINE_DIST = 38;
@@ -477,8 +479,9 @@
 
       // 글자 획을 따라 고르게 전부 사용합니다(일부만 무작위로 골라 쓰면 획
       // 중간중간이 비어 보여 가독성이 떨어짐). step을 키우면 같은 방식으로
-      // 더 성기게 골라 렉 없이 점 개수만 줄입니다.
-      var step = Math.max(2, Math.floor(fontSize / 24));
+      // 더 성기게 골라 렉 없이 점 개수만 줄입니다. 저사양이 많은 모바일은
+      // 더 공격적으로 줄입니다.
+      var step = Math.max(2, Math.floor(fontSize / (isWide ? 24 : 20)));
       var candidates = [];
       var data = octx.getImageData(0, 0, netW, netH).data;
       for (var y = 0; y < netH; y += step) {
@@ -499,6 +502,10 @@
       // 모바일에서는 글자가 작아서(넓은 화면보다 폰트가 훨씬 작음) 흔들림
       // 폭이 크면 획이 뭉개져 잘 안 읽힙니다. 화면이 좁을수록 흔들림을 줄입니다.
       var wobbleScale = isWide ? 1 : 0.4;
+      // 모바일은 점을 더 성기게 뽑으므로(위 step 참고) 하나하나를 더 키워
+      // 밀도감을 비슷하게 유지합니다.
+      var radiusBase = isWide ? 1.3 : 1.6;
+      var radiusRange = isWide ? 1.7 : 2.1;
       netNodes = [];
       for (var i = 0; i < count; i++) {
         var t = targets[i];
@@ -509,8 +516,7 @@
           ty: t ? t.y : Math.random() * netH,
           vx: 0,
           vy: 0,
-          // 점 개수를 줄인 만큼 하나하나를 살짝 키워 밀도감은 비슷하게 유지합니다.
-          r: Math.random() * 1.7 + 1.3,
+          r: Math.random() * radiusRange + radiusBase,
           // 다 모인 뒤 제자리에서 계속 살짝 흔들리도록 각자 다른 위상/속도를 부여합니다.
           wPhaseX: Math.random() * Math.PI * 2,
           wPhaseY: Math.random() * Math.PI * 2,
@@ -638,12 +644,14 @@
         netTargetProgress = 0;
       }
 
-      // netProgress를 목표값 쪽으로 일정한 속도로 움직입니다 — 늘어나는
-      // 방향(풀림)과 줄어드는 방향(다시 모임)에 같은 물리를 그대로 씁니다.
+      // netProgress를 목표값 쪽으로 움직입니다 — 풀리는 방향은 기존 속도,
+      // 다시 모이는 방향은 요청에 따라 그 두 배 속도(절반 시간)로 움직입니다.
       var wasAboveZero = netProgress > 0;
-      var step = dt / NET_TRANSITION_MS;
-      if (netProgress < netTargetProgress) netProgress = Math.min(netProgress + step, netTargetProgress);
-      else if (netProgress > netTargetProgress) netProgress = Math.max(netProgress - step, netTargetProgress);
+      if (netProgress < netTargetProgress) {
+        netProgress = Math.min(netProgress + dt / NET_TRANSITION_MS, netTargetProgress);
+      } else if (netProgress > netTargetProgress) {
+        netProgress = Math.max(netProgress - dt / NET_REFORM_MS, netTargetProgress);
+      }
 
       // 완전히 다시 모이면 이전에 쓰던 확산 방향을 지워, 쉬는 동안 잔여
       // 힘이 남아 미세하게 계속 흘러가는 일이 없도록 합니다.
