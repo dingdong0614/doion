@@ -475,9 +475,10 @@
       octx.textBaseline = "middle";
       octx.fillText("doion", centerX, centerY);
 
-      // 글자 내부 픽셀을 촘촘하게 전부 사용합니다(일부만 무작위로 골라 쓰면
-      // 획 중간중간이 비어 보여 가독성이 떨어짐).
-      var step = Math.max(2, Math.floor(fontSize / 34));
+      // 글자 획을 따라 고르게 전부 사용합니다(일부만 무작위로 골라 쓰면 획
+      // 중간중간이 비어 보여 가독성이 떨어짐). step을 키우면 같은 방식으로
+      // 더 성기게 골라 렉 없이 점 개수만 줄입니다.
+      var step = Math.max(2, Math.floor(fontSize / 24));
       var candidates = [];
       var data = octx.getImageData(0, 0, netW, netH).data;
       for (var y = 0; y < netH; y += step) {
@@ -508,7 +509,8 @@
           ty: t ? t.y : Math.random() * netH,
           vx: 0,
           vy: 0,
-          r: Math.random() * 1.5 + 1.1,
+          // 점 개수를 줄인 만큼 하나하나를 살짝 키워 밀도감은 비슷하게 유지합니다.
+          r: Math.random() * 1.7 + 1.3,
           // 다 모인 뒤 제자리에서 계속 살짝 흔들리도록 각자 다른 위상/속도를 부여합니다.
           wPhaseX: Math.random() * Math.PI * 2,
           wPhaseY: Math.random() * Math.PI * 2,
