@@ -801,6 +801,37 @@ h1, h2, h3 {
 .portfolio-meta h3 { font-size: 1.15rem; margin: var(--sp-3) 0 var(--sp-2); }
 .portfolio-meta p { margin: 0; color: var(--text-muted); font-size: 0.92rem; line-height: 1.55; }
 
+/* ---------- 지원 업종 티커: 순수 CSS 애니메이션(translateX)이라 JS 프레임
+   비용 없이 GPU 합성만으로 돌아갑니다. 콘텐츠를 2배로 넣고 -50%만큼
+   옮기면 이음매 없이 반복됩니다. reactbits의 LogoLoop 아이디어 참고. ---------- */
+.ticker {
+  overflow: hidden;
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+  background: var(--bg-alt);
+  padding: var(--sp-3) 0;
+}
+.ticker-track {
+  display: flex;
+  align-items: center;
+  width: max-content;
+  gap: var(--sp-5);
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  letter-spacing: 0.03em;
+  color: var(--text-faint);
+  white-space: nowrap;
+  animation: ticker-scroll 24s linear infinite;
+}
+.ticker-dot { color: var(--teal); }
+@keyframes ticker-scroll {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .ticker-track { animation: none; }
+}
+
 /* ---------- stats / counters ---------- */
 .stats { padding: var(--sp-8) 0; background: var(--bg-alt); }
 .stats-grid {
