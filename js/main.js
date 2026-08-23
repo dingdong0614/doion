@@ -121,10 +121,12 @@
       var shopName = (data.get("shopName") || "").toString().trim();
       var managerName = (data.get("managerName") || "").toString().trim();
       var phone = (data.get("phone") || "").toString().trim();
+      var email = (data.get("email") || "").toString().trim();
+      var newsletter = data.get("newsletter") ? "동의" : "미동의";
 
       formNote.classList.remove("is-error", "is-success");
 
-      if (!shopName || !managerName || !phone) {
+      if (!shopName || !managerName || !phone || !email) {
         formNote.textContent = "모든 항목을 입력해주세요.";
         formNote.classList.add("is-error");
         return;
@@ -142,7 +144,9 @@
           from_name: "doion 웹사이트 상담 신청 폼",
           매장이름: shopName,
           담당자이름: managerName,
-          연락처: phone
+          연락처: phone,
+          이메일: email,
+          뉴스레터수신: newsletter
         })
       })
         .then(function (res) { return res.json(); })
