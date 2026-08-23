@@ -739,16 +739,15 @@ h1, h2, h3 {
 
 /* 안내/강조 콜아웃 */
 .legal-callout {
-  border-left: 3px solid var(--teal);
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius);
   background: var(--surface);
-  border-radius: 0 var(--radius) var(--radius) 0;
   padding: var(--sp-3) var(--sp-4);
   margin: 0 0 var(--sp-4);
   font-size: 0.9rem;
   color: var(--text-muted);
 }
 .legal-callout strong { color: var(--text); }
-.legal-callout--amber { border-left-color: var(--amber); }
 
 /* 필수/선택 동의 미리보기 카드 (실제 상담 폼 체크박스와 동일한 문구) */
 .legal-consent-card {
