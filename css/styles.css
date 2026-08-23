@@ -506,7 +506,7 @@ h1, h2, h3 {
 
 /* ---------- problem / diagnostic log ---------- */
 .problem { padding: var(--sp-9) 0; }
-.problem h2 { font-size: clamp(1.6rem, 4vw, 2.4rem); margin-bottom: var(--sp-7); }
+.problem h2 { font-size: clamp(1.8rem, 4.5vw, 2.7rem); letter-spacing: -0.015em; margin-bottom: var(--sp-7); }
 .log-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -615,7 +615,7 @@ h1, h2, h3 {
 
 /* ---------- pricing / spec sheet ---------- */
 .pricing { padding: var(--sp-9) 0; background: var(--bg-alt); }
-.pricing h2 { font-size: clamp(1.6rem, 4vw, 2.4rem); }
+.pricing h2 { font-size: clamp(1.8rem, 4.5vw, 2.7rem); letter-spacing: -0.015em; }
 .pricing:not(.section--light):not(.addons) { position: relative; }
 .pricing:not(.section--light):not(.addons) .wrap { position: relative; z-index: 1; }
 .pricing:not(.section--light):not(.addons)::after {
@@ -699,7 +699,7 @@ h1, h2, h3 {
 
 /* ---------- process / pipeline ---------- */
 .process { padding: var(--sp-9) 0; }
-.process h2 { font-size: clamp(1.6rem, 4vw, 2.4rem); margin-bottom: var(--sp-7); }
+.process h2 { font-size: clamp(1.8rem, 4.5vw, 2.7rem); letter-spacing: -0.015em; margin-bottom: var(--sp-7); }
 .pipeline {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
@@ -714,7 +714,9 @@ h1, h2, h3 {
   padding: var(--sp-5);
   position: relative;
   margin-right: var(--sp-5);
+  transition: border-color 0.2s var(--ease), transform 0.2s var(--ease);
 }
+.pipeline li:hover { border-color: rgba(60,255,154,0.35); transform: translateY(-3px); }
 .pipeline li:last-child { margin-right: 0; }
 .pipeline li::before {
   content: "";
@@ -822,7 +824,7 @@ h1, h2, h3 {
 
 /* ---------- portfolio grid / filter tabs ---------- */
 .portfolio-showcase { padding: var(--sp-9) 0; }
-.portfolio-showcase h2 { font-size: clamp(1.6rem, 4vw, 2.4rem); }
+.portfolio-showcase h2 { font-size: clamp(1.8rem, 4.5vw, 2.7rem); letter-spacing: -0.015em; }
 
 .filter-tabs {
   display: flex;
