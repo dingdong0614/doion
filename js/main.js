@@ -15,39 +15,6 @@
 
   var prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-  /* ---------- 1. hero terminal typewriter ---------- */
-  var shopNames = ["헬스장", "뷰티샵", "학원"];
-  var typeEl = document.getElementById("typeTarget");
-
-  if (typeEl && !prefersReducedMotion) {
-    var nameIdx = 0;
-    var charIdx = 0;
-    var deleting = false;
-
-    (function tick() {
-      var current = shopNames[nameIdx];
-      if (!deleting) {
-        charIdx++;
-        typeEl.textContent = current.slice(0, charIdx);
-        if (charIdx === current.length) {
-          deleting = true;
-          window.setTimeout(tick, 1400);
-          return;
-        }
-      } else {
-        charIdx--;
-        typeEl.textContent = current.slice(0, charIdx);
-        if (charIdx === 0) {
-          deleting = false;
-          nameIdx = (nameIdx + 1) % shopNames.length;
-        }
-      }
-      window.setTimeout(tick, deleting ? 45 : 90);
-    })();
-  } else if (typeEl) {
-    typeEl.textContent = shopNames[0];
-  }
-
   /* ---------- 2. floating contact buttons (call + 문의하기) ---------- */
   var fabGroup = document.getElementById("fabGroup");
   if (fabGroup) {
@@ -290,28 +257,6 @@
     });
   }
 
-  /* ---------- 8. 히어로 터미널 체크리스트 순차 등장 ---------- */
-  var termChecklist = document.querySelector(".term-checklist");
-  if (termChecklist) {
-    if (!prefersReducedMotion && "IntersectionObserver" in window) {
-      var termItems = termChecklist.querySelectorAll("li");
-      termItems.forEach(function (li, i) {
-        li.style.transitionDelay = (i * 160) + "ms";
-      });
-      var termObserver = new IntersectionObserver(function (entries, obs) {
-        entries.forEach(function (entry) {
-          if (entry.isIntersecting) {
-            termChecklist.classList.add("is-animated");
-            obs.unobserve(entry.target);
-          }
-        });
-      }, { threshold: 0.3 });
-      termObserver.observe(termChecklist);
-    } else {
-      termChecklist.classList.add("is-animated");
-    }
-  }
-
   /* ---------- 9. 스크롤 리빌: 카드가 뷰포트에 들어오면 순차적으로 페이드인 ---------- */
   var revealEls = document.querySelectorAll(".stat-card, .log-card, .spec-panel, .portfolio-card, .doc-row");
   if (revealEls.length && !prefersReducedMotion && "IntersectionObserver" in window) {
@@ -465,9 +410,8 @@
       var octx = off.getContext("2d");
 
       // 넓은 화면에서는 텍스트가 왼쪽(css의 .hero .hero-wrap 560px)에 있으므로
-      // 로고는 그 오른쪽 여백에 그리고, 좁은 화면에서는 카드가 화면 전체를
-      // 차지하므로 카드보다 위쪽(css에서 미리 넓혀둔 상단 여백)에 작게 그려서
-      // 어느 화면에서도 카드에 가려지지 않게 합니다.
+      // 로고는 그 오른쪽 여백에 그리고, 좁은 화면에서는 제목 텍스트 위쪽
+      // (css에서 미리 넓혀둔 상단 여백)에 작게 그려서 겹치지 않게 합니다.
       var centerX, centerY, fontSize, regionW;
       if (isWide) {
         var regionX0 = 640;
