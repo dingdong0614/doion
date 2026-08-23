@@ -166,21 +166,57 @@
     });
   }
 
-  /* ---------- 6. stat counter (scroll count-up) ----------
+  /* ---------- 6. stat counter (scroll count-up, 오도미터 자리굴림) ----------
      실제 수치는 관리자 페이지(admin.html)에서 수정할 수 있습니다. /api/stats에서
      불러온 값으로 data-target을 갱신한 뒤 카운트업을 시작하며, KV 미연동/조회
-     실패 시에는 아래 HTML에 적힌 기본값을 그대로 사용합니다. */
+     실패 시에는 아래 HTML에 적힌 기본값을 그대로 사용합니다.
+     자리마다 0~9를 세로로 늘어놓은 트랙을 만들고 transform으로 굴려서 자동차
+     계기판처럼 자리가 맞춰지는 효과를 냅니다(반올림 텍스트 교체 대신). */
   var statEls = document.querySelectorAll(".stat-number[data-target]");
 
-  var renderStat = function (el, value) {
+  var renderStatFlat = function (el, value) {
     var suffix = el.getAttribute("data-suffix") || "";
     el.textContent = value + suffix;
+  };
+
+  // 자리(placeVal)마다 0행부터 floor(target/placeVal)행까지 만들어두면, 그
+  // 인덱스를 그대로 내려가는 것만으로 중간에 끊기거나 되감기지 않고 자연스럽게
+  // 마지막 숫자에 정확히 도착합니다(자리올림을 모듈로 연산 없이 처리).
+  var buildDigitRoll = function (el, target) {
+    var suffix = el.getAttribute("data-suffix") || "";
+    var digits = String(target).split("");
+    el.textContent = "";
+    var tracks = digits.map(function (_, i) {
+      var placeVal = Math.pow(10, digits.length - 1 - i);
+      var rows = Math.floor(target / placeVal);
+      var roll = document.createElement("span");
+      roll.className = "digit-roll";
+      var track = document.createElement("span");
+      track.className = "digit-track";
+      for (var r = 0; r <= rows; r++) {
+        var row = document.createElement("span");
+        row.textContent = String(r % 10);
+        track.appendChild(row);
+      }
+      roll.appendChild(track);
+      el.appendChild(roll);
+      return track;
+    });
+    if (suffix) {
+      var suffixEl = document.createElement("span");
+      suffixEl.className = "stat-suffix";
+      suffixEl.textContent = suffix;
+      el.appendChild(suffixEl);
+    }
+    return tracks;
   };
 
   var setupStatCounters = function () {
     if (statEls.length && !prefersReducedMotion && "IntersectionObserver" in window) {
       var animateStat = function (el) {
         var target = parseInt(el.getAttribute("data-target"), 10) || 0;
+        var digitCount = String(target).length;
+        var tracks = buildDigitRoll(el, target);
         var duration = 1400;
         var startTime = null;
 
@@ -188,7 +224,11 @@
           if (startTime === null) startTime = ts;
           var progress = Math.min((ts - startTime) / duration, 1);
           var eased = 1 - Math.pow(1 - progress, 3);
-          renderStat(el, Math.round(target * eased));
+          var raw = target * eased;
+          for (var i = 0; i < digitCount; i++) {
+            var placeVal = Math.pow(10, digitCount - 1 - i);
+            tracks[i].style.transform = "translateY(-" + Math.floor(raw / placeVal) + "em)";
+          }
           if (progress < 1) window.requestAnimationFrame(step);
         };
         window.requestAnimationFrame(step);
@@ -206,7 +246,7 @@
       statEls.forEach(function (el) { statObserver.observe(el); });
     } else {
       statEls.forEach(function (el) {
-        renderStat(el, parseInt(el.getAttribute("data-target"), 10) || 0);
+        renderStatFlat(el, parseInt(el.getAttribute("data-target"), 10) || 0);
       });
     }
   };

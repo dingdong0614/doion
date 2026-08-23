@@ -819,9 +819,25 @@ h1, h2, h3 {
   font-family: var(--font-mono);
   font-size: clamp(2.2rem, 5vw, 3.2rem);
   font-weight: 700;
+  font-variant-numeric: tabular-nums;
   color: var(--accent-strong);
   margin: 0 0 var(--sp-2);
+  display: inline-flex;
+  align-items: baseline;
+  justify-content: center;
 }
+/* 숫자가 그냥 바뀌지 않고 오도미터(자동차 계기판)처럼 자리마다 굴러가며
+   맞춰지도록: 자리마다 0~9를 세로로 쌓아두고 transform으로 위치만 옮깁니다. */
+.digit-roll {
+  display: inline-block;
+  overflow: hidden;
+  height: 1em;
+  line-height: 1;
+  width: 1ch;
+}
+.digit-track { display: block; }
+.digit-track span { display: block; height: 1em; line-height: 1; }
+.stat-suffix { margin-left: 2px; }
 .stat-label {
   font-family: var(--font-body);
   font-size: 0.95rem;
