@@ -390,6 +390,10 @@ h1, h2, h3 {
    기준으로 애니메이션 위치도 함께 오른쪽으로 옮깁니다. */
 @media (min-width: 900px) {
   .hero { text-align: left; }
+  /* 카드를 뺀 뒤 히어로가 너무 짧아지면서, 점들이 흩어질 때 위아래 여백(js의
+     margin=140)이 좁아 가장자리에 몰려 보였습니다. 최소 높이를 넉넉히
+     확보해 점이 퍼질 공간을 늘립니다. */
+  .hero { min-height: 640px; }
   .hero .hero-wrap { max-width: 560px; margin: 0; }
   .hero .hero-sub { margin: 0 0 var(--sp-7); }
   .hero .hero-ctas { justify-content: flex-start; }
