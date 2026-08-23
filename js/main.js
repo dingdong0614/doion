@@ -346,6 +346,17 @@
     });
   }
 
+  /* ---------- 9-1. 모바일 히어로: 플로팅 상담 위젯이 헤드라인을 가리지 않도록,
+     히어로가 화면에 보이는 동안만 숨김(스크롤해서 지나가면 다시 나타남) ---------- */
+  var heroSectionForWidget = document.querySelector(".hero");
+  var contactWidgetEl = document.getElementById("contactWidget");
+  if (heroSectionForWidget && contactWidgetEl && "IntersectionObserver" in window) {
+    var widgetVisibilityObserver = new IntersectionObserver(function (entries) {
+      contactWidgetEl.classList.toggle("is-over-hero", entries[0].isIntersecting);
+    }, { threshold: 0.15 });
+    widgetVisibilityObserver.observe(heroSectionForWidget);
+  }
+
   /* ---------- 10. 3D 틸트 + 글레어 카드 (데스크톱 전용) ---------- */
   var canHover = window.matchMedia("(hover: hover) and (pointer: fine)").matches;
 
@@ -481,7 +492,7 @@
       // 중간중간이 비어 보여 가독성이 떨어짐). step을 키우면 같은 방식으로
       // 더 성기게 골라 렉 없이 점 개수만 줄입니다. 저사양이 많은 모바일은
       // 더 공격적으로 줄입니다.
-      var step = Math.max(2, Math.floor(fontSize / (isWide ? 24 : 20)));
+      var step = Math.max(2, Math.floor(fontSize / (isWide ? 24 : 14)));
       var candidates = [];
       var data = octx.getImageData(0, 0, netW, netH).data;
       for (var y = 0; y < netH; y += step) {
@@ -568,8 +579,8 @@
       var gx = netW * 0.5 + Math.sin(t) * netW * 0.25;
       var gy = netH * 0.35 + Math.cos(t * 0.8) * netH * 0.2;
       var grad = netCtx.createRadialGradient(gx, gy, 0, gx, gy, Math.max(netW, netH) * 0.7);
-      grad.addColorStop(0, "rgba(70,117,219,0.16)");
-      grad.addColorStop(1, "rgba(70,117,219,0)");
+      grad.addColorStop(0, "rgba(61,107,255,0.16)");
+      grad.addColorStop(1, "rgba(61,107,255,0)");
       netCtx.fillStyle = grad;
       netCtx.fillRect(0, 0, netW, netH);
     };
@@ -602,7 +613,7 @@
               if (d >= maxDist) continue;
               var op = (1 - d / maxDist) * 0.5 * opacityMul;
               if (op < 0.003) continue;
-              netCtx.strokeStyle = "rgba(120,160,220," + op.toFixed(3) + ")";
+              netCtx.strokeStyle = "rgba(90,230,165," + op.toFixed(3) + ")";
               netCtx.lineWidth = 0.7;
               netCtx.beginPath();
               netCtx.moveTo(na.x, na.y);
@@ -615,10 +626,10 @@
     };
 
     var drawDots = function () {
+      netCtx.fillStyle = "rgba(212,255,228,0.95)";
       netNodes.forEach(function (n) {
         netCtx.beginPath();
         netCtx.arc(n.x, n.y, n.r, 0, Math.PI * 2);
-        netCtx.fillStyle = "rgba(220,233,255,0.95)";
         netCtx.fill();
       });
     };
@@ -631,7 +642,10 @@
       }
 
       netCtx.clearRect(0, 0, netW, netH);
-      drawGradientWash();
+      // 모바일에서는 .hero::before/::after의 정적 CSS 블러 그라데이션이 이미
+      // 같은 은은한 배경 빛을 담당하므로, 매 프레임 캔버스 전체를 다시 칠하는
+      // 무거운 작업은 넓은 화면(데스크톱)에서만 수행합니다.
+      if (netIsWide) drawGradientWash();
 
       var now = Date.now();
       var dt = netLastFrameAt ? Math.min(now - netLastFrameAt, 100) : 16.7;

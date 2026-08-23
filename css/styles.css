@@ -5,16 +5,16 @@
 ------------------------------------------------------------------- */
 
 :root {
-  /* navy (default, dark sections) */
-  --bg: #13181C;
-  --bg-alt: #181E23;
-  --surface: #1D2329;
-  --surface-raised: #232A32;
-  --line: rgba(255, 255, 255, 0.08);
-  --line-strong: rgba(255, 255, 255, 0.16);
-  --text: #FDFEF8;
-  --text-muted: #9AA0A8;
-  --text-faint: #5E626B;
+  /* navy (default, dark sections) — 기존보다 더 짙게 눌러 터미널 콘솔 톤을 강조 */
+  --bg: #0C1110;
+  --bg-alt: #111815;
+  --surface: #161D1A;
+  --surface-raised: #1B2420;
+  --line: rgba(150, 255, 200, 0.09);
+  --line-strong: rgba(150, 255, 200, 0.2);
+  --text: #F3F7F4;
+  --text-muted: #98A6A0;
+  --text-faint: #5B655F;
 
   /* paper (light sections, via .section--light) */
   --paper: #FDFEF8;
@@ -25,12 +25,16 @@
   --paper-line: rgba(28, 28, 28, 0.12);
   --paper-line-strong: rgba(28, 28, 28, 0.22);
 
-  --accent: #4675DB;
-  --accent-strong: #6E90E8;
-  --teal: #01948C;
-  --orange: #D35032;
-  --success: #388F41;
-  --error: #CF4241;
+  /* 기존 블루를 더 또렷하게 눌러 CTA/브랜드 컬러로 유지(로고와 일관), 네온
+     그린을 "시스템 신호" 보조색으로 추가해 터미널 정체성을 증폭 */
+  --accent: #3D6BFF;
+  --accent-strong: #6D93FF;
+  --neon: #3CFF9A;
+  --neon-dim: rgba(60, 255, 154, 0.16);
+  --teal: #01B39F;
+  --orange: #FF5A36;
+  --success: #3CFF9A;
+  --error: #FF5A5A;
   --amber: #FFB020;
 
   --font-display: "Pretendard Variable", -apple-system, BlinkMacSystemFont, sans-serif;
@@ -62,8 +66,6 @@ html { scroll-behavior: smooth; overflow-x: hidden; }
 body {
   margin: 0;
   background: var(--bg);
-  background-image: radial-gradient(circle, rgba(255,255,255,0.055) 1px, transparent 1px);
-  background-size: 28px 28px;
   color: var(--text);
   font-family: var(--font-body);
   font-size: 17px;
@@ -72,6 +74,20 @@ body {
   text-rendering: optimizeLegibility;
   word-break: keep-all;
   overflow-x: hidden;
+}
+
+/* 전신 CRT 스캔라인 텍스처. 밝은 paper 섹션에서는 대비가 거의 없어 자연히
+   옅어지고, 어두운 콘솔 섹션에서만 은은하게 드러나 기존의 명암 리듬을 해치지
+   않습니다. mix-blend-mode는 히어로 캔버스처럼 매 프레임 다시 그려지는
+   레이어 위에서 매 프레임 블렌드 재계산을 강제해 렉을 유발할 수 있어 쓰지
+   않고, 일반 알파 합성만 사용합니다(정적 레이어라 비용이 거의 없음). */
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+  background-image: repeating-linear-gradient(to bottom, rgba(150, 255, 200, 0.05) 0px, rgba(150, 255, 200, 0.05) 1px, transparent 1px, transparent 3px);
 }
 
 img { max-width: 100%; display: block; }
@@ -151,16 +167,17 @@ h1, h2, h3 {
 .btn-solid {
   background: var(--accent);
   color: #ffffff;
-  box-shadow: 0 0 0 1px rgba(70,117,219,0.4), 0 8px 24px -8px rgba(70,117,219,0.55);
+  box-shadow: 0 0 0 1px rgba(61,107,255,0.45), 0 8px 24px -8px rgba(61,107,255,0.6);
 }
-.btn-solid:hover { transform: translateY(-2px); background: var(--accent-strong); }
-.btn-solid:active { transform: translateY(0); }
+.btn-solid:hover { transform: translateY(-2px); background: var(--accent-strong); box-shadow: 0 0 0 1px rgba(61,107,255,0.55), 0 10px 30px -8px rgba(61,107,255,0.75); }
+.btn-solid:active { transform: translateY(0) scale(0.98); }
 .btn-ghost {
   background: transparent;
   color: var(--text);
   border-color: var(--line-strong);
 }
-.btn-ghost:hover { border-color: var(--accent-strong); color: var(--accent-strong); }
+.btn-ghost:hover { border-color: var(--neon); color: var(--neon); box-shadow: 0 0 0 1px var(--neon-dim); }
+.btn-ghost:active { transform: scale(0.98); }
 .btn-sm { padding: 10px 18px; font-size: 0.85rem; }
 .btn-full { width: 100%; padding: 16px; }
 .btn:focus-visible {
@@ -186,14 +203,14 @@ h1, h2, h3 {
 /* ---------- nav ---------- */
 .nav {
   position: sticky; top: 0; z-index: 40;
-  background: rgba(19, 24, 28, 0.82);
+  background: rgba(12, 17, 16, 0.82);
   backdrop-filter: blur(10px);
   border-bottom: 1px solid var(--line);
 }
 /* 저사양 모바일에서는 스크롤마다 backdrop-filter를 다시 샘플링하는 비용이
    커서(GPU 합성 부담) 블러 없이 불투명도만 높인 배경으로 대체합니다. */
 @media (max-width: 760px) {
-  .nav { background: rgba(19, 24, 28, 0.96); backdrop-filter: none; }
+  .nav { background: rgba(12, 17, 16, 0.96); backdrop-filter: none; }
 }
 .nav-inner {
   display: flex; align-items: center; justify-content: space-between;
@@ -299,10 +316,10 @@ h1, h2, h3 {
   filter: blur(80px);
   pointer-events: none;
   z-index: 0;
-  background: radial-gradient(circle, rgba(70,117,219,0.28), transparent 70%);
+  background: radial-gradient(circle, rgba(61,107,255,0.28), transparent 70%);
 }
 .page-header .wrap { position: relative; z-index: 1; }
-.page-header h1 { font-size: clamp(2rem, 5vw, 2.8rem); }
+.page-header h1 { font-size: clamp(2.2rem, 5.5vw, 3.2rem); letter-spacing: -0.02em; }
 
 /* ---------- cta row (index bottom links) ---------- */
 .next-steps {
@@ -321,7 +338,7 @@ h1, h2, h3 {
   filter: blur(90px);
   pointer-events: none;
   z-index: 0;
-  background: radial-gradient(circle, rgba(70,117,219,0.18), transparent 70%);
+  background: radial-gradient(circle, rgba(61,107,255,0.18), transparent 70%);
 }
 .next-steps::after {
   content: "";
@@ -361,12 +378,12 @@ h1, h2, h3 {
   width: 560px; height: 560px;
   top: -220px; left: 50%;
   transform: translateX(-50%);
-  background: radial-gradient(circle, rgba(70,117,219,0.35), transparent 70%);
+  background: radial-gradient(circle, rgba(61,107,255,0.35), transparent 70%);
 }
 .hero::after {
   width: 380px; height: 380px;
   bottom: -160px; right: 6%;
-  background: radial-gradient(circle, rgba(211,80,50,0.14), transparent 70%);
+  background: radial-gradient(circle, rgba(60,255,154,0.16), transparent 70%);
 }
 .hero-wrap { position: relative; z-index: 1; }
 .hero-canvas { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none; display: block; }
@@ -379,7 +396,7 @@ h1, h2, h3 {
   border-radius: var(--radius);
   overflow: hidden;
   text-align: left;
-  box-shadow: 0 30px 60px -30px rgba(0,0,0,0.6);
+  box-shadow: 0 30px 60px -30px rgba(0,0,0,0.75), 0 0 0 1px rgba(60,255,154,0.08), 0 0 40px -12px rgba(60,255,154,0.14);
 }
 .term-bar {
   display: flex; align-items: center; gap: var(--sp-2);
@@ -391,8 +408,8 @@ h1, h2, h3 {
   width: 8px; height: 8px;
   border-radius: 50%;
   display: inline-block;
-  background: var(--accent);
-  box-shadow: 0 0 0 3px rgba(70,117,219,0.18);
+  background: var(--neon);
+  box-shadow: 0 0 0 3px var(--neon-dim), 0 0 8px 0 rgba(60,255,154,0.6);
 }
 .term-path {
   font-family: var(--font-mono);
@@ -425,7 +442,7 @@ h1, h2, h3 {
   justify-content: center;
   width: 18px; height: 18px;
   border-radius: 50%;
-  background: rgba(56,143,65,0.16);
+  background: var(--neon-dim);
   color: var(--success);
   font-family: var(--font-mono);
   font-size: 0.7rem;
@@ -438,13 +455,13 @@ h1, h2, h3 {
   width: 8px; height: 8px;
   border-radius: 50%;
   background: var(--success);
-  box-shadow: 0 0 0 0 rgba(56,143,65,0.5);
+  box-shadow: 0 0 0 0 rgba(60,255,154,0.5);
   animation: term-pulse 1.8s ease-out infinite;
 }
 @keyframes term-pulse {
-  0% { box-shadow: 0 0 0 0 rgba(56,143,65,0.5); }
-  70% { box-shadow: 0 0 0 8px rgba(56,143,65,0); }
-  100% { box-shadow: 0 0 0 0 rgba(56,143,65,0); }
+  0% { box-shadow: 0 0 0 0 rgba(60,255,154,0.5); }
+  70% { box-shadow: 0 0 0 8px rgba(60,255,154,0); }
+  100% { box-shadow: 0 0 0 0 rgba(60,255,154,0); }
 }
 .term-result { display: flex; flex-direction: column; gap: var(--sp-1); }
 .term-result-label {
@@ -454,16 +471,18 @@ h1, h2, h3 {
   color: var(--text-faint);
 }
 .term-line { font-size: 1.1rem; color: var(--text); }
-.term-type { color: var(--accent-strong); font-weight: 700; }
+.term-type { color: var(--neon); font-weight: 700; text-shadow: 0 0 12px rgba(60,255,154,0.5); }
 .term-cursor {
-  color: var(--accent-strong);
+  color: var(--neon);
   animation: blink 1s step-end infinite;
 }
 @keyframes blink { 50% { opacity: 0; } }
 
 .hero-title {
-  font-size: clamp(2.4rem, 6vw, 4rem);
-  line-height: 1.15;
+  font-size: clamp(2.8rem, 7vw, 4.6rem);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  line-height: 1.1;
   margin-bottom: var(--sp-5);
 }
 .hero-sub {
@@ -508,8 +527,8 @@ h1, h2, h3 {
   font-weight: 700;
   letter-spacing: 0.06em;
   color: var(--orange);
-  background: rgba(211,80,50,0.12);
-  border: 1px solid rgba(211,80,50,0.32);
+  background: rgba(255,90,54,0.12);
+  border: 1px solid rgba(255,90,54,0.32);
   border-radius: 4px;
   padding: 2px 8px;
 }
@@ -571,8 +590,8 @@ h1, h2, h3 {
   align-items: center;
   justify-content: center;
   border-radius: 10px;
-  background: rgba(211,80,50,0.12);
-  border: 1px solid rgba(211,80,50,0.32);
+  background: rgba(255,90,54,0.12);
+  border: 1px solid rgba(255,90,54,0.32);
   color: var(--orange);
   font-family: var(--font-mono);
   font-size: 0.68rem;
@@ -622,7 +641,7 @@ h1, h2, h3 {
 }
 .spec-popular {
   border-color: var(--accent);
-  box-shadow: 0 0 0 1px var(--accent), 0 24px 48px -24px rgba(70,117,219,0.5);
+  box-shadow: 0 0 0 1px var(--accent), 0 24px 48px -24px rgba(61,107,255,0.5);
   background: var(--surface-raised);
   position: relative;
 }
@@ -635,10 +654,10 @@ h1, h2, h3 {
   filter: blur(60px);
   pointer-events: none;
   z-index: 0;
-  background: radial-gradient(circle, rgba(70,117,219,0.4), transparent 70%);
+  background: radial-gradient(circle, rgba(61,107,255,0.4), transparent 70%);
 }
 .section--light .spec-popular::before {
-  background: radial-gradient(circle, rgba(70,117,219,0.16), transparent 70%);
+  background: radial-gradient(circle, rgba(61,107,255,0.16), transparent 70%);
 }
 .spec-popular > * { position: relative; z-index: 1; }
 .spec-badge {
@@ -713,7 +732,8 @@ h1, h2, h3 {
   top: 18px; left: var(--sp-5);
   width: 8px; height: 8px;
   border-radius: 50%;
-  background: var(--accent);
+  background: var(--neon);
+  box-shadow: 0 0 8px 0 rgba(60,255,154,0.6);
 }
 .tl-no {
   display: block;
@@ -749,7 +769,7 @@ h1, h2, h3 {
   filter: blur(80px);
   pointer-events: none;
   z-index: 0;
-  background: radial-gradient(circle, rgba(70,117,219,0.3), transparent 70%);
+  background: radial-gradient(circle, rgba(61,107,255,0.3), transparent 70%);
 }
 .contact-panel > * { position: relative; z-index: 1; }
 .contact-copy h2 { font-size: clamp(1.6rem, 4vw, 2.2rem); margin: var(--sp-2) 0 var(--sp-4); }
@@ -769,6 +789,10 @@ h1, h2, h3 {
 }
 .contact-form input::placeholder { color: var(--text-faint); }
 .contact-form input:focus { outline: 2px solid var(--accent); outline-offset: 1px; border-color: var(--accent); }
+.consent-check { flex-direction: row !important; align-items: center; gap: var(--sp-2); font-size: 0.85rem !important; font-weight: 400 !important; }
+.consent-check input { width: auto !important; accent-color: var(--accent); }
+.consent-check a { color: var(--text-muted); text-decoration: underline; text-underline-offset: 2px; }
+.consent-check a:hover { color: var(--accent-strong); }
 .form-note { font-size: 0.82rem; min-height: 1.2em; margin: 0; color: var(--text-muted); }
 .form-note.is-error { color: var(--error); }
 .form-note.is-success { color: var(--success); }
@@ -781,9 +805,20 @@ h1, h2, h3 {
 .footer-contact { font-size: 0.82rem !important; color: var(--text-faint) !important; }
 .footer-contact a { color: inherit; text-decoration: none; }
 .footer-contact a:hover { color: var(--accent-strong); }
+.footer-legal { font-size: 0.78rem !important; color: var(--text-faint) !important; }
+.footer-legal a { color: inherit; text-decoration: underline; text-underline-offset: 2px; }
+.footer-legal a:hover { color: var(--accent-strong); }
 @media (max-width: 600px) {
   .footer-meta { align-items: flex-start; text-align: left; }
 }
+
+/* ---------- legal doc (privacy.html) ---------- */
+.legal-doc { max-width: 720px; padding: var(--sp-6) 0 var(--sp-9); line-height: 1.7; }
+.legal-doc h2 { font-size: 1.1rem; margin: var(--sp-6) 0 var(--sp-2); }
+.legal-doc p, .legal-doc ul { color: var(--text-muted); font-size: 0.95rem; margin: 0 0 var(--sp-2); }
+.legal-doc ul { padding-left: 1.2em; }
+.legal-doc li { margin-bottom: 4px; }
+.legal-date { margin-top: var(--sp-5) !important; color: var(--text-faint) !important; }
 
 /* ---------- portfolio grid / filter tabs ---------- */
 .portfolio-showcase { padding: var(--sp-9) 0; }
@@ -860,7 +895,7 @@ h1, h2, h3 {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: rgba(19, 24, 28, 0.72);
+  background: rgba(12, 17, 16, 0.72);
   color: #ffffff;
   font-weight: 700;
   font-size: 1rem;
@@ -890,7 +925,8 @@ h1, h2, h3 {
   font-family: var(--font-mono);
   font-size: clamp(2.2rem, 5vw, 3.2rem);
   font-weight: 700;
-  color: var(--accent-strong);
+  color: var(--neon);
+  text-shadow: 0 0 20px rgba(60,255,154,0.35);
   margin: 0 0 var(--sp-2);
 }
 .stat-label {
@@ -934,7 +970,7 @@ h1, h2, h3 {
 }
 .live-status.is-live .live-status-dot {
   background: var(--success);
-  box-shadow: 0 0 0 0 rgba(56, 143, 65, 0.5);
+  box-shadow: 0 0 0 0 rgba(60, 255, 154, 0.5);
   animation: term-pulse 1.8s ease-out infinite;
 }
 .live-status-link {
@@ -965,7 +1001,7 @@ h1, h2, h3 {
 .fab-call {
   background: var(--accent);
   color: #ffffff;
-  box-shadow: 0 0 0 1px rgba(70, 117, 219, 0.4), 0 12px 28px -10px rgba(70, 117, 219, 0.55);
+  box-shadow: 0 0 0 1px rgba(61, 107, 255, 0.4), 0 12px 28px -10px rgba(61, 107, 255, 0.55);
 }
 .fab-call:hover { background: var(--accent-strong); }
 .fab-email { background: var(--teal); color: #ffffff; }
@@ -978,7 +1014,11 @@ h1, h2, h3 {
   .fab { width: 48px; height: 48px; }
   .fab svg { width: 21px; height: 21px; }
   .live-status { font-size: 0.72rem; padding: 6px 12px; }
+  /* 좁은 화면에서는 히어로 영역이 뷰포트보다 길어 플로팅 위젯이 헤드라인
+     위에 겹칠 수 있어, 히어로가 보이는 동안만 숨깁니다(js/main.js). */
+  .contact-widget.is-over-hero { opacity: 0; visibility: hidden; pointer-events: none; }
 }
+.contact-widget { transition: opacity 0.2s var(--ease), visibility 0.2s; }
 
 /* ---------- 히어로 터미널: 체크리스트 순차 등장 (js/main.js에서 is-animated 부여) ---------- */
 .term-checklist li {
@@ -997,7 +1037,7 @@ h1, h2, h3 {
 .reveal.is-visible { opacity: 1; transform: translateY(0); }
 
 /* ---------- 3D 틸트 + 글레어 카드 (js/main.js가 마우스 위치에 따라 회전/하이라이트 적용) ---------- */
-.tilt-card { position: relative; }
+.tilt-card { position: relative; transition: border-color 0.2s var(--ease), box-shadow 0.2s var(--ease); }
 .log-card { overflow: hidden; }
 .tilt-glare {
   position: absolute;
@@ -1005,10 +1045,13 @@ h1, h2, h3 {
   pointer-events: none;
   opacity: 0;
   transition: opacity 0.25s var(--ease);
-  background: radial-gradient(circle at var(--mx, 50%) var(--my, 50%), rgba(255,255,255,0.22), transparent 55%);
+  background: radial-gradient(circle at var(--mx, 50%) var(--my, 50%), rgba(60,255,154,0.22), transparent 55%);
   z-index: 2;
 }
 .tilt-card.is-tilting .tilt-glare { opacity: 1; }
+/* 마우스를 따라오는 스포트라이트 테두리 — js/main.js가 트래킹하는 --mx/--my를
+   그대로 재사용해 새 이벤트 리스너 없이 카드 테두리에 은은한 네온 하이라이트를 더함 */
+.tilt-card.is-tilting { border-color: rgba(60,255,154,0.4); box-shadow: 0 20px 40px -20px rgba(0,0,0,0.5), 0 0 32px -14px rgba(60,255,154,0.4); }
 .spec-panel { transition: transform 0.2s var(--ease), border-color 0.2s var(--ease), box-shadow 0.2s var(--ease); }
 .spec-panel:hover { transform: translateY(-4px); }
 .spec-panel:not(.spec-popular):hover { border-color: var(--line-strong); }
