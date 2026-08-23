@@ -5,16 +5,16 @@
 ------------------------------------------------------------------- */
 
 :root {
-  /* navy (default, dark sections) — 기존보다 더 짙게 눌러 터미널 콘솔 톤을 강조 */
-  --bg: #0C1110;
-  --bg-alt: #111815;
-  --surface: #161D1A;
-  --surface-raised: #1B2420;
-  --line: rgba(150, 255, 200, 0.09);
-  --line-strong: rgba(150, 255, 200, 0.2);
-  --text: #F3F7F4;
-  --text-muted: #98A6A0;
-  --text-faint: #5B655F;
+  /* navy (default, dark sections) */
+  --bg: #13181C;
+  --bg-alt: #181E23;
+  --surface: #1D2329;
+  --surface-raised: #232A32;
+  --line: rgba(255, 255, 255, 0.08);
+  --line-strong: rgba(255, 255, 255, 0.16);
+  --text: #FDFEF8;
+  --text-muted: #9AA0A8;
+  --text-faint: #5E626B;
 
   /* paper (light sections, via .section--light) */
   --paper: #FDFEF8;
@@ -25,16 +25,12 @@
   --paper-line: rgba(28, 28, 28, 0.12);
   --paper-line-strong: rgba(28, 28, 28, 0.22);
 
-  /* 기존 블루를 더 또렷하게 눌러 CTA/브랜드 컬러로 유지(로고와 일관), 네온
-     그린을 "시스템 신호" 보조색으로 추가해 터미널 정체성을 증폭 */
-  --accent: #3D6BFF;
-  --accent-strong: #6D93FF;
-  --neon: #3CFF9A;
-  --neon-dim: rgba(60, 255, 154, 0.16);
-  --teal: #01B39F;
-  --orange: #FF5A36;
-  --success: #3CFF9A;
-  --error: #FF5A5A;
+  --accent: #4675DB;
+  --accent-strong: #6E90E8;
+  --teal: #01948C;
+  --orange: #D35032;
+  --success: #388F41;
+  --error: #CF4241;
   --amber: #FFB020;
 
   --font-display: "Pretendard Variable", -apple-system, BlinkMacSystemFont, sans-serif;
@@ -87,7 +83,7 @@ body::after {
   inset: 0;
   z-index: 2;
   pointer-events: none;
-  background-image: repeating-linear-gradient(to bottom, rgba(150, 255, 200, 0.05) 0px, rgba(150, 255, 200, 0.05) 1px, transparent 1px, transparent 3px);
+  background-image: repeating-linear-gradient(to bottom, rgba(255, 255, 255, 0.05) 0px, rgba(255, 255, 255, 0.05) 1px, transparent 1px, transparent 3px);
 }
 
 img { max-width: 100%; display: block; }
@@ -167,7 +163,7 @@ h1, h2, h3 {
 .btn-solid {
   background: var(--accent);
   color: #ffffff;
-  box-shadow: 0 0 0 1px rgba(61,107,255,0.45), 0 8px 24px -8px rgba(61,107,255,0.6);
+  box-shadow: 0 0 0 1px rgba(70,117,219,0.45), 0 8px 24px -8px rgba(70,117,219,0.6);
 }
 .btn-solid:hover { transform: translateY(-2px); background: var(--accent-strong); }
 .btn-solid:active { transform: translateY(0) scale(0.98); }
@@ -203,14 +199,14 @@ h1, h2, h3 {
 /* ---------- nav ---------- */
 .nav {
   position: sticky; top: 0; z-index: 40;
-  background: rgba(12, 17, 16, 0.82);
+  background: rgba(19, 24, 28, 0.82);
   backdrop-filter: blur(10px);
   border-bottom: 1px solid var(--line);
 }
 /* 저사양 모바일에서는 스크롤마다 backdrop-filter를 다시 샘플링하는 비용이
    커서(GPU 합성 부담) 블러 없이 불투명도만 높인 배경으로 대체합니다. */
 @media (max-width: 760px) {
-  .nav { background: rgba(12, 17, 16, 0.96); backdrop-filter: none; }
+  .nav { background: rgba(19, 24, 28, 0.96); backdrop-filter: none; }
 }
 .nav-inner {
   display: flex; align-items: center; justify-content: space-between;
@@ -316,7 +312,7 @@ h1, h2, h3 {
   filter: blur(80px);
   pointer-events: none;
   z-index: 0;
-  background: radial-gradient(circle, rgba(61,107,255,0.1), transparent 70%);
+  background: radial-gradient(circle, rgba(70,117,219,0.1), transparent 70%);
 }
 .page-header .wrap { position: relative; z-index: 1; }
 .page-header h1 { font-size: clamp(2.2rem, 5.5vw, 3.2rem); letter-spacing: -0.02em; }
@@ -338,7 +334,7 @@ h1, h2, h3 {
   filter: blur(90px);
   pointer-events: none;
   z-index: 0;
-  background: radial-gradient(circle, rgba(61,107,255,0.18), transparent 70%);
+  background: radial-gradient(circle, rgba(70,117,219,0.18), transparent 70%);
 }
 .next-steps::after {
   content: "";
@@ -388,8 +384,8 @@ h1, h2, h3 {
   width: 8px; height: 8px;
   border-radius: 50%;
   display: inline-block;
-  background: var(--neon);
-  box-shadow: 0 0 0 3px var(--neon-dim);
+  background: var(--accent);
+  box-shadow: 0 0 0 3px rgba(70,117,219,0.18);
 }
 .term-path {
   font-family: var(--font-mono);
@@ -422,7 +418,7 @@ h1, h2, h3 {
   justify-content: center;
   width: 18px; height: 18px;
   border-radius: 50%;
-  background: var(--neon-dim);
+  background: rgba(56,143,65,0.16);
   color: var(--success);
   font-family: var(--font-mono);
   font-size: 0.7rem;
@@ -435,13 +431,13 @@ h1, h2, h3 {
   width: 8px; height: 8px;
   border-radius: 50%;
   background: var(--success);
-  box-shadow: 0 0 0 0 rgba(60,255,154,0.5);
+  box-shadow: 0 0 0 0 rgba(56,143,65,0.5);
   animation: term-pulse 1.8s ease-out infinite;
 }
 @keyframes term-pulse {
-  0% { box-shadow: 0 0 0 0 rgba(60,255,154,0.5); }
-  70% { box-shadow: 0 0 0 8px rgba(60,255,154,0); }
-  100% { box-shadow: 0 0 0 0 rgba(60,255,154,0); }
+  0% { box-shadow: 0 0 0 0 rgba(56,143,65,0.5); }
+  70% { box-shadow: 0 0 0 8px rgba(56,143,65,0); }
+  100% { box-shadow: 0 0 0 0 rgba(56,143,65,0); }
 }
 .term-result { display: flex; flex-direction: column; gap: var(--sp-1); }
 .term-result-label {
@@ -451,9 +447,9 @@ h1, h2, h3 {
   color: var(--text-faint);
 }
 .term-line { font-size: 1.1rem; color: var(--text); }
-.term-type { color: var(--neon); font-weight: 700; }
+.term-type { color: var(--accent-strong); font-weight: 700; }
 .term-cursor {
-  color: var(--neon);
+  color: var(--accent-strong);
   animation: blink 1s step-end infinite;
 }
 @keyframes blink { 50% { opacity: 0; } }
@@ -507,8 +503,8 @@ h1, h2, h3 {
   font-weight: 700;
   letter-spacing: 0.06em;
   color: var(--orange);
-  background: rgba(255,90,54,0.12);
-  border: 1px solid rgba(255,90,54,0.32);
+  background: rgba(211,80,50,0.12);
+  border: 1px solid rgba(211,80,50,0.32);
   border-radius: 4px;
   padding: 2px 8px;
 }
@@ -570,8 +566,8 @@ h1, h2, h3 {
   align-items: center;
   justify-content: center;
   border-radius: 10px;
-  background: rgba(255,90,54,0.12);
-  border: 1px solid rgba(255,90,54,0.32);
+  background: rgba(211,80,50,0.12);
+  border: 1px solid rgba(211,80,50,0.32);
   color: var(--orange);
   font-family: var(--font-mono);
   font-size: 0.68rem;
@@ -621,7 +617,7 @@ h1, h2, h3 {
 }
 .spec-popular {
   border-color: var(--accent);
-  box-shadow: 0 0 0 1px var(--accent), 0 24px 48px -24px rgba(61,107,255,0.5);
+  box-shadow: 0 0 0 1px var(--accent), 0 24px 48px -24px rgba(70,117,219,0.5);
   background: var(--surface-raised);
   position: relative;
 }
@@ -634,10 +630,10 @@ h1, h2, h3 {
   filter: blur(60px);
   pointer-events: none;
   z-index: 0;
-  background: radial-gradient(circle, rgba(61,107,255,0.14), transparent 70%);
+  background: radial-gradient(circle, rgba(70,117,219,0.14), transparent 70%);
 }
 .section--light .spec-popular::before {
-  background: radial-gradient(circle, rgba(61,107,255,0.07), transparent 70%);
+  background: radial-gradient(circle, rgba(70,117,219,0.07), transparent 70%);
 }
 .spec-popular > * { position: relative; z-index: 1; }
 .spec-badge {
@@ -712,7 +708,7 @@ h1, h2, h3 {
   top: 18px; left: var(--sp-5);
   width: 8px; height: 8px;
   border-radius: 50%;
-  background: var(--neon);
+  background: var(--accent);
 }
 .tl-no {
   display: block;
@@ -748,7 +744,7 @@ h1, h2, h3 {
   filter: blur(80px);
   pointer-events: none;
   z-index: 0;
-  background: radial-gradient(circle, rgba(61,107,255,0.1), transparent 70%);
+  background: radial-gradient(circle, rgba(70,117,219,0.1), transparent 70%);
 }
 .contact-panel > * { position: relative; z-index: 1; }
 .contact-copy h2 { font-size: clamp(1.6rem, 4vw, 2.2rem); margin: var(--sp-2) 0 var(--sp-4); }
@@ -874,7 +870,7 @@ h1, h2, h3 {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: rgba(12, 17, 16, 0.72);
+  background: rgba(19, 24, 28, 0.72);
   color: #ffffff;
   font-weight: 700;
   font-size: 1rem;
@@ -904,7 +900,7 @@ h1, h2, h3 {
   font-family: var(--font-mono);
   font-size: clamp(2.2rem, 5vw, 3.2rem);
   font-weight: 700;
-  color: var(--neon);
+  color: var(--accent-strong);
   margin: 0 0 var(--sp-2);
 }
 .stat-label {
@@ -948,7 +944,7 @@ h1, h2, h3 {
 }
 .live-status.is-live .live-status-dot {
   background: var(--success);
-  box-shadow: 0 0 0 0 rgba(60, 255, 154, 0.5);
+  box-shadow: 0 0 0 0 rgba(56, 143, 65, 0.5);
   animation: term-pulse 1.8s ease-out infinite;
 }
 .live-status-link {
@@ -979,7 +975,7 @@ h1, h2, h3 {
 .fab-call {
   background: var(--accent);
   color: #ffffff;
-  box-shadow: 0 0 0 1px rgba(61, 107, 255, 0.4), 0 12px 28px -10px rgba(61, 107, 255, 0.55);
+  box-shadow: 0 0 0 1px rgba(70, 117, 219, 0.4), 0 12px 28px -10px rgba(70, 117, 219, 0.55);
 }
 .fab-call:hover { background: var(--accent-strong); }
 .fab-email { background: var(--teal); color: #ffffff; }

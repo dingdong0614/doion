@@ -579,8 +579,8 @@
       var gx = netW * 0.5 + Math.sin(t) * netW * 0.25;
       var gy = netH * 0.35 + Math.cos(t * 0.8) * netH * 0.2;
       var grad = netCtx.createRadialGradient(gx, gy, 0, gx, gy, Math.max(netW, netH) * 0.7);
-      grad.addColorStop(0, "rgba(61,107,255,0.16)");
-      grad.addColorStop(1, "rgba(61,107,255,0)");
+      grad.addColorStop(0, "rgba(70,117,219,0.16)");
+      grad.addColorStop(1, "rgba(70,117,219,0)");
       netCtx.fillStyle = grad;
       netCtx.fillRect(0, 0, netW, netH);
     };
@@ -613,7 +613,7 @@
               if (d >= maxDist) continue;
               var op = (1 - d / maxDist) * 0.5 * opacityMul;
               if (op < 0.003) continue;
-              netCtx.strokeStyle = "rgba(90,230,165," + op.toFixed(3) + ")";
+              netCtx.strokeStyle = "rgba(120,160,220," + op.toFixed(3) + ")";
               netCtx.lineWidth = 0.7;
               netCtx.beginPath();
               netCtx.moveTo(na.x, na.y);
@@ -626,7 +626,7 @@
     };
 
     var drawDots = function () {
-      netCtx.fillStyle = "rgba(212,255,228,0.95)";
+      netCtx.fillStyle = "rgba(220,233,255,0.95)";
       netNodes.forEach(function (n) {
         netCtx.beginPath();
         netCtx.arc(n.x, n.y, n.r, 0, Math.PI * 2);
