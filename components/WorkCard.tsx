@@ -2,7 +2,7 @@ import Image from "next/image";
 import { ArrowUpRight } from "lucide-react";
 import type { PortfolioItem } from "@/data/portfolio";
 
-export default function WorkCard({ item, span, priority }: { item: PortfolioItem; span: string; priority?: boolean }) {
+export default function WorkCard({ item, span }: { item: PortfolioItem; span: string }) {
   const big = span === "span-xl";
   return (
     <article className={`work ${span}`}>
@@ -11,7 +11,6 @@ export default function WorkCard({ item, span, priority }: { item: PortfolioItem
           src={item.thumb}
           alt={`${item.name} 사이트 화면`}
           fill
-          priority={priority}
           sizes={big ? "(max-width: 960px) 100vw, 700px" : "(max-width: 620px) 100vw, (max-width: 960px) 50vw, 500px"}
         />
       </div>

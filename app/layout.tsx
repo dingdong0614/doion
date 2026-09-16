@@ -1,9 +1,7 @@
 import type { Metadata, Viewport } from "next";
-import { Phone } from "lucide-react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { site } from "@/lib/site";
-import "./fonts/pretendard.css";
 import "./fonts/wanted/wanted-sans.css";
 import "./globals.css";
 
@@ -46,9 +44,6 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         <Header />
         <main id="main">{children}</main>
         <Footer />
-        <a className="fab-call" href={`tel:${site.phone.replaceAll("-", "")}`} aria-label={`전화 상담 ${site.phone}`}>
-          <Phone size={22} aria-hidden />
-        </a>
       </body>
     </html>
   );

@@ -31,7 +31,7 @@ export default function PortfolioBrowser({ items, categories }: { items: Portfol
       </p>
       <div className="bento">
         {shown.map((item, i) => (
-          <WorkCard key={item.name} item={item} span={spanFor(i, shown.length)} priority={i < 2} />
+          <WorkCard key={item.name} item={item} span={spanFor(i, shown.length)} />
         ))}
       </div>
     </>

@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { Phone } from "lucide-react";
 import { site } from "@/lib/site";
 import MotionToggle from "./MotionToggle";
 
@@ -34,6 +35,9 @@ export default function Footer() {
       <p className="wrap muted" style={{ marginTop: 32, fontSize: "0.85rem" }}>
         © {new Date().getFullYear()} doion
       </p>
+      <a className="fab-call" href={`tel:${site.phone.replaceAll("-", "")}`} aria-label={`전화 상담 ${site.phone}`}>
+        <Phone size={22} aria-hidden />
+      </a>
     </footer>
   );
 }

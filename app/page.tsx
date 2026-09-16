@@ -95,7 +95,7 @@ export default function Home() {
         </div>
         <div className="bento">
           {portfolio.slice(0, spans.length).map((item, i) => (
-            <WorkCard key={item.name} item={item} span={spans[i]} priority={i === 0} />
+            <WorkCard key={item.name} item={item} span={spans[i]} />
           ))}
         </div>
       </section>

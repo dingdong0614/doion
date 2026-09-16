@@ -26,7 +26,10 @@ export default function PortfolioPage() {
         </p>
       </section>
 
-      <section className="wrap" aria-label="사례 목록">
+      <section className="wrap" aria-labelledby="list-title">
+        <h2 id="list-title" className="sr-only">
+          사례 목록
+        </h2>
         <PortfolioBrowser items={portfolio} categories={categories} />
       </section>
 
