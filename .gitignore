@@ -39,3 +39,6 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# 리서치용 타사 사이트 캡처 (저장소에 올리지 않음)
+/docs/research-shots/
