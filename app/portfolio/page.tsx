@@ -16,10 +16,10 @@ export default function PortfolioPage() {
   return (
     <>
       <section className="hero wrap" style={{ paddingBottom: 40 }}>
-        <h1 className="display" style={{ fontSize: "clamp(2.3rem, 1.6rem + 3.4vw, 4.4rem)" }}>
+        <h1 className="title-lg">
           만든 사이트,
           <br />
-          지금 열어볼 수 있어요
+          지금 열어보세요.
         </h1>
         <p className="lead" style={{ marginTop: 20 }}>
           실제 운영 중인 사이트와 업종별 영업용 데모를 함께 모았습니다. 카드를 누르면 라이브 사이트가 새 탭에서 열립니다.
@@ -35,8 +35,8 @@ export default function PortfolioPage() {
 
       <section className="section wrap" aria-labelledby="proposal-title">
         <div className="section-head">
-          <h2 id="proposal-title" className="h2">
-            업종별 제안서
+          <h2 id="proposal-title" className="title-lg" style={{ fontSize: "clamp(1.9rem, 1.3rem + 2.4vw, 3.2rem)" }}>
+            업종별 제안서.
           </h2>
           <p className="lead">업종마다 필요한 기능과 강조할 부분이 다릅니다. 해당 업종 제안서를 PDF로 바로 볼 수 있어요.</p>
         </div>

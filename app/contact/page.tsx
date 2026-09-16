@@ -15,8 +15,8 @@ export default function ContactPage() {
     <section className="hero wrap">
       <div className="split">
         <div className="section-head" style={{ marginBottom: 0 }}>
-          <h1 className="display" style={{ fontSize: "clamp(2.3rem, 1.6rem + 3.4vw, 4.4rem)" }}>
-            무료 상담 신청
+          <h1 className="title-lg">
+            무료 상담 신청.
           </h1>
           <p className="lead">간단히 남겨주시면 대표가 직접 연락드립니다. 전화가 편하시면 바로 걸어주세요.</p>
           <LiveStatus />

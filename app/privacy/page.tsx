@@ -11,7 +11,7 @@ export const metadata: Metadata = {
 export default function PrivacyPage() {
   return (
     <article className="hero wrap prose-legal" style={{ maxWidth: 860 }}>
-      <h1 className="display" style={{ fontSize: "clamp(2.1rem, 1.6rem + 2.4vw, 3.4rem)" }}>
+      <h1 className="title-lg">
         개인정보처리방침
       </h1>
       <p style={{ marginTop: 16 }}>

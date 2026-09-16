@@ -40,9 +40,9 @@ export default function Header() {
       <div className="wrap bar">
         <Link href="/" className="logo" aria-label="doion 홈">
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img className="on-dark" src="/assets/logo-dark.png" alt="" width={69} height={28} />
+          <img className="on-dark" src="/assets/logo-dark.png" alt="" width={69} height={28} loading="lazy" />
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img className="on-light" src="/assets/logo-light.png" alt="" width={69} height={28} />
+          <img className="on-light" src="/assets/logo-light.png" alt="" width={69} height={28} loading="lazy" />
         </Link>
         <nav className="main-nav" id="main-nav" aria-label="주요 메뉴">
           {nav.map((n) => (

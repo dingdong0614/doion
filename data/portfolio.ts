@@ -5,7 +5,10 @@ export type PortfolioItem = {
   category: string; // 필터 탭에 그대로 쓰임
   summary: string;
   href?: string; // 라이브 URL
-  thumb: string; // public 기준 경로, 가로형 약 2:1 권장
+  thumb: string; // public 기준 경로, 가로형 약 2:1 권장 (공유용·예비)
+  desktop?: string; // 1440×900 캡처 → 노트북 프레임
+  mobile?: string; // 390×844 @2x 캡처 → 휴대폰 프레임
+  tile: { bg: string; tone: "dark" | "light" }; // 카드 배경 = 고객 브랜드 색, tone은 글자색 기준
   demo?: boolean; // 영업용 데모면 true — 카드에 '데모'로 표기
   published: boolean; // 공개 동의 미확인이면 false (렌더 안 함)
   order: number; // 작을수록 앞
@@ -18,6 +21,8 @@ const items: PortfolioItem[] = [
     summary: "성균관대 자연과학캠퍼스 도보권 맛집 166곳. 지금 문 연 곳만 골라 도보 거리·가격으로 정렬하는 모바일 웹앱.",
     href: "https://yuljeonfood.co.kr",
     thumb: "/assets/portfolio/sungdae-bapjip-thumb.jpg",
+    mobile: "/assets/work/sungdae-m.jpg",
+    tile: { bg: "#0f5c3c", tone: "dark" },
     published: true,
     order: 1,
   },
@@ -27,6 +32,9 @@ const items: PortfolioItem[] = [
     summary: "수원 율전동 PT 전문 헬스장. Next.js로 전면 리빌드해 운영 중.",
     href: "https://ptholic-1.vercel.app",
     thumb: "/assets/portfolio/ptholic-thumb.jpg",
+    mobile: "/assets/work/ptholic-m.jpg",
+    desktop: "/assets/work/ptholic-d.jpg",
+    tile: { bg: "#171311", tone: "dark" },
     published: true,
     order: 2,
   },
@@ -36,6 +44,9 @@ const items: PortfolioItem[] = [
     summary: "부산 양정·서울 충무로 보컬·음성재활 트레이닝 센터. 데이터 기반 훈련을 앞세운 사이트.",
     href: "https://bbadoom-music.vercel.app",
     thumb: "/assets/portfolio/bbadoom-thumb.jpg",
+    mobile: "/assets/work/bbadoom-m.jpg",
+    desktop: "/assets/work/bbadoom-d.jpg",
+    tile: { bg: "#efe8da", tone: "light" },
     published: true,
     order: 3,
   },
@@ -45,6 +56,9 @@ const items: PortfolioItem[] = [
     summary: "인스타그램 팔로워 8.7K 뷰티 크리에이터의 제품 아카이브. 인스타그램 연동형.",
     href: "https://keyhoon.vercel.app",
     thumb: "/assets/portfolio/keyhoon-thumb.jpg",
+    mobile: "/assets/work/keyhoon-m.jpg",
+    desktop: "/assets/work/keyhoon-d.jpg",
+    tile: { bg: "#e4ddd6", tone: "light" },
     published: true,
     order: 4,
   },
@@ -54,6 +68,9 @@ const items: PortfolioItem[] = [
     summary: "수원 장안구 보일러·냉난방·샷시 등 설비 소상공인을 업종별로 모아 연결하는 지역 디렉토리.",
     href: "https://jangan-equipment.vercel.app",
     thumb: "/assets/portfolio/jangan-equipment-thumb.jpg",
+    mobile: "/assets/work/jangan-m.jpg",
+    desktop: "/assets/work/jangan-d.jpg",
+    tile: { bg: "#0a1626", tone: "dark" },
     published: true,
     order: 5,
   },
@@ -63,6 +80,9 @@ const items: PortfolioItem[] = [
     summary: "실기 기준·입시요강·일정을 정리하고 지역별 학원을 연결하는 정보 허브.",
     href: "https://chedae-ipsi.vercel.app",
     thumb: "/assets/portfolio/chedae-ipsi-thumb.jpg",
+    mobile: "/assets/work/chedae-m.jpg",
+    desktop: "/assets/work/chedae-d.jpg",
+    tile: { bg: "#141619", tone: "dark" },
     published: true,
     order: 6,
   },
@@ -73,6 +93,9 @@ const items: PortfolioItem[] = [
     href: "https://care-demo-git-main-me-68b9.vercel.app",
     thumb: "/assets/portfolio/ondam-care-thumb.jpg",
     demo: true,
+    mobile: "/assets/work/ondam-m.jpg",
+    desktop: "/assets/work/ondam-d.jpg",
+    tile: { bg: "#e6e9dd", tone: "light" },
     published: true,
     order: 7,
   },
@@ -83,6 +106,9 @@ const items: PortfolioItem[] = [
     href: "https://dasom-church-demo.vercel.app",
     thumb: "/assets/portfolio/dasom-church-thumb.jpg",
     demo: true,
+    mobile: "/assets/work/dasom-m.jpg",
+    desktop: "/assets/work/dasom-d.jpg",
+    tile: { bg: "#f2ece6", tone: "light" },
     published: true,
     order: 8,
   },

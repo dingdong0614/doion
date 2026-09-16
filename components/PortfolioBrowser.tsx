@@ -1,21 +1,13 @@
 "use client";
 
 import { useState } from "react";
-import WorkCard from "./WorkCard";
+import WorkTile, { spansFor } from "./WorkTile";
 import type { PortfolioItem } from "@/data/portfolio";
-
-// 첫 줄 2개 크게, 이후 3개씩 작게. 마지막 줄이 1~2개로 남으면 반폭으로 채워 빈칸이 안 생기게.
-function spanFor(i: number, n: number) {
-  if (n === 3) return "span-sm";
-  if (n <= 2 || i < 2) return "span-half";
-  const rest = (n - 2) % 3;
-  const tail = rest === 1 ? 4 : rest; // 1개 남으면 앞줄 3개와 합쳐 반폭 2줄
-  return i >= n - tail ? "span-half" : "span-sm";
-}
 
 export default function PortfolioBrowser({ items, categories }: { items: PortfolioItem[]; categories: string[] }) {
   const [active, setActive] = useState("전체");
   const shown = items.filter((c) => active === "전체" || c.category === active);
+  const spans = spansFor(shown.length);
 
   return (
     <>
@@ -29,9 +21,9 @@ export default function PortfolioBrowser({ items, categories }: { items: Portfol
       <p className="sr-only" aria-live="polite">
         {active} 사례 {shown.length}개
       </p>
-      <div className="bento">
+      <div className="tiles">
         {shown.map((item, i) => (
-          <WorkCard key={item.name} item={item} span={spanFor(i, shown.length)} />
+          <WorkTile key={item.name} item={item} span={spans[i]} />
         ))}
       </div>
     </>
