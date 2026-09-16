@@ -1,19 +1,11 @@
 import type { Metadata, Viewport } from "next";
-import { Noto_Serif_KR } from "next/font/google";
 import { Phone } from "lucide-react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { site } from "@/lib/site";
 import "./fonts/pretendard.css";
+import "./fonts/wanted/wanted-sans.css";
 import "./globals.css";
-
-// 제목 전용 세리프. 한글은 unicode-range 조각으로 필요한 글자만 내려받음.
-const serif = Noto_Serif_KR({
-  weight: ["700"],
-  preload: false,
-  display: "swap",
-  variable: "--font-serif",
-});
 
 const description =
   "헬스장, 뷰티샵, 학원 등 소규모 매장을 위한 업종별 맞춤 웹사이트 제작·관리 대행, 도이온. 수원 율전동에서 대표가 직접 상담하고 약 2주 안에 만듭니다.";
@@ -43,7 +35,7 @@ const prefsScript = `try{var d=document.documentElement,t=localStorage.getItem('
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html lang="ko" className={serif.variable} suppressHydrationWarning>
+    <html lang="ko" suppressHydrationWarning>
       <head>
         <script dangerouslySetInnerHTML={{ __html: prefsScript }} />
       </head>
