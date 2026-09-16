@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowRight, Check, Phone } from "lucide-react";
+import { ArrowRight, Check, FileText, Phone } from "lucide-react";
 import CaseMosaic from "@/components/CaseMosaic";
 import Ledger from "@/components/Ledger";
 import LiveStatus from "@/components/LiveStatus";
@@ -184,6 +184,9 @@ export default function Home() {
                 </li>
               ))}
             </ul>
+            <a href="/assets/docs/doion-merits.pdf" target="_blank" rel="noopener noreferrer" className="more" style={{ marginTop: 20 }}>
+              <FileText size={16} aria-hidden /> 전체 비교자료 PDF 보기
+            </a>
           </div>
         </div>
       </section>
