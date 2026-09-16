@@ -709,6 +709,13 @@ main > .section:last-child {
     grid-template-columns: 1fr;
   }
 }
+/* 사진 고정은 2단(데스크톱)일 때만. 1단(모바일)에서 고정하면 아래 글을 덮음 */
+@media (min-width: 861px) {
+  .sticky-desk {
+    position: sticky;
+    top: 96px;
+  }
+}
 .photo {
   position: relative;
   border-radius: var(--r);
@@ -1221,6 +1228,14 @@ main > .section:last-child {
     from {
       opacity: 0;
       transform: translateY(40px);
+    }
+  }
+  /* 모바일: 글이 반투명하게 올라오면 읽기 어려워서 위치만 살짝 움직임 */
+  @media (max-width: 760px) {
+    @keyframes rise {
+      from {
+        transform: translateY(24px);
+      }
     }
   }
   @keyframes rise-scale {

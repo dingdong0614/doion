@@ -170,7 +170,7 @@ export default function Home() {
       {/* 6. 맡기면 좋은 이유 */}
       <section className="section wrap" aria-labelledby="why-title">
         <div className="split top">
-          <div style={{ position: "sticky", top: 96 }}>
+          <div className="sticky-desk">
             <div className="photo">
               <Image src="/assets/photos/owner-counter.jpg" alt="카운터 앞에 선 가게 사장님" fill sizes="(max-width: 860px) 100vw, 50vw" />
             </div>
