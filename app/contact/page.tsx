@@ -1,13 +1,13 @@
 import type { Metadata } from "next";
 import ContactForm from "@/components/ContactForm";
 import LiveStatus from "@/components/LiveStatus";
-import { site } from "@/lib/site";
+import { og, site } from "@/lib/site";
 
 export const metadata: Metadata = {
   title: "무료 상담 신청",
   description: "수원 율전동 doion에 웹사이트 제작 무료 상담을 신청하세요. 대표가 직접 연락드립니다. 010-9786-2433 · ceo@doion.co.kr",
   alternates: { canonical: "/contact" },
-  openGraph: { url: "/contact" },
+  openGraph: og("/contact"),
 };
 
 export default function ContactPage() {

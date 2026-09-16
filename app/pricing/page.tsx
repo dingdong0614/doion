@@ -1,14 +1,16 @@
 import type { Metadata } from "next";
+import { og } from "@/lib/site";
 import Link from "next/link";
-import { Check } from "lucide-react";
-import { buildPlans, carePlans } from "@/data/offer";
+import { Check, Minus } from "lucide-react";
+import Faq from "@/components/Faq";
+import { buildMatrix, buildPlans, carePlans } from "@/data/offer";
 
 export const metadata: Metadata = {
   title: "웹사이트 제작 가격",
   description:
     "소규모 매장 웹사이트 제작 30만·60만·80만원, 제작 후 관리 Doion Care 월 5만·10만·13만원. 관리비는 최소 1년간 고정됩니다.",
   alternates: { canonical: "/pricing" },
-  openGraph: { url: "/pricing" },
+  openGraph: og("/pricing"),
 };
 
 function Plan({ p, unit }: { p: { name: string; price: number; features: string[]; recommended?: boolean }; unit: string }) {
@@ -58,6 +60,43 @@ export default function PricingPage() {
         <p className="note" style={{ marginTop: 16 }}>
           VAT 별도. 도메인·서버 비용은 상담 때 따로 안내드립니다.
         </p>
+
+        <h3 className="h3" style={{ margin: "clamp(48px, 7vw, 80px) 0 16px" }}>
+          패키지별 기능 비교
+        </h3>
+        <div className="table-scroll">
+          <table className="compare">
+            <thead>
+              <tr>
+                <th scope="col">기능</th>
+                {buildPlans.map((p) => (
+                  <th key={p.name} scope="col">
+                    {p.name}
+                    <small>{p.price}만원</small>
+                  </th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {buildMatrix().map((r) => (
+                <tr key={r.feature}>
+                  <th scope="row" style={{ fontWeight: 400 }}>
+                    {r.feature}
+                  </th>
+                  {buildPlans.map((p, i) => (
+                    <td key={p.name}>
+                      {i >= r.from ? (
+                        <Check size={18} aria-label="포함" />
+                      ) : (
+                        <Minus size={18} className="no" aria-label="미포함" />
+                      )}
+                    </td>
+                  ))}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       </section>
 
       <section className="section wrap" aria-labelledby="care-title">
@@ -76,6 +115,15 @@ export default function PricingPage() {
           실시간 혼잡도 표시 옵션: 전 패키지 공통 월 2만원 추가. 혼잡도는 사장님이 직접 바꾸고, 데이터가 쌓이면 요일·시간대별
           평균도 자동으로 보여줍니다.
         </p>
+
+        <div style={{ marginTop: "clamp(64px, 9vw, 112px)" }}>
+          <div className="section-head">
+            <h2 id="faq-title" className="title-md">
+              자주 묻는 질문.
+            </h2>
+          </div>
+          <Faq />
+        </div>
 
         <div className="cta-band rule" style={{ marginTop: "clamp(56px, 8vw, 104px)", paddingTop: "clamp(56px, 8vw, 104px)" }}>
           <h2 className="title-lg">

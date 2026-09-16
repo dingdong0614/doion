@@ -21,7 +21,7 @@ const jsonLd = {
   alternateName: "도이온",
   url: `${site.url}/`,
   logo: `${site.url}/assets/logo-dark.png`,
-  image: `${site.url}/assets/og-image.png`,
+  image: `${site.url}/assets/og-2026.png`,
   email: site.email,
   telephone: site.phone,
   priceRange: "₩300,000~₩800,000",

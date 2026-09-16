@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { og } from "@/lib/site";
 import Link from "next/link";
 import { FileText } from "lucide-react";
 import PortfolioBrowser from "@/components/PortfolioBrowser";
@@ -9,7 +10,7 @@ export const metadata: Metadata = {
   description:
     "doion이 만든 실제 운영 중인 웹사이트와 업종별 영업용 데모. 헬스장, 학원, 뷰티 인플루언서, 지역 디렉토리, 요양원, 교회 사례를 라이브 화면으로 확인하세요.",
   alternates: { canonical: "/portfolio" },
-  openGraph: { url: "/portfolio" },
+  openGraph: og("/portfolio"),
 };
 
 export default function PortfolioPage() {

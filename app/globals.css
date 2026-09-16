@@ -881,6 +881,79 @@ main > .section:last-child {
   color: var(--accent);
 }
 
+/* 비교표 */
+.compare {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.97rem;
+}
+.compare th,
+.compare td {
+  padding: 16px 12px;
+  border-bottom: 1px solid var(--line);
+  text-align: center;
+}
+.compare th:first-child,
+.compare td:first-child {
+  text-align: left;
+  padding-left: 0;
+}
+.compare thead th {
+  font-weight: 600;
+  vertical-align: bottom;
+}
+.compare thead small {
+  display: block;
+  font-weight: 400;
+  color: var(--muted);
+}
+.compare td svg {
+  display: inline;
+  color: var(--accent);
+}
+.compare .no {
+  color: var(--line-strong);
+}
+
+/* FAQ: 네이티브 details */
+.faq {
+  border-top: 1px solid var(--line);
+}
+.faq details {
+  border-bottom: 1px solid var(--line);
+}
+.faq summary {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  min-height: 64px;
+  padding: 16px 0;
+  font-size: 1.08rem;
+  font-weight: 500;
+  cursor: pointer;
+  list-style: none;
+}
+.faq summary::-webkit-details-marker {
+  display: none;
+}
+.faq summary::after {
+  content: "+";
+  flex: none;
+  font-size: 1.5rem;
+  font-weight: 300;
+  color: var(--muted);
+  transition: transform 0.2s var(--ease);
+}
+.faq details[open] summary::after {
+  transform: rotate(45deg);
+}
+.faq p {
+  color: var(--muted);
+  padding: 0 40px 22px 0;
+  max-width: 44em;
+}
+
 /* ---------- 마무리 CTA ---------- */
 .cta-band {
   display: grid;

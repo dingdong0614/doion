@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { og } from "@/lib/site";
 import Link from "next/link";
 import { steps } from "@/data/offer";
 
@@ -6,7 +7,7 @@ export const metadata: Metadata = {
   title: "웹사이트 제작 진행 방식",
   description: "상담, 제작(약 2주), 납품, 운영까지 네 단계. 대표가 처음부터 끝까지 직접 소통합니다.",
   alternates: { canonical: "/process" },
-  openGraph: { url: "/process" },
+  openGraph: og("/process"),
 };
 
 export default function ProcessPage() {

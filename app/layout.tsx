@@ -1,7 +1,8 @@
 import type { Metadata, Viewport } from "next";
+import { Analytics } from "@vercel/analytics/next";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
-import { site } from "@/lib/site";
+import { og, site, twitterCard } from "@/lib/site";
 import "./fonts/wanted/wanted-sans.css";
 import "./globals.css";
 
@@ -14,13 +15,8 @@ export const metadata: Metadata = {
   description,
   alternates: { canonical: "/" },
   icons: { icon: [{ url: "/favicon.ico" }, { url: "/assets/favicon.svg", type: "image/svg+xml" }], apple: "/assets/apple-touch-icon.png" },
-  openGraph: {
-    type: "website",
-    siteName: site.name,
-    locale: "ko_KR",
-    images: [{ url: "/assets/og-image.png", width: 1200, height: 630 }],
-  },
-  twitter: { card: "summary_large_image" },
+  openGraph: og("/"),
+  twitter: twitterCard,
   verification: { other: { "naver-site-verification": site.naverVerification } },
 };
 
@@ -44,6 +40,8 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         <Header />
         <main id="main">{children}</main>
         <Footer />
+        {/* 쿠키 없는 방문 통계(Vercel Web Analytics) */}
+        <Analytics />
       </body>
     </html>
   );

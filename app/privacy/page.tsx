@@ -1,11 +1,11 @@
 import type { Metadata } from "next";
-import { site } from "@/lib/site";
+import { og, site } from "@/lib/site";
 
 export const metadata: Metadata = {
   title: "개인정보처리방침",
   description: "doion(도이온) 개인정보처리방침. 수집 항목, 이용 목적, 보유 기간, 처리 위탁, 정보주체의 권리를 안내합니다.",
   alternates: { canonical: "/privacy" },
-  openGraph: { url: "/privacy" },
+  openGraph: og("/privacy"),
 };
 
 export default function PrivacyPage() {
@@ -42,8 +42,8 @@ export default function PrivacyPage() {
             </tr>
             <tr>
               <td>자동 수집</td>
-              <td>접속 IP, 접속 일시(부정 이용 방지를 위한 신청 횟수 제한에 사용)</td>
-              <td>서버 요청 기록</td>
+              <td>접속 IP, 접속 일시(부정 이용 방지를 위한 신청 횟수 제한에 사용), 페이지 방문 기록(익명 통계)</td>
+              <td>서버 요청 기록, Vercel Web Analytics</td>
             </tr>
           </tbody>
         </table>
@@ -124,7 +124,7 @@ export default function PrivacyPage() {
           <tbody>
             <tr>
               <td>Vercel Inc.(미국)</td>
-              <td>웹사이트 호스팅, 상담 신청 처리 서버 운영</td>
+              <td>웹사이트 호스팅, 상담 신청 처리 서버 운영, 익명 방문 통계</td>
               <td>상담 신청 항목, 접속 IP · 신청 시 · 네트워크 전송</td>
               <td>위탁 계약 종료 시까지</td>
             </tr>
@@ -160,8 +160,8 @@ export default function PrivacyPage() {
 
       <h2>10. 쿠키 등 자동 수집 장치</h2>
       <p>
-        광고·분석용 쿠키는 쓰지 않습니다. 화면 밝기와 움직임 줄이기 설정만 이용자 브라우저(localStorage)에 저장되며, 회사로
-        전송되지 않습니다.
+        광고용 쿠키와 추적 쿠키는 쓰지 않습니다. 방문 통계는 쿠키를 쓰지 않고 개인을 식별하지 않는 Vercel Web Analytics로
+        익명 집계합니다. 화면 밝기와 움직임 줄이기 설정만 이용자 브라우저(localStorage)에 저장되며, 회사로 전송되지 않습니다.
       </p>
 
       <h2>11. 개인정보 보호책임자</h2>
