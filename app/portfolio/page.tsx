@@ -19,7 +19,7 @@ export default function PortfolioPage() {
         <h1 className="title-lg">
           만든 사이트,
           <br />
-          지금 열어보세요.
+          <span className="dim">지금 열어보세요.</span>
         </h1>
         <p className="lead" style={{ marginTop: 20 }}>
           실제 운영 중인 사이트와 업종별 영업용 데모를 함께 모았습니다. 카드를 누르면 라이브 사이트가 새 탭에서 열립니다.
@@ -35,19 +35,19 @@ export default function PortfolioPage() {
 
       <section className="section wrap" aria-labelledby="proposal-title">
         <div className="section-head">
-          <h2 id="proposal-title" className="title-lg" style={{ fontSize: "clamp(1.9rem, 1.3rem + 2.4vw, 3.2rem)" }}>
+          <h2 id="proposal-title" className="title-md">
             업종별 제안서.
           </h2>
           <p className="lead">업종마다 필요한 기능과 강조할 부분이 다릅니다. 해당 업종 제안서를 PDF로 바로 볼 수 있어요.</p>
         </div>
-        <ul className="reason-list" style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", columnGap: 40 }}>
+        <ul className="reason-list">
           {proposals.map((p) => (
-            <li key={p.file} style={{ borderBottom: "1px solid var(--line)" }}>
+            <li key={p.file}>
               <a href={`/assets/proposals/${p.file}`} target="_blank" rel="noopener noreferrer" style={{ display: "flex", gap: 14 }}>
-                <FileText size={22} aria-hidden style={{ flex: "none", marginTop: 4, color: "var(--accent-text)" }} />
+                <FileText size={22} aria-hidden style={{ flex: "none", marginTop: 4, color: "var(--accent)" }} />
                 <span>
                   <span className="h3" style={{ display: "block" }}>
-                    {p.title} <span className="muted" style={{ fontSize: "0.85rem", fontWeight: 500 }}>PDF</span>
+                    {p.title} <span className="muted" style={{ fontSize: "0.85rem", fontWeight: 400 }}>PDF</span>
                   </span>
                   <span className="muted">{p.desc}</span>
                 </span>

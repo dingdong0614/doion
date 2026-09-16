@@ -1,15 +1,18 @@
+import Image from "next/image";
 import Link from "next/link";
-import { CalendarCheck, ChevronRight, MessagesSquare, PencilRuler, ShieldCheck } from "lucide-react";
-import { Laptop, Phone } from "@/components/Device";
-import WorkTile, { spansFor } from "@/components/WorkTile";
+import { ArrowRight, Check, Phone } from "lucide-react";
+import CaseMosaic from "@/components/CaseMosaic";
 import Ledger from "@/components/Ledger";
 import LiveStatus from "@/components/LiveStatus";
-import { portfolio } from "@/data/portfolio";
+import { portfolio, categories } from "@/data/portfolio";
 import { buildPlans, carePlans, reasons, steps } from "@/data/offer";
 import { site } from "@/lib/site";
 
-const HOME_TILES = 7;
-const reasonIcons = [PencilRuler, MessagesSquare, CalendarCheck, ShieldCheck];
+const HOME_CASES = 7;
+const tel = `tel:${site.phone.replaceAll("-", "")}`;
+
+// 홈 칩: 사례 페이지에 있는 업종만 (디렉토리는 제외하고 상담 칩을 끝에)
+const chipCategories = categories.filter((c) => c !== "디렉토리");
 
 const jsonLd = {
   "@context": "https://schema.org",
@@ -45,126 +48,154 @@ const jsonLd = {
   ],
 };
 
+function find(name: string) {
+  return portfolio.find((p) => p.name === name)!;
+}
+
 export default function Home() {
-  const hero = portfolio.find((p) => p.name === "피티홀릭짐")!;
-  const heroPhone = portfolio.find((p) => p.name === "뭐무까~")!;
-  const tiles = portfolio.slice(0, HOME_TILES);
-  const spans = spansFor(tiles.length);
-  const [nfc, ...rest] = reasons;
+  const fan = [find("체대입시 실기 기록판"), find("피티홀릭짐"), find("빠둠뮤직 보컬 트레이닝 센터")];
+  const fanMobile = [find("뭐무까~"), find("피티홀릭짐"), find("빠둠뮤직 보컬 트레이닝 센터")];
+  const [nfc, ...why] = reasons;
 
   return (
     <>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
 
-      {/* 1. 히어로: 카피 + 실제 고객 사이트 */}
-      <section className="hero2 wrap center">
-        <h1 className="title-xl">
-          간판 다음으로,
-          <br />
-          손님이 보는 곳.
-        </h1>
-        <p className="lead">
-          인스타그램을 보고 온 손님이 가격·위치·예약을 한 화면에서 찾게 만듭니다. 수원 율전동에서 만들고, 만든 뒤에도 매달
-          관리합니다.
-        </p>
-        <div className="hero-cta" style={{ marginTop: 28 }}>
-          <Link href="/contact" className="btn btn-primary">
-            무료 상담 신청
-          </Link>
-          <Link href="/portfolio" className="btn btn-ghost">
-            포트폴리오 보기
-          </Link>
+      {/* 1. 사진 히어로 */}
+      <section className="photo-hero" aria-labelledby="hero-title">
+        <Image src="/assets/photos/owner-phone.jpg" alt="" fill preload sizes="100vw" />
+        <div className="shade" aria-hidden />
+        <div className="inner wrap" style={{ paddingInline: "clamp(24px, 5vw, 64px)" }}>
+          <h1 id="hero-title" className="title-xl">
+            간판 다음으로,
+            <br />
+            손님이 보는 곳.
+          </h1>
+          <p className="lead">수원 율전동에서 동네 가게 홈페이지를 만들고, 만든 뒤에도 매달 관리합니다.</p>
+          <div className="hero-cta">
+            <Link href="/contact" className="btn btn-light">
+              무료 상담 신청
+            </Link>
+            <Link href="/portfolio" className="more" style={{ color: "#fff" }}>
+              포트폴리오 보기 <ArrowRight size={16} aria-hidden />
+            </Link>
+          </div>
+          <p className="reassure">상담은 무료이고, 대표가 직접 연락드립니다.</p>
         </div>
-        <LiveStatus />
+      </section>
 
-        <div className="stage">
-          <Laptop src={hero.desktop!} alt={`${hero.name} 사이트 데스크톱 화면`} sizes="(max-width: 1100px) 88vw, 950px" preload />
-          <Phone src={heroPhone.mobile!} alt={`${heroPhone.name} 웹앱 모바일 화면`} sizes="(max-width: 620px) 30vw, 220px" />
-        </div>
+      {/* 부채꼴: 실제로 만든 사이트 */}
+      <div className="fan" aria-label="doion이 만든 사이트 화면">
+        {fan.map((item, i) => (
+          <figure key={item.name} className={i === 1 ? "mid" : `side ${i === 0 ? "l" : "r"}`}>
+            <Image className="d-shot" src={item.desktop!} alt={`${item.name} 화면`} fill sizes="(max-width: 700px) 1px, 760px" />
+            <Image className="m-shot" src={fanMobile[i].mobile} alt={`${fanMobile[i].name} 모바일 화면`} fill sizes="(max-width: 700px) 46vw, 1px" />
+          </figure>
+        ))}
+      </div>
+
+      <section className="wrap" aria-label="실적" style={{ marginTop: "clamp(40px, 6vw, 72px)" }}>
         <Ledger />
       </section>
 
-      {/* 2. 사례 타일 */}
-      <section className="section wrap" aria-labelledby="work-title">
-        <div className="section-head row">
-          <h2 id="work-title" className="title-lg">
-            업종에 맞춰
-            <br />
-            만든 사이트.
-          </h2>
-          <Link href="/portfolio" className="more">
-            사례 {portfolio.length}개 모두 보기 <ChevronRight size={18} aria-hidden />
-          </Link>
-        </div>
-        <div className="tiles">
-          {tiles.map((item, i) => (
-            <WorkTile key={item.name} item={item} span={spans[i]} />
+      {/* 2. 업종 칩 */}
+      <section className="section wrap center" aria-labelledby="chips-title">
+        <h2 id="chips-title" className="title-md" style={{ marginBottom: "clamp(28px, 4vw, 44px)" }}>
+          어떤 가게를 하고 계세요?
+        </h2>
+        <div className="chips">
+          {chipCategories.map((c) => (
+            <Link key={c} className="chip" href={`/portfolio#${encodeURIComponent(c)}`}>
+              {c}
+            </Link>
           ))}
+          <Link className="chip outline" href="/contact">
+            그 외 업종 상담
+          </Link>
         </div>
       </section>
 
-      {/* 3. NFC/QR — doion만의 차별점 */}
-      <section className="wrap" aria-labelledby="nfc-title">
-        <div className="band">
+      {/* 3. 사례 모자이크 */}
+      <section className="wrap" aria-labelledby="work-title">
+        <div className="section-head row">
+          <h2 id="work-title" className="title-lg">
+            만든 사이트, <span className="dim">지금 열어볼 수 있어요.</span>
+          </h2>
+          <Link href="/portfolio" className="more">
+            사례 {portfolio.length}개 모두 보기 <ArrowRight size={16} aria-hidden />
+          </Link>
+        </div>
+        <CaseMosaic items={portfolio.slice(0, HOME_CASES)} />
+      </section>
+
+      {/* 4. 2톤 문단 */}
+      <section className="section wrap" aria-label="doion이 하는 일">
+        <p className="title-lg" style={{ maxWidth: "20em" }}>
+          사장님은 장사만 하세요.{" "}
+          <span className="dim">문구 수정, 사진 교체, 이벤트 페이지, 태그 관리까지 매달 저희가 챙깁니다.</span>
+        </p>
+      </section>
+
+      {/* 5. NFC/QR (짙은 구간) */}
+      <section className="night" aria-labelledby="nfc-title">
+        <div className="section wrap split">
+          <div className="photo">
+            <Image src="/assets/photos/nfc-tap.jpg" alt="휴대폰을 리더기에 대는 손" fill sizes="(max-width: 860px) 100vw, 50vw" />
+          </div>
           <div>
             <h2 id="nfc-title" className="title-lg">
-              휴대폰을 대면,
-              <br />
-              바로 우리 매장 페이지.
+              휴대폰을 대면, <span className="dim">바로 우리 가게 페이지.</span>
             </h2>
-            <p>{nfc.body}</p>
-            <Link href="/contact" className="btn btn-primary" style={{ marginTop: 28 }}>
+            <p className="lead" style={{ marginTop: 20 }}>
+              {nfc.body}
+            </p>
+            <ol className="rows" style={{ marginTop: 36 }}>
+              {["카운터·거울·입구에 태그를 붙입니다", "손님이 휴대폰을 대거나 QR을 찍습니다", "예약·후기·이벤트 페이지가 바로 열립니다"].map((t, i) => (
+                <li key={t}>
+                  <span className="n">{String(i + 1).padStart(2, "0")}</span>
+                  <span>{t}</span>
+                </li>
+              ))}
+            </ol>
+            <Link href="/contact" className="btn btn-primary" style={{ marginTop: 32 }}>
               NFC/QR 설치 상담
             </Link>
           </div>
-          <div className="band-visual" aria-hidden>
-            <Phone src={hero.mobile!} alt="" sizes="230px" />
-            <div className="tagcard">
-              <span className="d" />
-              <span className="waves">
-                <b style={{ height: 6 }} />
-                <b style={{ height: 11 }} />
-                <b style={{ height: 16 }} />
-              </span>
-              <small>휴대폰을 대보세요</small>
+        </div>
+      </section>
+
+      {/* 6. 맡기면 좋은 이유 */}
+      <section className="section wrap" aria-labelledby="why-title">
+        <div className="split top">
+          <div style={{ position: "sticky", top: 96 }}>
+            <div className="photo">
+              <Image src="/assets/photos/owner-counter.jpg" alt="카운터 앞에 선 가게 사장님" fill sizes="(max-width: 860px) 100vw, 50vw" />
             </div>
+          </div>
+          <div>
+            <h2 id="why-title" className="title-lg" style={{ marginBottom: 36 }}>
+              맡기면 <span className="dim">이렇게 달라집니다.</span>
+            </h2>
+            <ul className="rows plain">
+              {why.map((r) => (
+                <li key={r.title}>
+                  <h3 className="h3">{r.title}</h3>
+                  <p>{r.body}</p>
+                </li>
+              ))}
+            </ul>
           </div>
         </div>
       </section>
 
-      {/* 4~5. 밝은 띠: 이유 + 진행 */}
-      <div className="flip" style={{ marginTop: "clamp(72px, 10vw, 140px)" }}>
-      <section className="section wrap" aria-labelledby="why-title">
-        <div className="section-head">
-          <h2 id="why-title" className="title-lg">
-            도이온에 맡기면
-            <br />
-            좋은 이유.
-          </h2>
-        </div>
-        <ul className="why">
-          {rest.map((r, i) => {
-            const Icon = reasonIcons[i];
-            return (
-              <li key={r.title}>
-                <Icon size={30} strokeWidth={1.6} aria-hidden />
-                <h3>{r.title}</h3>
-                <p>{r.body}</p>
-              </li>
-            );
-          })}
-        </ul>
-      </section>
-
-      {/* 5. 진행 */}
-      <section className="section wrap" aria-labelledby="process-title" style={{ paddingTop: 0 }}>
+      {/* 7. 진행 */}
+      <section className="wrap" aria-labelledby="process-title">
         <div className="section-head row">
           <h2 id="process-title" className="title-lg">
-            상담부터 운영까지,
-            <br />네 단계.
+            상담부터 운영까지, <span className="dim">네 단계.</span>
           </h2>
           <Link href="/process" className="more">
-            진행 방식 자세히 <ChevronRight size={18} aria-hidden />
+            진행 방식 자세히 <ArrowRight size={16} aria-hidden />
           </Link>
         </div>
         <ol className="steps">
@@ -177,58 +208,81 @@ export default function Home() {
           ))}
         </ol>
       </section>
-      </div>
 
-      {/* 6. 가격 라인업 */}
-      <section className="section wrap center" aria-labelledby="price-title">
-        <h2 id="price-title" className="title-lg" style={{ marginBottom: "clamp(40px, 6vw, 72px)" }}>
-          가격은 처음부터
-          <br />
-          공개합니다.
-        </h2>
-        <div className="lineup">
+      {/* 8. 가격 */}
+      <section className="section wrap" aria-labelledby="price-title">
+        <div className="section-head row">
+          <h2 id="price-title" className="title-lg">
+            가격은 <span className="dim">처음부터 공개합니다.</span>
+          </h2>
+          <Link href="/pricing" className="more">
+            구성 자세히 비교 <ArrowRight size={16} aria-hidden />
+          </Link>
+        </div>
+        <div className="plans">
           {buildPlans.map((p) => (
-            <div key={p.name}>
+            <article key={p.name} className="plan" data-rec={Boolean(p.recommended)}>
               {p.recommended && <span className="rec-label">추천</span>}
-              <h3 className="h3" style={{ marginTop: p.recommended ? 10 : 0 }}>
-                {p.name}
-              </h3>
+              <h3 className="h3">{p.name}</h3>
               <p className="price">
                 {p.price}
                 <small>만원</small>
               </p>
-              <p className="muted">{p.features.slice(-2).join(" · ")}</p>
-            </div>
+              <ul>
+                {p.features.map((f) => (
+                  <li key={f}>
+                    <Check size={15} aria-hidden />
+                    {f}
+                  </li>
+                ))}
+              </ul>
+            </article>
           ))}
         </div>
-        <p className="muted" style={{ marginTop: 40 }}>
-          만든 뒤 관리는 월 {carePlans.map((c) => c.price).join("·")}만원. 관리비는 최소 1년간 고정, VAT 별도.
-        </p>
-        <Link href="/pricing" className="more" style={{ marginTop: 8 }}>
-          패키지 구성 비교 <ChevronRight size={18} aria-hidden />
-        </Link>
-      </section>
-
-      {/* 7. 마무리 CTA */}
-      <section className="wrap" aria-labelledby="cta-title">
-        <div className="cta-band center" style={{ justifyItems: "center" }}>
-          <h2 id="cta-title" className="title-lg">
-            매장 이야기부터
-            <br />
-            들려주세요.
-          </h2>
-          <p className="muted" style={{ maxWidth: "30em" }}>
-            어떤 손님이 오는지, 지금 어디서 문의가 끊기는지. 상담은 무료이고, 대표가 직접 연락드립니다.
+        <div className="split top" style={{ marginTop: "clamp(40px, 6vw, 64px)" }}>
+          <p className="title-md">
+            만든 뒤 관리는 <span className="dim">월 {carePlans.map((c) => c.price).join("·")}만원.</span>
           </p>
-          <div className="hero-cta" style={{ marginTop: 0, justifyContent: "center" }}>
-            <Link href="/contact" className="btn btn-primary">
-              무료 상담 신청
-            </Link>
-            <a href={`tel:${site.phone.replaceAll("-", "")}`} className="btn btn-ghost">
-              전화 {site.phone}
-            </a>
+          <div>
+            <ul className="checks">
+              <li>
+                <Check size={18} aria-hidden />
+                관리비는 계약일부터 최소 1년 동안 오르지 않습니다.
+              </li>
+              <li>
+                <Check size={18} aria-hidden />
+                디자인 방향을 먼저 확정하고, 확인받은 뒤 만들기 시작합니다.
+              </li>
+              <li>
+                <Check size={18} aria-hidden />
+                도메인 연결과 검색 등록까지 끝내서 넘겨드립니다.
+              </li>
+            </ul>
+            <p className="note" style={{ marginTop: 12 }}>
+              VAT 별도. 도메인·서버 비용은 상담 때 따로 안내드립니다.
+            </p>
           </div>
         </div>
+      </section>
+
+      {/* 9. 마무리 */}
+      <section className="section wrap cta-band" aria-labelledby="cta-title">
+        <h2 id="cta-title" className="title-lg">
+          매장 이야기부터 <br />
+          <span className="dim">들려주세요.</span>
+        </h2>
+        <LiveStatus />
+        <div className="pair">
+          <a className="btn btn-ghost" href={tel}>
+            <Phone size={18} aria-hidden /> 전화 상담
+          </a>
+          <Link className="btn btn-primary" href="/contact">
+            상담 신청
+          </Link>
+        </div>
+        <p className="note">
+          {site.phone} · {site.email}
+        </p>
       </section>
     </>
   );

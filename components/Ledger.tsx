@@ -6,9 +6,9 @@ import { statDefaults } from "@/data/offer";
 type Stats = typeof statDefaults;
 
 const rows: { key: keyof Stats; label: string; unit: string }[] = [
-  { key: "stores", label: "누적 제작 매장", unit: "곳" },
-  { key: "days", label: "평균 제작 기간", unit: "일" },
-  { key: "tags", label: "설치한 NFC 태그", unit: "개" },
+  { key: "stores", label: "제작한 매장", unit: "곳" },
+  { key: "days", label: "평균 제작", unit: "일" },
+  { key: "tags", label: "설치한 태그", unit: "개" },
 ];
 
 export default function Ledger() {

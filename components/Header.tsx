@@ -11,7 +11,7 @@ export default function Header() {
   const path = usePathname();
   const [open, setOpen] = useState(false);
   // 첫 페인트 전 스크립트가 저장값 또는 OS 설정으로 data-theme을 채워 둠
-  const theme = useRootAttr("theme") ?? "dark";
+  const theme = useRootAttr("theme") ?? "light";
 
   useEffect(() => {
     if (!open) return;

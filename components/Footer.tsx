@@ -3,16 +3,18 @@ import { Phone } from "lucide-react";
 import { site } from "@/lib/site";
 import MotionToggle from "./MotionToggle";
 
+const tel = `tel:${site.phone.replaceAll("-", "")}`;
+
 export default function Footer() {
   return (
     <footer className="site-footer">
       <div className="wrap cols">
-        <div style={{ display: "grid", gap: 6, maxWidth: 420 }}>
-          <strong>doion(도이온)</strong>
-          <p className="muted">수원 율전동에서 소규모 매장 웹사이트를 만들고 관리합니다.</p>
+        <div style={{ display: "grid", gap: 6, maxWidth: 440 }}>
+          <strong style={{ fontWeight: 600 }}>doion(도이온)</strong>
+          <p className="muted">수원 율전동에서 동네 가게 홈페이지를 만들고 관리합니다.</p>
           <p className="muted">
             대표 {site.ceo} ·{" "}
-            <a href={`tel:${site.phone.replaceAll("-", "")}`} className="link">
+            <a href={tel} className="link">
               {site.phone}
             </a>{" "}
             ·{" "}
@@ -26,18 +28,25 @@ export default function Footer() {
           <Link href="/pricing">가격</Link>
           <Link href="/process">진행 방식</Link>
           <Link href="/contact">무료 상담 신청</Link>
-          <Link href="/privacy">
-            <strong>개인정보처리방침</strong>
+          <Link href="/privacy" style={{ color: "var(--ink)", fontWeight: 600 }}>
+            개인정보처리방침
           </Link>
           <MotionToggle />
         </nav>
       </div>
-      <p className="wrap muted" style={{ marginTop: 32, fontSize: "0.85rem" }}>
+      <p className="wrap muted" style={{ marginTop: 28, fontSize: "0.85rem" }}>
         © {new Date().getFullYear()} doion
       </p>
-      <a className="fab-call" href={`tel:${site.phone.replaceAll("-", "")}`} aria-label={`전화 상담 ${site.phone}`}>
-        <Phone size={22} aria-hidden />
-      </a>
+
+      {/* 모바일 하단 고정 바 */}
+      <div className="m-bar">
+        <a className="btn btn-ghost" href={tel}>
+          <Phone size={18} aria-hidden /> 전화 상담
+        </a>
+        <Link className="btn btn-primary" href="/contact">
+          상담 신청
+        </Link>
+      </div>
     </footer>
   );
 }

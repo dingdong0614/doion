@@ -25,7 +25,7 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#0f1b2e",
+  themeColor: "#f7f7f4",
 };
 
 // 첫 페인트 전에 테마·모션 설정을 적용해 깜빡임 방지

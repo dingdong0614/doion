@@ -43,7 +43,7 @@ export default function ContactForm() {
 
   if (state.status === "done") {
     return (
-      <div role="status" className="plan" style={{ gap: 10 }}>
+      <div role="status" style={{ display: "grid", gap: 10 }}>
         <h2 className="title-lg" style={{ fontSize: "clamp(1.7rem, 1.3rem + 1.6vw, 2.4rem)" }}>상담 신청이 접수됐어요.</h2>
         <p className="muted">남겨주신 연락처로 대표가 직접 연락드립니다.</p>
         <p>

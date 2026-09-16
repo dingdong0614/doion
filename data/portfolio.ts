@@ -6,9 +6,8 @@ export type PortfolioItem = {
   summary: string;
   href?: string; // 라이브 URL
   thumb: string; // public 기준 경로, 가로형 약 2:1 권장 (공유용·예비)
-  desktop?: string; // 1440×900 캡처 → 노트북 프레임
-  mobile?: string; // 390×844 @2x 캡처 → 휴대폰 프레임
-  tile: { bg: string; tone: "dark" | "light" }; // 카드 배경 = 고객 브랜드 색, tone은 글자색 기준
+  desktop?: string; // 1440×900 캡처 (넓은 칸)
+  mobile: string; // 390×844 @2x 캡처 (좁은 칸)
   demo?: boolean; // 영업용 데모면 true — 카드에 '데모'로 표기
   published: boolean; // 공개 동의 미확인이면 false (렌더 안 함)
   order: number; // 작을수록 앞
@@ -17,12 +16,11 @@ export type PortfolioItem = {
 const items: PortfolioItem[] = [
   {
     name: "뭐무까~",
-    category: "웹앱",
+    category: "음식점",
     summary: "성균관대 자연과학캠퍼스 도보권 맛집 166곳. 지금 문 연 곳만 골라 도보 거리·가격으로 정렬하는 모바일 웹앱.",
     href: "https://yuljeonfood.co.kr",
     thumb: "/assets/portfolio/sungdae-bapjip-thumb.jpg",
     mobile: "/assets/work/sungdae-m.jpg",
-    tile: { bg: "#0f5c3c", tone: "dark" },
     published: true,
     order: 1,
   },
@@ -34,7 +32,6 @@ const items: PortfolioItem[] = [
     thumb: "/assets/portfolio/ptholic-thumb.jpg",
     mobile: "/assets/work/ptholic-m.jpg",
     desktop: "/assets/work/ptholic-d.jpg",
-    tile: { bg: "#171311", tone: "dark" },
     published: true,
     order: 2,
   },
@@ -46,19 +43,17 @@ const items: PortfolioItem[] = [
     thumb: "/assets/portfolio/bbadoom-thumb.jpg",
     mobile: "/assets/work/bbadoom-m.jpg",
     desktop: "/assets/work/bbadoom-d.jpg",
-    tile: { bg: "#efe8da", tone: "light" },
     published: true,
     order: 3,
   },
   {
     name: "키훈 Beauty Archive",
-    category: "인플루언서",
+    category: "뷰티",
     summary: "인스타그램 팔로워 8.7K 뷰티 크리에이터의 제품 아카이브. 인스타그램 연동형.",
     href: "https://keyhoon.vercel.app",
     thumb: "/assets/portfolio/keyhoon-thumb.jpg",
     mobile: "/assets/work/keyhoon-m.jpg",
     desktop: "/assets/work/keyhoon-d.jpg",
-    tile: { bg: "#e4ddd6", tone: "light" },
     published: true,
     order: 4,
   },
@@ -70,7 +65,6 @@ const items: PortfolioItem[] = [
     thumb: "/assets/portfolio/jangan-equipment-thumb.jpg",
     mobile: "/assets/work/jangan-m.jpg",
     desktop: "/assets/work/jangan-d.jpg",
-    tile: { bg: "#0a1626", tone: "dark" },
     published: true,
     order: 5,
   },
@@ -82,7 +76,6 @@ const items: PortfolioItem[] = [
     thumb: "/assets/portfolio/chedae-ipsi-thumb.jpg",
     mobile: "/assets/work/chedae-m.jpg",
     desktop: "/assets/work/chedae-d.jpg",
-    tile: { bg: "#141619", tone: "dark" },
     published: true,
     order: 6,
   },
@@ -95,7 +88,6 @@ const items: PortfolioItem[] = [
     demo: true,
     mobile: "/assets/work/ondam-m.jpg",
     desktop: "/assets/work/ondam-d.jpg",
-    tile: { bg: "#e6e9dd", tone: "light" },
     published: true,
     order: 7,
   },
@@ -108,7 +100,6 @@ const items: PortfolioItem[] = [
     demo: true,
     mobile: "/assets/work/dasom-m.jpg",
     desktop: "/assets/work/dasom-d.jpg",
-    tile: { bg: "#f2ece6", tone: "light" },
     published: true,
     order: 8,
   },

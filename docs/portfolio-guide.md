@@ -15,9 +15,8 @@
   summary: "한두 문장 설명",
   href: "https://라이브주소",   // 없으면 생략
   thumb: "/assets/portfolio/파일명.jpg",
-  desktop: "/assets/work/이름-d.jpg",  // 없으면 생략 → 휴대폰 화면만 나옴
-  mobile: "/assets/work/이름-m.jpg",
-  tile: { bg: "#0f5c3c", tone: "dark" }, // 카드 배경 = 고객 브랜드 대표색. 밝은 색이면 tone: "light"
+  desktop: "/assets/work/이름-d.jpg",  // 없으면 생략 → 좁은 칸(휴대폰 화면)에만 배치
+  mobile: "/assets/work/이름-m.jpg",   // 필수. 모바일에서는 이 화면을 가로로 넘겨 보여줌
   demo: false,                 // 영업용 데모면 true → '영업용 데모' 표시
   published: true,             // 고객 공개 동의 전이면 false → 화면에 안 나옴
   order: 9,                    // 작을수록 앞. 홈에는 앞 7개만 나옴
@@ -26,7 +25,8 @@
 
 3. `npm run dev`로 `/`와 `/portfolio`를 확인한 뒤 배포합니다.
 
-- 카드 크기는 개수에 맞춰 7·5 / 4·4·4 / 6·6 줄로 자동 배치되고, 빈칸이 남지 않게 마지막 줄을 조정합니다. 넓은 카드에는 노트북, 좁은 카드에는 휴대폰 화면이 나옵니다.
+- 칸 크기는 8·4 / 3·6·3 / 6·6 줄로 자동 배치되고(넓은 칸 = 데스크톱 캡처, 좁은 칸 = 모바일 캡처), 빈칸이 남지 않게 마지막 줄을 조정합니다. 목업 없이 맨 스크린샷을 씁니다. 검증: `npx tsx scripts/mosaic-check.ts`
+- 카테고리 이름은 홈의 "어떤 가게를 하고 계세요?" 칩에도 그대로 나옵니다("디렉토리" 제외).
 - 홈에는 앞의 7개가 나옵니다(`app/page.tsx`의 `HOME_TILES`).
 - 업종별 제안서 PDF는 같은 파일의 `proposals` 배열과 `public/assets/proposals/`에서 관리합니다.
 - 가격, 관리 요금, 진행 단계, 차별점 문구는 `data/offer.ts`에서 고칩니다.

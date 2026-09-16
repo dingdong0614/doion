@@ -16,7 +16,7 @@ export default function ProcessPage() {
         <h1 className="title-lg">
           전화 한 통에서
           <br />
-          매달 관리까지.
+          <span className="dim">매달 관리까지.</span>
         </h1>
         <p className="lead" style={{ marginTop: 20 }}>
           담당자가 바뀌지 않습니다. 첫 상담부터 운영까지 대표가 직접 연락드려요.

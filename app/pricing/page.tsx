@@ -39,7 +39,7 @@ export default function PricingPage() {
         <h1 className="title-lg">
           제작 한 번,
           <br />
-          관리는 필요한 만큼.
+          <span className="dim">관리는 필요한 만큼.</span>
         </h1>
         <p className="lead" style={{ marginTop: 20 }}>
           매장 규모와 필요한 기능에 맞춰 세 가지로 준비했습니다. 견적 요청 전에 가격부터 확인하세요.
@@ -47,7 +47,7 @@ export default function PricingPage() {
       </section>
 
       <section className="wrap" aria-labelledby="build-title">
-        <h2 id="build-title" className="title-lg" style={{ fontSize: "clamp(1.9rem, 1.3rem + 2.4vw, 3.2rem)", marginBottom: 28 }}>
+        <h2 id="build-title" className="title-md" style={{ marginBottom: 28 }}>
           제작 패키지.
         </h2>
         <div className="plans">
@@ -62,7 +62,7 @@ export default function PricingPage() {
 
       <section className="section wrap" aria-labelledby="care-title">
         <div className="section-head">
-          <h2 id="care-title" className="title-lg" style={{ fontSize: "clamp(1.9rem, 1.3rem + 2.4vw, 3.2rem)" }}>
+          <h2 id="care-title" className="title-md">
             만든 뒤에는 Doion Care.
           </h2>
           <p className="lead">매달 필요한 수정만 맡기는 관리 서비스입니다. 필요할 때 신청하시면 됩니다.</p>
@@ -77,8 +77,10 @@ export default function PricingPage() {
           평균도 자동으로 보여줍니다.
         </p>
 
-        <div className="cta-band" style={{ marginTop: "clamp(48px, 7vw, 96px)" }}>
-          <h2 className="title-lg" style={{ fontSize: "clamp(1.9rem, 1.3rem + 2.4vw, 3.2rem)" }}>관리비는 1년간 오르지 않습니다.</h2>
+        <div className="cta-band rule" style={{ marginTop: "clamp(56px, 8vw, 104px)", paddingTop: "clamp(56px, 8vw, 104px)" }}>
+          <h2 className="title-lg">
+            관리비는 <span className="dim">1년간 오르지 않습니다.</span>
+          </h2>
           <p className="muted" style={{ maxWidth: "36em" }}>
             Doion Care 비용은 계약일부터 최소 1년 동안 고정입니다. 그 뒤 조정이 필요하면 일방적으로 올리지 않고 서로 협의해서
             정합니다.

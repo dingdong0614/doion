@@ -13,10 +13,10 @@ export const metadata: Metadata = {
 export default function ContactPage() {
   return (
     <section className="hero wrap">
-      <div className="split">
+      <div className="split top">
         <div className="section-head" style={{ marginBottom: 0 }}>
           <h1 className="title-lg">
-            무료 상담 신청.
+            무료 상담 <span className="dim">신청.</span>
           </h1>
           <p className="lead">간단히 남겨주시면 대표가 직접 연락드립니다. 전화가 편하시면 바로 걸어주세요.</p>
           <LiveStatus />
@@ -43,7 +43,9 @@ export default function ContactPage() {
             </div>
           </dl>
         </div>
-        <ContactForm />
+        <div className="form-card">
+          <ContactForm />
+        </div>
       </div>
     </section>
   );
