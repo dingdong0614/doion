@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowRight, Check, FileText, Phone } from "lucide-react";
+import { ArrowRight, ArrowUpRight, Check, FileText, Phone } from "lucide-react";
+import FanTilt from "@/components/FanTilt";
 import CaseMosaic from "@/components/CaseMosaic";
 import Ledger from "@/components/Ledger";
 import LiveStatus from "@/components/LiveStatus";
@@ -54,7 +55,6 @@ function find(name: string) {
 
 export default function Home() {
   const fan = [find("체대입시 실기 기록판"), find("피티홀릭짐"), find("빠둠뮤직 보컬 트레이닝 센터")];
-  const fanMobile = [find("뭐무까~"), find("피티홀릭짐"), find("빠둠뮤직 보컬 트레이닝 센터")];
   const [nfc, ...why] = reasons;
 
   return (
@@ -85,11 +85,20 @@ export default function Home() {
       </section>
 
       {/* 부채꼴: 실제로 만든 사이트 */}
-      <div className="fan" aria-label="doion이 만든 사이트 화면">
+      <div className="fan" aria-label="doion이 만든 사이트">
+        <FanTilt />
         {fan.map((item, i) => (
           <figure key={item.name} className={i === 1 ? "mid" : `side ${i === 0 ? "l" : "r"}`}>
-            <Image className="d-shot" src={item.desktop!} alt={`${item.name} 화면`} fill sizes="(max-width: 700px) 1px, 760px" />
-            <Image className="m-shot" src={fanMobile[i].mobile} alt={`${fanMobile[i].name} 모바일 화면`} fill sizes="(max-width: 700px) 46vw, 1px" />
+            <a className="card" href={item.href} target="_blank" rel="noopener noreferrer" aria-label={`${item.name} 사이트 열기 (새 창)`}>
+              <Image className="d-shot" src={item.desktop!} alt="" fill sizes="(max-width: 700px) 1px, 760px" />
+              <Image className="m-shot" src={item.mobile} alt="" fill sizes="(max-width: 700px) 46vw, 1px" />
+              <span className="label" aria-hidden>
+                <b>{item.name}</b>
+                <span>
+                  {item.category} <ArrowUpRight size={14} />
+                </span>
+              </span>
+            </a>
           </figure>
         ))}
       </div>

@@ -425,16 +425,112 @@ main > .section:last-child {
   margin-top: clamp(-230px, -16vw, -130px);
   perspective: 1400px;
   padding-inline: 12px;
-  overflow: hidden;
+  padding-bottom: 28px;
+  /* 가로만 잘라서 호버로 커진 카드가 위아래로 잘리지 않게 */
+  overflow-x: clip;
 }
 .fan figure {
   position: relative;
   margin: 0;
   flex: none;
+  aspect-ratio: 16 / 10;
+}
+.fan figure:hover,
+.fan figure:focus-within {
+  z-index: 5;
+}
+/* 카드: 기울기(--rx/--ry)·호버·등장 모션은 안쪽 요소에. 바깥 figure는 스크롤 연동 부채꼴 담당 */
+.fan .card {
+  position: absolute;
+  inset: 0;
+  display: block;
   border-radius: var(--r);
   overflow: hidden;
   background: var(--surface);
-  aspect-ratio: 16 / 10;
+  transform: perspective(1100px) translate3d(var(--shift, 0px), var(--lift, 0px), 0) rotateX(var(--rx, 0deg))
+    rotateY(calc(var(--ry, 0deg) + var(--straight, 0deg))) scale(var(--s, 1));
+  transition: transform 0.6s var(--ease), opacity 0.35s;
+  animation: deal 1s var(--ease) backwards;
+}
+.fan .mid .card {
+  animation-delay: 0.15s;
+}
+.fan .l .card {
+  animation-delay: 0.3s;
+}
+.fan .r .card {
+  animation-delay: 0.42s;
+}
+@keyframes deal {
+  0% {
+    opacity: 0;
+    transform: perspective(1100px) translateY(90px) scale(0.92);
+  }
+  /* 투명 구간을 짧게(사진이 비쳐 탁해 보이지 않게) */
+  35% {
+    opacity: 1;
+  }
+}
+.fan .label {
+  position: absolute;
+  left: 14px;
+  right: 14px;
+  bottom: 14px;
+  z-index: 2;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 14px;
+  border-radius: 12px;
+  background: var(--ink);
+  color: var(--bg);
+  font-size: 0.92rem;
+  opacity: 0;
+  transform: translateY(12px);
+  transition: opacity 0.25s, transform 0.35s var(--ease);
+}
+.fan .label b {
+  font-weight: 600;
+}
+.fan .label span {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  opacity: 0.75;
+  white-space: nowrap;
+}
+@media (hover: hover) and (pointer: fine) {
+  .fan figure:hover .card {
+    --s: 1.05;
+    --lift: -14px;
+    /* 마우스를 따라 기울 때는 빠르게 반응 */
+    transition: transform 0.18s ease-out, opacity 0.35s;
+  }
+  .fan .l:hover .card {
+    --straight: -18deg;
+    --shift: 7vw;
+  }
+  .fan .r:hover .card {
+    --straight: 18deg;
+    --shift: -7vw;
+  }
+  /* 나머지 카드는 투명도 대신 살짝 작아지며 물러남(뒤 사진이 비치지 않게) */
+  .fan:has(figure:hover) figure:not(:hover) .card {
+    --s: 0.94;
+    --lift: 10px;
+  }
+  .fan figure:hover .label {
+    opacity: 1;
+    transform: none;
+  }
+}
+.fan .card:focus-visible {
+  outline-offset: 4px;
+}
+.fan figure:focus-within .label {
+  opacity: 1;
+  transform: none;
 }
 .fan figure img {
   object-fit: cover;
