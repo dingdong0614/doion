@@ -1160,6 +1160,208 @@ main > .section:last-child {
   }
 }
 
+/* ================= 모션 =================
+   transform·opacity만 씀(합성 레이어, 약한 폰에서도 부드럽게).
+   스크롤 연동은 CSS scroll-driven animation(JS 없음). 미지원 브라우저는 완성 상태 그대로 보임.
+   모션 줄이기(OS 설정·사이트 토글)면 아래 전역 규칙으로 전부 꺼짐. */
+
+/* 히어로 사진이 천천히 자리 잡음 */
+@keyframes settle {
+  from {
+    transform: scale(1.12);
+  }
+}
+.photo-hero > img {
+  animation: settle 2.2s var(--ease) both;
+}
+
+/* 사례 라벨: 포인터를 따라다니는 "사이트 보기" (PeekFollow가 --px/--py 갱신) */
+.peek {
+  position: absolute;
+  left: 0;
+  top: 0;
+  z-index: 3;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 8px 14px;
+  border-radius: 999px;
+  background: var(--ink);
+  color: var(--bg);
+  font-size: 0.9rem;
+  font-weight: 500;
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  /* 커서는 그대로 두고 라벨은 커서 오른쪽 아래에 붙음 */
+  transform: translate3d(calc(var(--px, 50%) + 16px), calc(var(--py, 50%) + 20px), 0);
+  transform-origin: left top;
+  scale: 0.6;
+  transition: opacity 0.2s, scale 0.25s var(--ease);
+}
+@media (hover: hover) and (pointer: fine) {
+  .case:hover .peek {
+    opacity: 1;
+    scale: 1;
+  }
+}
+@media (hover: none) {
+  .peek {
+    display: none;
+  }
+}
+
+/* 버튼·칩 누를 때 살짝 눌림 */
+.filters button:active {
+  transform: scale(0.97);
+}
+
+@supports (animation-timeline: view()) {
+  @keyframes rise {
+    from {
+      opacity: 0;
+      transform: translateY(40px);
+    }
+  }
+  @keyframes rise-scale {
+    from {
+      opacity: 0;
+      transform: translateY(56px) scale(0.94);
+    }
+  }
+  @keyframes ink {
+    from {
+      color: var(--muted);
+    }
+    to {
+      color: var(--ink);
+    }
+  }
+  @keyframes parallax {
+    from {
+      transform: translateY(-7%) scale(1.16);
+    }
+    to {
+      transform: translateY(7%) scale(1.16);
+    }
+  }
+  @keyframes fan-l {
+    to {
+      transform: rotateY(6deg) translateX(3vw);
+    }
+  }
+  @keyframes fan-r {
+    to {
+      transform: rotateY(-6deg) translateX(-3vw);
+    }
+  }
+  @keyframes fan-mid {
+    to {
+      transform: translateY(-24px) scale(1.03);
+    }
+  }
+  @keyframes draw {
+    from {
+      transform: scaleX(0);
+    }
+  }
+
+  /* 부채꼴: 스크롤하면 양옆 화면이 펴지며 가운데로 모임 */
+  .fan .l {
+    animation: fan-l linear both;
+    animation-timeline: view();
+    animation-range: cover 20% cover 60%;
+  }
+  .fan .r {
+    animation: fan-r linear both;
+    animation-timeline: view();
+    animation-range: cover 20% cover 60%;
+  }
+  .fan .mid {
+    animation: fan-mid linear both;
+    animation-timeline: view();
+    animation-range: cover 20% cover 60%;
+  }
+
+  /* 사례·가격·이유·칩: 화면에 들어올 때 떠오름 */
+  .plan,
+  .rows > li,
+  .chip,
+  .ledger > div,
+  .faq details {
+    animation: rise linear both;
+    animation-timeline: view();
+    animation-range: entry 0% entry 70%;
+  }
+  /* 사례 카드는 데스크톱 그리드에서만(모바일 가로 넘김에서는 첫 화면 LCP를 늦춤) */
+  @media (min-width: 761px) {
+    .case {
+      animation: rise-scale linear both;
+      animation-timeline: view();
+      animation-range: entry 0% entry 70%;
+    }
+  }
+  .plan:nth-child(2),
+  .chip:nth-child(2n),
+  .ledger > div:nth-child(2) {
+    animation-range: entry 8% entry 78%;
+  }
+  .plan:nth-child(3),
+  .chip:nth-child(3n),
+  .ledger > div:nth-child(3) {
+    animation-range: entry 16% entry 86%;
+  }
+
+  /* 2톤 문단: 스크롤 따라 구절이 차례로 진해짐 */
+  .statement .ink {
+    color: var(--muted);
+    animation: ink linear both;
+    animation-timeline: view();
+    animation-range: cover calc(18% + var(--i) * 5%) cover calc(26% + var(--i) * 5%);
+  }
+
+  /* 진행 단계: 위 선이 왼쪽부터 그어지고 단계가 차례로 떠오름 */
+  .steps {
+    position: relative;
+  }
+  .steps::before {
+    content: "";
+    position: absolute;
+    top: -1px;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: var(--ink);
+    transform-origin: left;
+    animation: draw linear both;
+    animation-timeline: view();
+    animation-range: entry 40% cover 45%;
+  }
+  .steps > li {
+    animation: rise linear both;
+    animation-timeline: view();
+    animation-range: entry calc(10% + var(--n, 0) * 12%) entry calc(70% + var(--n, 0) * 12%);
+  }
+  .steps > li:nth-child(2) {
+    --n: 1;
+  }
+  .steps > li:nth-child(3) {
+    --n: 2;
+  }
+  .steps > li:nth-child(4) {
+    --n: 3;
+  }
+
+  /* 사진 패럴랙스(데스크톱만) */
+  @media (min-width: 861px) {
+    .night .photo img,
+    .split .photo img {
+      animation: parallax linear both;
+      animation-timeline: view();
+    }
+  }
+}
+
 /* ---------- 모션 줄이기 ---------- */
 @media (prefers-reduced-motion: reduce) {
   *,

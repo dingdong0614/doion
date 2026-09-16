@@ -130,9 +130,12 @@ export default function Home() {
 
       {/* 4. 2톤 문단 */}
       <section className="section wrap" aria-label="doion이 하는 일">
-        <p className="title-lg" style={{ maxWidth: "20em" }}>
-          사장님은 장사만 하세요.{" "}
-          <span className="dim">문구 수정, 사진 교체, 이벤트 페이지, 태그 관리까지 매달 저희가 챙깁니다.</span>
+        <p className="title-lg statement" style={{ maxWidth: "20em" }}>
+          {["사장님은 장사만 하세요.", "문구 수정,", "사진 교체,", "이벤트 페이지,", "태그 관리까지", "매달 저희가 챙깁니다."].map((w, i) => (
+            <span key={w} className={i === 0 ? undefined : "ink"} style={{ "--i": i } as React.CSSProperties}>
+              {w}{" "}
+            </span>
+          ))}
         </p>
       </section>
 

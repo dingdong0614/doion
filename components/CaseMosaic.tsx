@@ -1,6 +1,7 @@
 import Image from "next/image";
 import { ArrowUpRight } from "lucide-react";
 import type { PortfolioItem } from "@/data/portfolio";
+import PeekFollow from "./PeekFollow";
 
 type Slot = { span: number; kind: "d" | "m" };
 
@@ -45,6 +46,7 @@ export default function CaseMosaic({ items }: { items: PortfolioItem[] }) {
   const cells = layout(items);
   return (
     <div className="mosaic">
+      <PeekFollow />
       {cells.map(({ item, span, kind }) => (
         <article key={item.name} className="case" data-kind={kind} style={{ gridColumn: `span ${span}` }}>
           <div className="shot">
@@ -58,6 +60,11 @@ export default function CaseMosaic({ items }: { items: PortfolioItem[] }) {
               fill
               sizes={`(max-width: 760px) 64vw, ${Math.round((span / 12) * 1240)}px`}
             />
+            {item.href && (
+              <span className="peek" aria-hidden>
+                사이트 보기 <ArrowUpRight size={14} />
+              </span>
+            )}
           </div>
           <div className="cap">
             <b>
