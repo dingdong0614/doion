@@ -129,7 +129,7 @@ export default function PrivacyPage() {
               <td>위탁 계약 종료 시까지</td>
             </tr>
             <tr>
-              <td>Resend(미국)</td>
+              <td>Web3Forms 또는 Resend(미국)</td>
               <td>상담 신청 알림 메일 발송</td>
               <td>상담 신청 항목 · 신청 시 · 네트워크 전송</td>
               <td>위탁 계약 종료 시까지</td>

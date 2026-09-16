@@ -2,7 +2,9 @@
 
 ## 흐름
 
-`/contact` 폼 → `POST /api/contact` → 서버에서 다시 검증 → Resend → **ceo@doion.co.kr** 메일
+`/contact` 폼 → `POST /api/contact`(서버 검증·honeypot·횟수 제한) → 메일 발송
+- `RESEND_API_KEY`가 있으면: 서버가 Resend로 **ceo@doion.co.kr**에 발송
+- 없으면(현재): 브라우저가 Web3Forms로 발송. 수신 주소는 Web3Forms 키에 등록된 메일(기존 사이트와 동일). ceo@로 받으려면 web3forms.com에서 ceo@doion.co.kr로 키를 재발급해 `NEXT_PUBLIC_WEB3FORMS_KEY`에 넣거나 Resend를 연결
 
 - 수집 항목: 매장 이름, 담당자 이름, 연락처, 업종, 문의 내용(선택), 필수 동의
 - 메일 제목: `[상담 신청] 매장 이름 (업종)`

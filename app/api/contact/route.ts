@@ -54,8 +54,9 @@ export async function POST(req: Request) {
       console.info("[contact] RESEND_API_KEY 없음 — 개발 모드라 메일 대신 로그만 남김", { ...data, phone: "***" });
       return Response.json({ ok: true, dev: true });
     }
-    // 운영에서 키가 없으면 조용히 성공 처리하지 않음 (문의 유실 방지)
-    return Response.json({ ok: false, error: `지금 온라인 접수가 안 됩니다. ${site.phone}로 전화 주세요.` }, { status: 503 });
+    // Resend 키가 없으면 검증·횟수 제한만 서버에서 하고, 메일은 브라우저가 Web3Forms로 보냄
+    // (기존 정적 사이트와 같은 방식. Web3Forms 무료 플랜은 서버 호출을 막음)
+    return Response.json({ ok: true, relay: "web3forms" });
   }
 
   const rows: [string, string][] = [

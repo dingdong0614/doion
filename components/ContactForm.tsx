@@ -6,6 +6,27 @@ import { industries, validate, type Errors } from "@/lib/inquiry";
 
 type State = { status: "idle" | "sending" | "done" | "error"; message?: string };
 
+// 기존 사이트에서 쓰던 공개용 Web3Forms 키(브라우저에 노출되는 값). 수신 메일 변경은 web3forms.com에서 재발급.
+const WEB3FORMS_KEY = process.env.NEXT_PUBLIC_WEB3FORMS_KEY ?? "70c6c844-d397-4367-a7d3-21bb1f7a655b";
+
+async function relayToWeb3Forms(d: Record<string, FormDataEntryValue>) {
+  const res = await fetch("https://api.web3forms.com/submit", {
+    method: "POST",
+    headers: { "Content-Type": "application/json", Accept: "application/json" },
+    body: JSON.stringify({
+      access_key: WEB3FORMS_KEY,
+      subject: `[doion 상담 신청] ${d.shop} (${d.industry})`,
+      from_name: "doion 웹사이트 상담 신청",
+      매장: d.shop,
+      담당자: d.name,
+      연락처: d.phone,
+      업종: d.industry,
+      문의내용: d.message || "(없음)",
+    }),
+  });
+  return ((await res.json()) as { success?: boolean }).success === true;
+}
+
 export default function ContactForm() {
   const [errors, setErrors] = useState<Errors>({});
   const [state, setState] = useState<State>({ status: "idle" });
@@ -29,6 +50,10 @@ export default function ContactForm() {
         body: JSON.stringify({ ...raw, consent: raw.consent === "on" }),
       });
       const json = await res.json();
+      if (json.ok && json.relay === "web3forms" && !(await relayToWeb3Forms(raw))) {
+        setState({ status: "error", message: "접수 중 문제가 생겼어요. 010-9786-2433로 전화 주시면 바로 도와드릴게요." });
+        return;
+      }
       if (json.ok) {
         form.reset();
         setState({ status: "done" });
