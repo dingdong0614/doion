@@ -8,7 +8,7 @@ import { categories, portfolio, proposals } from "@/data/portfolio";
 export const metadata: Metadata = {
   title: "헬스장·뷰티샵·학원 웹사이트 제작 사례 · 포트폴리오",
   description:
-    "doion이 만든 실제 운영 중인 웹사이트와 업종별 영업용 데모. 헬스장, 학원, 뷰티 인플루언서, 지역 디렉토리, 요양원, 교회 사례를 라이브 화면으로 확인하세요.",
+    "doion이 만든 실제 운영 중인 웹사이트와 업종별 영업용 데모. 헬스장, 학원, 뷰티 인플루언서, 대학가 맛집 웹앱, 지역 디렉토리, 요양원, 교회 사례를 라이브 화면으로 확인하세요.",
   alternates: { canonical: "/portfolio" },
   openGraph: og("/portfolio"),
 };

@@ -17,7 +17,8 @@ const items: PortfolioItem[] = [
   {
     name: "뭐무까~",
     category: "음식점",
-    summary: "성균관대 자연과학캠퍼스 도보권 맛집 166곳. 지금 문 연 곳만 골라 도보 거리·가격으로 정렬하는 모바일 웹앱.",
+    summary:
+      "성균관대 두 캠퍼스와 경희대 국제캠퍼스, 아주대, 고려대, 서울대, 이화여대, 인하대, 중앙대, 한양대, 연세대까지 캠퍼스 11곳의 도보권 맛집 859곳(2026년 9월 기준). 학교를 고르면 학교색으로 바뀌는 설치형 웹앱으로, 지금 문 연 곳과 도보 거리순 정렬, 한/영 전환, 스꾸패스 혜택 표시를 지원.",
     href: "https://yuljeonfood.co.kr",
     thumb: "/assets/portfolio/sungdae-bapjip-thumb.jpg",
     mobile: "/assets/work/sungdae-m.jpg",
