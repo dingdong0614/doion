@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Analytics } from "@vercel/analytics/next";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import SmoothScroll from "@/components/SmoothScroll";
 import { og, site, twitterCard } from "@/lib/site";
 import localFont from "next/font/local";
 import "./fonts/wanted/wanted-sans.css";
@@ -47,6 +48,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         <script dangerouslySetInnerHTML={{ __html: prefsScript }} />
       </head>
       <body>
+        <SmoothScroll />
         <a href="#main" className="skip">
           본문 바로가기
         </a>
