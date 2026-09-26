@@ -137,7 +137,7 @@ export default function ContactForm() {
             <Link href="/privacy" className="link" target="_blank">
               개인정보 수집·이용
             </Link>
-            에 동의합니다. 매장 이름·담당자 이름·연락처·업종·문의 내용을 수집하고, 처리 후 3개월 뒤 파기합니다.
+            에 동의합니다. 매장 이름·담당자 이름·연락처·업종·문의 내용을 수집하고, 처리 완료 후 1년 뒤 파기합니다. 접수·알림을 위해 Vercel(미국)·Web3Forms(인도) 서버로 국외 이전됩니다.
           </span>
         </label>
         {errors.consent && (

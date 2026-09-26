@@ -16,7 +16,7 @@ export default function PrivacyPage() {
       </h1>
       <p style={{ marginTop: 16 }}>
         doion(이하 &ldquo;회사&rdquo;)은 「개인정보 보호법」을 지키며, 이용자의 개인정보를 필요한 만큼만 받고 목적이 끝나면
-        파기합니다. 시행일: 2026년 9월 16일.
+        파기합니다. 공고일: 2026년 9월 26일, 시행일: 2026년 10월 3일(이전 방침: 2026년 9월 16일 시행).
       </p>
 
       <h2>1. 수집하는 개인정보 항목과 방법</h2>
@@ -72,7 +72,7 @@ export default function PrivacyPage() {
             <tr>
               <td>상담 신청 내용</td>
               <td>회사 내부 방침</td>
-              <td>상담 처리 완료 후 3개월</td>
+              <td>상담 처리 완료 후 1년</td>
             </tr>
             <tr>
               <td>신청 횟수 제한용 IP</td>
@@ -129,8 +129,14 @@ export default function PrivacyPage() {
               <td>위탁 계약 종료 시까지</td>
             </tr>
             <tr>
-              <td>Web3Forms 또는 Resend(미국)</td>
-              <td>상담 신청 알림 메일 발송</td>
+              <td>Web3Creative(Web3Forms, 인도. 서버: AWS·Cloudflare·Hetzner)</td>
+              <td>상담 신청 전달·알림 메일 발송</td>
+              <td>상담 신청 항목 · 신청 시 · 네트워크 전송</td>
+              <td>Web3Forms 방침상 최대 3년. 회사는 상담 처리 완료 후 1년이 지나면 삭제</td>
+            </tr>
+            <tr>
+              <td>Resend, Inc.(미국)</td>
+              <td>상담 신청 알림 메일 발송(Web3Forms 대신 쓰는 경우)</td>
               <td>상담 신청 항목 · 신청 시 · 네트워크 전송</td>
               <td>위탁 계약 종료 시까지</td>
             </tr>
