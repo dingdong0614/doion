@@ -30,7 +30,7 @@
   --night-muted: #a9a69d;
   --night-line: rgb(241 239 233 / 0.14);
 
-  --font: "Wanted Sans Variable", "Wanted Fallback", -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
+  --font: var(--font-subset), "Wanted Sans Variable", "Wanted Fallback", -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
   --wrap: 1240px;
   --gutter: clamp(16px, 4vw, 40px);
   --r: 14px;
