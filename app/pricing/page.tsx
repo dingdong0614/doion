@@ -8,7 +8,7 @@ import { buildMatrix, buildPlans, carePlans } from "@/data/offer";
 export const metadata: Metadata = {
   title: "웹사이트 제작 가격",
   description:
-    "소규모 매장 웹사이트 제작 30만·60만·80만원, 제작 후 관리 Doion Care 월 5만·10만·13만원. 관리비는 최소 1년간 고정됩니다.",
+    "소규모 매장 웹사이트 제작 50만·80만·100만원, 제작 후 관리 Doion Care 월 5만·10만·13만원. 관리비는 최소 1년간 고정됩니다.",
   alternates: { canonical: "/pricing" },
   openGraph: og("/pricing"),
 };

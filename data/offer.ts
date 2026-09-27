@@ -4,14 +4,14 @@
 export const statDefaults = { stores: 12, days: 14, tags: 20 };
 
 export const buildPlans = [
-  { name: "기본형", price: 30, features: ["원페이지 소개 사이트", "메뉴·가격·위치 정보", "모바일 반응형"] },
+  { name: "기본형", price: 50, features: ["원페이지 소개 사이트", "메뉴·가격·위치 정보", "모바일 반응형"] },
   {
     name: "반응형UI형",
-    price: 60,
+    price: 80,
     recommended: true,
     features: ["기본형 전체 포함", "커스텀 애니메이션·인터랙션", "후기·갤러리 섹션", "지역 SEO 최적화"],
   },
-  { name: "예약완벽연동형", price: 80, features: ["반응형UI형 전체 포함", "예약·문의 폼 연동", "사장님 전용 관리 페이지"] },
+  { name: "예약완벽연동형", price: 100, features: ["반응형UI형 전체 포함", "예약·문의 폼 연동", "사장님 전용 관리 페이지"] },
 ];
 
 export const carePlans = [
