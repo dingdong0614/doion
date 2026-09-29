@@ -4,12 +4,12 @@
 
 | 기존 URL | 새 URL | 확인(로컬 dev, 2026-09-16) |
 |---|---|---|
-| /index.html | / | 301 ✓ |
-| /pricing.html | /pricing | 301 ✓ |
-| /portfolio.html | /portfolio | 301 ✓ |
-| /process.html | /process | 301 ✓ |
-| /contact.html | /contact | 301 ✓ |
-| /privacy.html | /privacy | 301 ✓ |
+| /index.html | / | 301 확인 |
+| /pricing.html | /pricing | 301 확인 |
+| /portfolio.html | /portfolio | 301 확인 |
+| /process.html | /process | 301 확인 |
+| /contact.html | /contact | 301 확인 |
+| /privacy.html | /privacy | 301 확인 |
 
 그대로 유지되는 경로(리다이렉트 없음):
 

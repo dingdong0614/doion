@@ -16,7 +16,7 @@ ROOT = Path(__file__).resolve().parent.parent
 OUT = ROOT / "public/assets/video"
 OUT.mkdir(parents=True, exist_ok=True)
 W, H, FPS = 600, 750, 24
-ORDER = ["ptholic", "sungdae", "bbadoom", "keyhoon", "jangan", "chedae", "ondam", "dasom"]
+ORDER = ["jangan", "sungdae", "bbadoom", "keyhoon", "chedae", "ptholic", "ondam", "dasom"]  # 첫 장(포스터)은 금지 패턴 없는 장안설비대장
 HOLD_A, MOVE, HOLD_B = 0.3, 1.8, 0.5
 
 

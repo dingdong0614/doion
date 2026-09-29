@@ -2,14 +2,14 @@
 
 | 항목 | 출처 | 라이선스 | 상태 |
 |---|---|---|---|
-| Pretendard Variable (제목·본문, 2026-09-29부터) | orioncactus/pretendard (npm 1.3.9) | SIL OFL 1.1, `public/fonts/pretendard/pretendardvariable-dynamic-subset.css` 머리 주석에 고지 | ✓ |
-| GSAP 3.15 (ScrollTrigger, CustomEase) | npm gsap | Standard 'no charge' license (https://gsap.com/standard-license), 상업 사이트 사용 가능 | ✓ |
-| Lenis | npm lenis | MIT | ✓ |
-| 아이콘 | 자체 제작 `components/Icon.tsx`(24 격자, 선 1.5) | doion 소유 | ✓ (lucide-react 제거) |
+| Pretendard Variable (제목·본문, 2026-09-29부터) | orioncactus/pretendard (npm 1.3.9) | SIL OFL 1.1, `public/fonts/pretendard/pretendardvariable-dynamic-subset.css` 머리 주석에 고지 | 확인 |
+| GSAP 3.15 (ScrollTrigger, CustomEase) | npm gsap | Standard 'no charge' license (https://gsap.com/standard-license), 상업 사이트 사용 가능 | 확인 |
+| Lenis | npm lenis | MIT | 확인 |
+| 아이콘 | 자체 제작 `components/Icon.tsx`(24 격자, 선 1.5) | doion 소유 | 확인 (lucide-react 제거) |
 | 임시 사진(Unsplash) | Unsplash(무료 라이선스) | 2026-09-29 디자인부터 화면에 쓰지 않음(`docs/photo-pipeline.md`) | 미사용 |
-| 사례 릴 영상 `assets/video/` | 고객 사이트 캡처로 만든 영상(`scripts/make-reel.py`) | 아래 사례 스크린샷 항목 준용 | ✓ |
+| 사례 릴 영상 `assets/video/` | 고객 사이트 캡처로 만든 영상(`scripts/make-reel.py`) | 아래 사례 스크린샷 항목 준용 | 확인 |
 | 사례 스크린샷 (`public/assets/work/`, `portfolio/`) | 각 고객 라이브 사이트 캡처 | 고객 사이트 저작물 | 기존 사이트에 이미 공개돼 있던 사례만 사용. **공개 동의 서면 확인은 [확인 필요]** |
-| 업종별 제안서 PDF, 비교자료 PDF | doion 자체 제작(기존 사이트 그대로) | doion 소유 | ✓ |
-| 공유 미리보기 이미지 `assets/og-2026.png` | doion 제작(Wanted Sans + 고객 사이트 캡처 2장) | 위 항목 준용 | ✓ |
+| 업종별 제안서 PDF, 비교자료 PDF | doion 자체 제작(기존 사이트 그대로) | doion 소유 | 확인 |
+| 공유 미리보기 이미지 `assets/og-2026.png` | doion 제작(Wanted Sans + 고객 사이트 캡처 2장) | 위 항목 준용 | 확인 |
 
 개인정보처리방침은 법률 전문가 검토 없이 작성했습니다. 게시 상태로 두되, 가능하면 전문가 검토를 받기를 권장합니다.

@@ -57,10 +57,11 @@ function find(name: string) {
 }
 
 export default function Home() {
-  const lead = find("피티홀릭짐");
+  // 풀블리드 한 장: 가격 배지·알약 버튼 같은 금지 패턴이 없는 캡처(장안설비대장)
+  const lead = find("장안설비대장");
   const cases = portfolio.filter((p) => p !== lead);
   const [nfc, ...why] = reasons;
-  const careImg = find("장안설비대장");
+  const careImg = find("빠둠뮤직 보컬 트레이닝 센터");
 
   // 풀블리드 한 장: 데스크톱 16:9, 모바일 4:5 (art direction)
   const common = { alt: `${lead.name} 사이트 첫 화면`, sizes: "100vw" };
@@ -106,8 +107,8 @@ export default function Home() {
             상담은 무료이고, 대표가 직접 연락드립니다.
           </p>
         </div>
-        {/* 상호 띠 자리 1(히어로) */}
-        <SignStrip dir="left" />
+        {/* 상호 띠 자리 1(히어로). 첫 화면에서는 작게(h2 크기): 주인공은 제목 하나 */}
+        <SignStrip dir="left" className="sm" />
         <p className="sr-only">doion이 만든 가게: {signs.join(", ")}</p>
       </section>
 
@@ -168,7 +169,7 @@ export default function Home() {
                   <div className="slice" aria-hidden="true">
                     <span>{c.sign ?? c.name}</span>
                   </div>
-                  <div className="media r45 tone" data-lit="false">
+                  <div className="media r45 tone">
                     <Image src={tone(c, "45")} alt={`${c.name} 사이트 모바일 화면`} width={780} height={975} sizes="(max-width: 767px) 80vw, 25vw" />
                   </div>
                   <h3 className="card-name">{c.name}</h3>
@@ -227,7 +228,7 @@ export default function Home() {
         {/* 실사 교체 자리 A: 카운터에 붙인 NFC 태그에 손님이 휴대폰을 대는 손 클로즈업(1:1).
             촬영 전까지는 실제 고객 사이트 캡처를 같은 보정 프리셋으로 씀 */}
         <figure className="care-img" style={col("21 / 25", "2 / 7")}>
-          <div className="media r11 tone" data-lit="false">
+          <div className="media r11 tone">
             <Image src={tone(careImg, "11")} alt={`${careImg.name} 사이트 모바일 화면`} width={780} height={780} sizes="(max-width: 767px) 80vw, 17vw" />
           </div>
           <figcaption className="t-cap mute fig-cap">{careImg.name} 사이트, 모바일 첫 화면</figcaption>

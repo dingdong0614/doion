@@ -9,11 +9,8 @@ export default function PageMotion() {
   const reduced = useReduced();
 
   useEffect(() => {
-    if (reduced !== false) {
-      // 최종 상태: 카드·사진은 원색(CSS가 처리), 가로 트랙은 손으로 넘김
-      document.querySelectorAll<HTMLElement>("[data-lit]").forEach((el) => (el.dataset.lit = "true"));
-      return;
-    }
+    // 움직임 줄이기: 아무것도 걸지 않음(가로 트랙은 손으로 넘김, 사진은 무채색 그대로)
+    if (reduced !== false) return;
     let cancelled = false;
     let cleanup = () => {};
 
@@ -40,7 +37,6 @@ export default function PageMotion() {
         lenis?.on("scroll", sync);
       };
       addEventListener("doion:lenis", onLenis);
-      const ios: IntersectionObserver[] = [];
       const mms: ReturnType<typeof gsap.matchMedia>[] = [];
 
       // 켜지기 전 글자는 회색(--mute, 대비 5.7:1)이라 연출 중에도 AA를 지킨다
@@ -79,16 +75,10 @@ export default function PageMotion() {
           );
         });
 
-        // 3. 풀블리드 사진: 패럴랙스 yPercent -6 에서 6 (사이트 전체에서 이 한 곳), 무채색에서 색이 켜짐
+        // 3. 풀블리드 사진: 패럴랙스 yPercent -6 에서 6 (사이트 전체에서 이 한 곳). 사진 톤은 무채색 고정(CSS)
+        // 사진은 load 뒤에 붙으므로(DeferredPicture) 틀 안의 picture를 움직인다
         $$("[data-parallax]").forEach((m) => {
-          const img = m.querySelector("img");
-          if (!img) return;
-          gsap.fromTo(img, { yPercent: -6 }, { yPercent: 6, ease: "none", scrollTrigger: { trigger: m, start: "top bottom", end: "bottom top", scrub: true } });
-          gsap.fromTo(
-            img,
-            { filter: "grayscale(1) contrast(1.02)" },
-            { filter: "grayscale(0) contrast(1)", ease: "none", scrollTrigger: { trigger: m, start: "top 75%", end: "center 55%", scrub: true } }
-          );
+          gsap.fromTo(m, { "--py": "-6%" }, { "--py": "6%", ease: "none", scrollTrigger: { trigger: m, start: "top bottom", end: "bottom top", scrub: true } });
         });
 
         // 4. 선언문: 단어가 스크롤에 따라 차례로 짙어짐(명도만, 회색에서 글자색)
@@ -101,24 +91,11 @@ export default function PageMotion() {
           gsap.fromTo(w, { color: mute }, { color: ink, ease: "none", scrollTrigger: { trigger: w, start: "top 80%", end: "top 45%", scrub: true } });
         });
 
-        // 6. 보이는 동안 색이 켜지는 사진(가로 트랙 제외)
-        const litIO = new IntersectionObserver(
-          (es) => es.forEach((e) => ((e.target as HTMLElement).dataset.lit = String(e.intersectionRatio > 0.55))),
-          { threshold: [0, 0.55, 1] }
-        );
-        $$("[data-lit]:not(.card [data-lit])").forEach((el) => litIO.observe(el));
-        ios.push(litIO);
-
-        // 7. 가로 트랙: 768 이상은 sticky 고정 + 세로 스크롤을 가로 이동으로. 가운데 온 카드만 색이 켜짐
+        // 6. 가로 트랙: 768 이상은 sticky 고정 + 세로 스크롤을 가로 이동으로
         $$("[data-track]").forEach((sec) => {
           const pin = sec.querySelector<HTMLElement>(".track-pin")!;
           const track = sec.querySelector<HTMLElement>(".track")!;
           const bar = sec.querySelector<HTMLElement>(".progress i");
-          const cards = $$(".card", track);
-          const light = (c: HTMLElement, on: boolean) => {
-            const m = c.querySelector<HTMLElement>("[data-lit]");
-            if (m) m.dataset.lit = String(on);
-          };
           const mm = gsap.matchMedia();
           mms.push(mm);
           mm.add("(min-width: 768px)", () => {
@@ -138,11 +115,6 @@ export default function PageMotion() {
                 invalidateOnRefresh: true,
                 onUpdate: (s) => {
                   if (bar) gsap.set(bar, { scaleX: s.progress });
-                  const cx = innerWidth / 2;
-                  cards.forEach((c) => {
-                    const r = c.getBoundingClientRect();
-                    light(c, Math.abs(r.left + r.width / 2 - cx) < r.width * 0.75);
-                  });
                 },
               },
             });
@@ -153,18 +125,12 @@ export default function PageMotion() {
             };
           });
           mm.add("(max-width: 767px)", () => {
-            const io = new IntersectionObserver((es) => es.forEach((e) => light(e.target as HTMLElement, e.intersectionRatio > 0.6)), {
-              root: track,
-              threshold: [0, 0.6, 1],
-            });
-            cards.forEach((c) => io.observe(c));
             const onS = () => {
               const m = track.scrollWidth - track.clientWidth;
               if (bar) gsap.set(bar, { scaleX: m > 0 ? track.scrollLeft / m : 0 });
             };
             track.addEventListener("scroll", onS, { passive: true });
             return () => {
-              io.disconnect();
               track.removeEventListener("scroll", onS);
             };
           });
@@ -190,7 +156,6 @@ export default function PageMotion() {
         clearTimeout(rT);
         removeEventListener("doion:lenis", onLenis);
         lenis?.off("scroll", sync);
-        ios.forEach((io) => io.disconnect());
         mms.forEach((mm) => mm.revert());
         ctx.revert();
       };

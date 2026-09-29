@@ -1,5 +1,5 @@
 /* ------------------------------------------------------------------
-   doion — Systems Precision
+   doion: Systems Precision
    Navy 다크 콘솔 톤 + Paper 라이트 섹션(가격표/CTA) 번갈아 배치
    Accent(블루) 주요 액션 · Teal 보조 하이라이트 · Orange 알림/뱃지
 ------------------------------------------------------------------- */
@@ -357,7 +357,7 @@ h1, h2, h3 {
 /* ---------- hero ---------- */
 .hero { padding: var(--sp-9) 0 var(--sp-8); text-align: center; position: relative; overflow: hidden; }
 /* 좁은 화면에서는 제목 위쪽에 로고가 들어갈 자리를 남겨둡니다
-   — js/main.js가 이 여백 안에서만 로고를 그립니다. */
+   js/main.js가 이 여백 안에서만 로고를 그립니다. */
 @media (max-width: 899px) {
   .hero { padding-top: 160px; }
 }

@@ -4,6 +4,7 @@
 2. PretendardVariable.ttf(npm pretendard, dist/public/variable)의 굵기 축을 200~800으로 줄인다.
 3. 첫 화면용: app/fonts/critical-chars.txt(scripts/critical-chars.py) + ASCII -> app/fonts/PretendardCritical.woff2 (preload)
    전체: 1의 글자 전부 -> public/fonts/PretendardSubset.woff2 (FontFallback이 한가할 때 붙임)
+4. 첫 화면용은 app/fonts/critical-font.css 에 data URI로 넣는다(layout.tsx가 import)
 실행: python3 scripts/font-subset.py <PretendardVariable.ttf 경로>   (fonttools, brotli 필요)
 """
 import subprocess, sys, tempfile
@@ -42,3 +43,20 @@ with tempfile.TemporaryDirectory() as tmp:
         )
         hangul = sum(1 for c in cs if "\uac00" <= c <= "\ud7a3")
         print(f"{name}: 한글 {hangul}자, 전체 {len(cs)}자 -> {out.relative_to(ROOT)} {out.stat().st_size // 1024}KB")
+
+# font-display swap: block은 글자가 보일 때까지 LCP가 늦어짐(실측 2.7초). swap은 첫 프레임 글꼴 교체로 CLS 약 0.02~0.04(기준 0.1 이하)
+# 첫 화면 서브셋은 CSS에 data URI로 넣는다(스타일시트와 함께 도착해 첫 레이아웃부터 같은 글꼴, 글꼴 교체로 인한 두 번째 레이아웃 없음)
+import base64
+b64 = base64.b64encode((ROOT / "app/fonts/PretendardCritical.woff2").read_bytes()).decode()
+(ROOT / "app/fonts/critical-font.css").write_text(
+    "/* scripts/font-subset.py 가 만드는 파일(직접 고치지 않음). Pretendard Variable, SIL OFL 1.1 */\n"
+    "@font-face {\n"
+    '  font-family: "Pretendard First";\n'
+    "  font-style: normal;\n"
+    "  font-weight: 200 800;\n"
+    "  font-display: swap;\n"
+    f'  src: url(data:font/woff2;base64,{b64}) format("woff2");\n'
+    "}\n",
+    encoding="utf-8",
+)
+print("critical-font.css", (ROOT / "app/fonts/critical-font.css").stat().st_size // 1024, "KB")

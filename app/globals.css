@@ -20,7 +20,7 @@
   --line-2: rgb(27 26 23 / 0.34);
   --ph: rgb(27 26 23 / 0.065);
 
-  --font: var(--font-first), "Pretendard Subset", "Pretendard Variable", "Pretendard Fallback", -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo",
+  --font: "Pretendard First", "Pretendard Subset", "Pretendard Variable", "Pretendard Fallback", -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo",
     "Malgun Gothic", sans-serif;
 
   /* 크기 5단계. display는 "간판 다음으로," 한 줄이 내용 폭을 채우는 크기(Pretendard 5.55em 기준) */
@@ -134,6 +134,20 @@ h2,
 h3 {
   font-size: inherit;
   font-weight: inherit;
+}
+/* 제목·선언문은 줄 길이를 고르게(한 단어 외톨이 줄 방지), 문단은 마지막 줄 외톨이만 방지 */
+h1,
+h2,
+h3,
+.t-h2,
+.t-st,
+.promise li {
+  text-wrap: balance;
+}
+p,
+li,
+dd {
+  text-wrap: pretty;
 }
 ::selection {
   background: var(--accent);
@@ -724,6 +738,8 @@ html[data-loader] body {
 .hero-b {
   display: block;
   text-align: right;
+  /* 첫 줄 쉼표 꼬리(약 0.2em)가 둘째 줄과 겹치지 않게 */
+  margin-top: calc(var(--fs-display) * 0.1);
 }
 .hero-cta {
   display: flex;
@@ -736,6 +752,13 @@ html[data-loader] body {
 }
 .hero .strip {
   margin-top: var(--in-a);
+}
+/* 첫 화면의 상호 띠는 작게(h2 크기, 높이 약 34px): 첫 화면 주인공은 제목 하나 */
+.strip.sm {
+  height: calc(var(--fs-h2) * 0.56);
+}
+.strip.sm .strip-in {
+  font-size: var(--fs-h2);
 }
 @media (min-width: 768px) {
   .hero-note {
@@ -787,8 +810,14 @@ html[data-loader] body {
   object-fit: cover;
   object-position: top center;
   filter: var(--tone-off);
+  transform: translateY(var(--py, 0%));
   will-change: transform;
-  transition: transform var(--t-hover) var(--ease-out);
+  transition: filter var(--t-reveal) var(--ease-out);
+}
+@media (hover: hover) and (pointer: fine) {
+  .feature:hover .feature-media img {
+    filter: var(--tone-on);
+  }
 }
 .feature-cap {
   margin-top: var(--in-b);
@@ -860,14 +889,15 @@ html[data-loader] body {
    높이가 바뀌면 PageMotion이 ScrollTrigger를 다시 계산한다 */
 .cv {
   content-visibility: auto;
-  contain-intrinsic-size: auto 1200px;
+  /* 너비는 부모에서 받고(최소 내용 폭 1px), 높이만 추정값 */
+  contain-intrinsic-size: auto 1px auto 1200px;
 }
 
 /* 화면 밖 사진 칸은 그리기·이미지 요청을 미룬다(칸 크기는 비율로 고정이라 레이아웃 이동 없음) */
 .media,
 .feature-media {
   content-visibility: auto;
-  contain-intrinsic-size: auto 480px;
+  contain-intrinsic-size: auto 1px auto 480px;
 }
 .r45 {
   aspect-ratio: 4 / 5;
@@ -885,17 +915,17 @@ html[data-loader] body {
   object-fit: cover;
   object-position: top center;
 }
-.tone img {
+/* 사진은 무채색 고정(한 세션 톤). 원색은 마우스 기기에서 올렸을 때만(대표 결정 항목) */
+.tone img,
+.tone video {
   filter: var(--tone-off);
   transition: filter var(--t-reveal) var(--ease-out), transform var(--t-hover) var(--ease-out);
 }
-.tone[data-lit="true"] img,
-a:hover .tone img,
-a:focus-visible .tone img {
-  filter: var(--tone-on);
-}
-a:hover .tone img {
-  transform: scale(1.03);
+@media (hover: hover) and (pointer: fine) {
+  a:hover .tone img {
+    filter: var(--tone-on);
+    transform: scale(1.03);
+  }
 }
 .card .media {
   margin-top: 12px;
@@ -1023,6 +1053,7 @@ a:hover .tone img {
 }
 .p-left {
   display: grid;
+  grid-template-columns: minmax(0, 1fr);
   gap: var(--in-b);
   align-content: start;
 }
@@ -1305,6 +1336,9 @@ button.chip {
   margin: 0;
   accent-color: var(--ink);
 }
+.consent-link {
+  margin-left: 34px;
+}
 .send {
   display: grid;
   gap: 16px;
@@ -1433,6 +1467,7 @@ button.chip {
 }
 .page-head h1 .b {
   display: block;
+  margin-top: calc(var(--fs-display) * 0.1);
 }
 .page-head[data-align="indent"] h1 .b {
   padding-left: 0;
@@ -1525,6 +1560,8 @@ button.chip {
   }
   .pf-preview .media img[data-on="true"] {
     opacity: 1;
+  }
+  .pf:has(.pf-list a:hover) .pf-preview .media img[data-on="true"] {
     filter: var(--tone-on);
   }
 }
@@ -1597,6 +1634,42 @@ table.compare {
 }
 .compare td {
   position: relative;
+}
+/* 390 등 좁은 화면: 표 대신 패키지별 목록(가로 스크롤 없이 전부 보이게) */
+.compare-stack {
+  display: grid;
+  gap: var(--in-b);
+}
+.compare-stack section {
+  border-top: 1px solid var(--ink);
+  padding-top: 16px;
+}
+.compare-stack h3 {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 12px;
+  font-weight: 500;
+}
+.compare-stack li {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  padding-block: 8px;
+  border-top: 1px solid var(--line);
+}
+.compare-stack li[data-in="false"] {
+  color: var(--mute);
+}
+@media (max-width: 767px) {
+  .compare-wrap {
+    display: none;
+  }
+}
+@media (min-width: 768px) {
+  .compare-stack {
+    display: none;
+  }
 }
 .compare td .ico {
   display: inline-block;
@@ -1709,12 +1782,13 @@ table.compare {
 }
 .legal table {
   width: 100%;
-  min-width: 520px;
+  table-layout: fixed;
   border-collapse: collapse;
   font-size: 15px;
 }
 .legal th,
 .legal td {
+  overflow-wrap: anywhere;
   text-align: left;
   vertical-align: top;
   padding: 12px 12px 12px 0;
@@ -1745,10 +1819,6 @@ table.compare {
     animation: none !important;
     scroll-behavior: auto !important;
   }
-  .tone img,
-  .feature-media img {
-    filter: var(--tone-on);
-  }
 }
 html[data-motion="reduced"] *,
 html[data-motion="reduced"] *::before,
@@ -1757,7 +1827,4 @@ html[data-motion="reduced"] *::after {
   animation: none !important;
   scroll-behavior: auto !important;
 }
-html[data-motion="reduced"] .tone img,
-html[data-motion="reduced"] .feature-media img {
-  filter: var(--tone-on);
-}
+

@@ -41,3 +41,4 @@
 - 새 파일: app/template.tsx(페이지 전환), app/not-found.tsx(404), components/Loader·Cursor·Transition·PageMotion·SignStrip·Reel·PriceDoc·PageHead·PortfolioIndex·Light·Icon·FontFallback, scripts/tone.py·make-reel.py·record-reel.mjs·critical-chars.py·font-subset.py, docs/photo-pipeline.md.
 - 뺀 것: 다크 테마 토글, 홈 실적 숫자 줄(Ledger, /api/stats·admin은 그대로 둠), 부채꼴 사례, 사례 모자이크, 업종 칩 줄(상담 폼 업종 선택으로 이동), 홈 NFC 번호 3단계(본문 한 단락으로).
 - 보안 헤더 4종 추가(next.config.ts headers). 상담 폼 API·rate limit·처리방침·301·IndexNow 키·네이버 인증은 그대로.
+- 2026-09-29 독립 채점(정보수집팀 91점) 반영: 첫 화면 상호 띠 작게, 풀블리드를 장안설비대장 캡처로, 제목 줄바꿈(text-wrap balance·쉼표 간격), 사진 무채색 고정(원색은 데스크톱 호버만), /portfolio 사진 load 뒤, 첫 화면 폰트 data URI, 동의 링크 48px, 390 가격 비교표 목록형, 처리방침 localStorage 문구, 긴 대시 제거, 검사 스크립트 scripts/verify.py.

@@ -53,7 +53,7 @@ export default function Reel() {
 
   return (
     <figure className="reel">
-      <div className="media r45">
+      <div className="media r45 tone">
         <video
           ref={v}
           muted

@@ -144,13 +144,14 @@ export default function ContactForm() {
           <label className="check">
             <input type="checkbox" {...aria("consent")} />
             <span>
-              (필수) 상담 연락을 위한{" "}
-              <Link href="/privacy" className="inline-link" target="_blank">
-                개인정보 수집·이용
-              </Link>
-              에 동의합니다. 매장 이름·담당자 이름·연락처·업종·문의 내용을 수집하고, 처리 완료 후 1년 뒤 파기합니다. 접수·알림을 위해 Vercel(미국)·Web3Forms(인도) 서버로 국외 이전됩니다.
+              (필수) 상담 연락을 위한 개인정보 수집·이용에 동의합니다. 매장 이름·담당자 이름·연락처·업종·문의 내용을 수집하고, 처리 완료 후 1년 뒤 파기합니다. 접수·알림을 위해 Vercel(미국)·Web3Forms(인도) 서버로 국외 이전됩니다.
             </span>
           </label>
+          {/* 문장 속 작은 링크 대신 따로 한 줄(터치 48px) */}
+          <Link href="/privacy" className="ul t-cap consent-link" target="_blank">
+            개인정보 수집·이용 내용 보기<span className="sr-only"> (새 탭)</span>
+            <Icon name="out" />
+          </Link>
           {err("consent")}
         </div>
         <button type="submit" className="btn btn-ink" disabled={state.status === "sending"}>

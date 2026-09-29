@@ -30,7 +30,7 @@ export default function PortfolioPage() {
       <PortfolioIndex items={portfolio} categories={categories} />
 
       {/* 3. 업종별 제안서: 두 칸 문서 목록 */}
-      <section className="g proposals" aria-labelledby="proposal-title">
+      <section className="g proposals cv" aria-labelledby="proposal-title">
         <h2 id="proposal-title" className="t-h2" style={col("1 / 9")} data-reveal>
           <span className="ln">
             <span>업종별 제안서.</span>
@@ -57,7 +57,7 @@ export default function PortfolioPage() {
       </section>
 
       {/* 4. 마무리 띠: 제목 왼쪽, 버튼 오른쪽 아래 */}
-      <section className="g band" aria-labelledby="band-title">
+      <section className="g band cv" aria-labelledby="band-title">
         <h2 id="band-title" className="t-h2" style={col("1 / 15")}>
           우리 매장도 상담받기
         </h2>

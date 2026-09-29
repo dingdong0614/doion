@@ -168,8 +168,14 @@ export default function PrivacyPage() {
       <h2>10. 쿠키 등 자동 수집 장치</h2>
       <p>
         광고용 쿠키와 추적 쿠키는 쓰지 않습니다. 방문 통계는 쿠키를 쓰지 않고 개인을 식별하지 않는 Vercel Web Analytics로
-        익명 집계합니다. 화면 밝기와 움직임 줄이기 설정만 이용자 브라우저(localStorage)에 저장되며, 회사로 전송되지 않습니다.
+        익명 집계합니다. 이용자 브라우저(localStorage)에는 아래 두 값만 저장되며, 개인을 알아볼 수 있는 정보가 아니고 회사로 전송되지
+        않습니다.
       </p>
+      <ul>
+        <li>움직임 줄이기 설정(motion): 화면 아래 &ldquo;움직임 줄이기&rdquo;를 누른 경우에만 저장하고, 다시 켜면 지웁니다. 목적: 다음 방문에도 같은 설정 유지.</li>
+        <li>첫 방문 표시(doion-seen): 첫 방문 때 여는 화면(약 1.6초)을 한 번만 보여주기 위한 값입니다.</li>
+        <li>보관 기간: 따로 정한 만료 없이, 이용자가 브라우저의 사이트 데이터를 지우면 함께 삭제됩니다.</li>
+      </ul>
 
       <h2>11. 개인정보 보호책임자</h2>
       <div className="table-scroll">
@@ -182,7 +188,7 @@ export default function PrivacyPage() {
             <tr>
               <th>이메일</th>
               <td>
-                <a className="link" href={`mailto:${site.email}`}>
+                <a className="ul" href={`mailto:${site.email}`}>
                   {site.email}
                 </a>
               </td>

@@ -49,6 +49,28 @@ export default function PricingPage() {
             <span>패키지별 기능 비교.</span>
           </span>
         </h2>
+        {/* 좁은 화면: 패키지별 목록 */}
+        <div className="compare-stack" style={col("1 / 25")}>
+          {buildPlans.map((p, i) => (
+            <section key={p.name} aria-label={`${p.name} ${p.price}만원 기능`}>
+              <h3>
+                <span>{p.name}</span>
+                <span className="t-cap mute">{p.price}만원</span>
+              </h3>
+              <ul>
+                {buildMatrix().map((r) => (
+                  <li key={r.feature} data-in={i >= r.from}>
+                    <Icon name={i >= r.from ? "check" : "minus"} />
+                    <span>
+                      {r.feature}
+                      <span className="sr-only">{i >= r.from ? " 포함" : " 미포함"}</span>
+                    </span>
+                  </li>
+                ))}
+              </ul>
+            </section>
+          ))}
+        </div>
         <div className="compare-wrap" style={col("1 / 25")}>
           <table className="compare">
             <thead>

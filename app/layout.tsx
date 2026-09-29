@@ -8,21 +8,13 @@ import Cursor from "@/components/Cursor";
 import { TransitionRoot } from "@/components/Transition";
 import FontFallback from "@/components/FontFallback";
 import { og, site, twitterCard } from "@/lib/site";
-import localFont from "next/font/local";
+import "./fonts/critical-font.css";
 import "./globals.css";
 
 // 폰트(Pretendard Variable, 굵기 200~800) 두 단계:
-// 1) 첫 화면 글자만 담은 작은 서브셋(PretendardCritical.woff2)을 next/font/local로 preload.
+// 1) 첫 화면 글자만 담은 작은 서브셋을 CSS 안에 data URI로(app/fonts/critical-font.css): 스타일시트와 같이 도착해 첫 레이아웃부터 같은 글꼴.
 // 2) 사이트 전체 글자 서브셋(public/fonts/PretendardSubset.woff2)과 조각 폰트는 FontFallback이 한가할 때 붙인다.
 // 문구를 바꾸면 docs/font-subset.md 순서대로 다시 생성.
-const critical = localFont({
-  src: "./fonts/PretendardCritical.woff2",
-  weight: "200 800",
-  display: "swap",
-  preload: true,
-  adjustFontFallback: false,
-  variable: "--font-first",
-});
 
 const description =
   "헬스장, 뷰티샵, 학원 등 소규모 매장을 위한 업종별 맞춤 웹사이트 제작·관리 대행, 도이온. 수원 율전동에서 대표가 직접 상담하고 약 2주 안에 만듭니다.";
@@ -49,7 +41,7 @@ const prefsScript = `try{var d=document.documentElement,m=localStorage.getItem('
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html lang="ko" className={critical.variable} suppressHydrationWarning>
+    <html lang="ko" suppressHydrationWarning>
       <head>
         <script dangerouslySetInnerHTML={{ __html: prefsScript }} />
       </head>

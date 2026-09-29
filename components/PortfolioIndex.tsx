@@ -2,7 +2,8 @@
 
 // 사례 목록 + 고정 미리보기(데스크톱). 줄에 마우스를 올리거나 초점이 가면 오른쪽 4:5 화면이 그 사례로 바뀐다.
 // 모바일은 줄마다 화면이 붙는다. 업종 필터는 /portfolio#헬스장 처럼 해시로도 시작.
-import Image from "next/image";
+// 사진은 load 뒤에 받는다(첫 화면 글자 먼저, LCP).
+import DeferredImage from "./DeferredImage";
 import { useEffect, useState } from "react";
 import Icon from "./Icon";
 import { tone, type PortfolioItem } from "@/data/portfolio";
@@ -70,8 +71,8 @@ export default function PortfolioIndex({ items, categories }: { items: Portfolio
               <h3 className="t-st">{c.name}</h3>
               <p className="sum mute">{c.summary}</p>
               {/* 모바일에서만 보이는 줄 사진(데스크톱은 오른쪽 고정 미리보기) */}
-              <div className="media r45 tone" data-lit="false">
-                <Image src={tone(c, "45")} alt="" width={780} height={975} sizes="(max-width: 767px) 92vw, 1px" />
+              <div className="media r45 tone">
+                <DeferredImage src={tone(c, "45")} alt="" width={780} height={975} sizes="(max-width: 767px) 92vw, 1px" />
               </div>
               <span className="ul">
                 사이트 보기<span className="sr-only"> (새 탭)</span> <Icon name="out" />
@@ -84,7 +85,7 @@ export default function PortfolioIndex({ items, categories }: { items: Portfolio
       <div className="pf-preview" style={col("16 / 25")} aria-hidden="true">
         <div className="media r45">
           {shown.map((c) => (
-            <Image
+            <DeferredImage
               key={c.name}
               src={tone(c, "45")}
               alt=""

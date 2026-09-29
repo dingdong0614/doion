@@ -10,12 +10,12 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 
 const SITES = (process.env.REEL_SITES ?? [
-  "https://ptholic-1.vercel.app",
+  "https://jangan-equipment.vercel.app",
   "https://yuljeonfood.co.kr",
   "https://bbadoom-music.vercel.app",
   "https://keyhoon.vercel.app",
-  "https://jangan-equipment.vercel.app",
   "https://chedae-ipsi.vercel.app",
+  "https://ptholic-1.vercel.app",
   "https://care-demo-git-main-me-68b9.vercel.app",
   "https://dasom-church-demo.vercel.app",
 ].join(",")).split(",");
