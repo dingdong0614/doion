@@ -1,9 +1,10 @@
 """doion 사진 보정 프리셋 doion-tone-01 (한 세션처럼 보이게 하는 단일 파이프라인).
 
 입력: public/assets/work/ 의 라이브 사이트 캡처(1440x900 데스크톱, 780x1688 모바일)
-출력: public/assets/tone/<slug>-<비율>.jpg  (비율은 169, 45, 11 세 가지만)
-프리셋: 채도 0.9, 대비 1.04, 배경색(#F7F7F4) 쪽으로 흰 균형 이동, 약한 선명도.
-화면에서는 CSS 토큰 --tone-off(무채색) / --tone-on(원색 복귀)만 쓴다.
+출력: public/assets/tone/<slug>-<비율>.jpg  (비율은 45, 11, 그리고 히어로 휴대폰용 phone = 390:844 전체 화면)
+프리셋: 채도 0.94, 대비 1.04, 배경색(#F7F7F4) 쪽으로 흰 균형 이동, 약한 선명도.
+화면에서는 원색 그대로 쓴다(2026-09-29 대표 피드백으로 무채색 연출 폐기). 톤 통일은 이 프리셋만.
+모바일 캡처는 390x844 DPR 2(780x1688)라 카드·휴대폰 표시 크기에서 2배 해상도.
 실사 촬영본이 들어오면 같은 스크립트에 넣어 같은 프리셋으로 뽑는다.
 실행: python3 scripts/tone.py  (Pillow 필요)
 """
@@ -32,7 +33,7 @@ WB = (1.0, 0.994, 0.972)  # 배경 #F7F7F4 방향의 따뜻한 흰 균형
 
 def preset(im: Image.Image) -> Image.Image:
     im = im.convert("RGB")
-    im = ImageEnhance.Color(im).enhance(0.9)
+    im = ImageEnhance.Color(im).enhance(0.94)
     im = ImageEnhance.Contrast(im).enhance(1.04)
     r, g, b = im.split()
     r = r.point(lambda v: min(255, round(v * WB[0])))
@@ -59,12 +60,16 @@ def save(im: Image.Image, name: str, width: int):
     im.save(OUT / name, "JPEG", quality=86, optimize=True, progressive=True)
 
 
+PHONE = ["sungdae", "jangan"]  # 히어로 옆 휴대폰 두 대(가운데는 60fps 영상, scripts/make-hero-video.py)
+USED_11 = ["bbadoom"]
+
 if __name__ == "__main__":
     for slug, (desk, mob) in CAPTURES.items():
         m = preset(Image.open(SRC / mob))
         save(crop(m, 4 / 5), f"{slug}-45.jpg", 780)
-        save(crop(m, 1 / 1), f"{slug}-11.jpg", 780)
-        if desk:
-            d = preset(Image.open(SRC / desk))
-            save(crop(d, 16 / 9), f"{slug}-169.jpg", 1440)
+        if slug in USED_11:
+            save(crop(m, 1 / 1), f"{slug}-11.jpg", 780)
+        if slug in PHONE:
+            save(m, f"{slug}-phone.jpg", 780)
+        # 데스크톱 1440x900 캡처(DPR 1)는 큰 화면에 흐리게 보여 쓰지 않는다(대표 피드백)
     print("done", sorted(p.name for p in OUT.iterdir()))

@@ -7,7 +7,7 @@
 | Lenis | npm lenis | MIT | 확인 |
 | 아이콘 | 자체 제작 `components/Icon.tsx`(24 격자, 선 1.5) | doion 소유 | 확인 (lucide-react 제거) |
 | 임시 사진(Unsplash) | Unsplash(무료 라이선스) | 2026-09-29 디자인부터 화면에 쓰지 않음(`docs/photo-pipeline.md`) | 미사용 |
-| 사례 릴 영상 `assets/video/` | 고객 사이트 캡처로 만든 영상(`scripts/make-reel.py`) | 아래 사례 스크린샷 항목 준용 | 확인 |
+| 히어로 휴대폰 영상 `assets/video/hero.*` | 피티홀릭짐 공개 저장소(dingdong0614/ptholic-1)를 로컬에서 띄워 한 프레임씩 찍은 60fps 영상(`scripts/make-hero-video.py`) | 아래 사례 스크린샷 항목 준용 | 확인 |
 | 사례 스크린샷 (`public/assets/work/`, `portfolio/`) | 각 고객 라이브 사이트 캡처 | 고객 사이트 저작물 | 기존 사이트에 이미 공개돼 있던 사례만 사용. **공개 동의 서면 확인은 [확인 필요]** |
 | 업종별 제안서 PDF, 비교자료 PDF | doion 자체 제작(기존 사이트 그대로) | doion 소유 | 확인 |
 | 공유 미리보기 이미지 `assets/og-2026.png` | doion 제작(Wanted Sans + 고객 사이트 캡처 2장) | 위 항목 준용 | 확인 |

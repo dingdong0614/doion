@@ -1,12 +1,11 @@
-import Image, { getImageProps } from "next/image";
+import Image from "next/image";
 import Link from "next/link";
 import ContactForm from "@/components/ContactForm";
 import Icon from "@/components/Icon";
 import Light from "@/components/Light";
 import LiveStatus from "@/components/LiveStatus";
 import { BuildRows, CareCols } from "@/components/PriceDoc";
-import Reel from "@/components/Reel";
-import DeferredPicture from "@/components/DeferredPicture";
+import HeroPhones from "@/components/HeroPhones";
 import SignStrip from "@/components/SignStrip";
 import { portfolio, signs, tone } from "@/data/portfolio";
 import { buildPlans, reasons, steps } from "@/data/offer";
@@ -57,18 +56,10 @@ function find(name: string) {
 }
 
 export default function Home() {
-  // 풀블리드 한 장: 가격 배지·알약 버튼 같은 금지 패턴이 없는 캡처(장안설비대장)
-  const lead = find("장안설비대장");
-  const cases = portfolio.filter((p) => p !== lead);
+  const cases = portfolio;
   const [nfc, ...why] = reasons;
   const careImg = find("빠둠뮤직 보컬 트레이닝 센터");
-
-  // 풀블리드 한 장: 데스크톱 16:9, 모바일 4:5 (art direction)
-  const common = { alt: `${lead.name} 사이트 첫 화면`, sizes: "100vw" };
-  const { props: desk } = getImageProps({ ...common, src: tone(lead, "169"), width: 1440, height: 810 });
-  const {
-    props: { srcSet: mobSet },
-  } = getImageProps({ ...common, src: tone(lead, "45"), width: 780, height: 975 });
+  const processImg = find("체대입시 실기 기록판");
 
   return (
     <>
@@ -83,7 +74,7 @@ export default function Home() {
           <p className="t-cap" style={{ ...col("17 / 25", "5 / 7"), textAlign: "right" }}>
             {site.region}
           </p>
-          <h1 className="hero-h" id="hero-title" style={col("1 / 25")} data-light>
+          <h1 className="hero-h" id="hero-title" style={col("1 / 17")} data-light>
             <span className="sr-only">간판 다음으로, 손님이 보는 곳.</span>
             <span className="hero-a t-display" aria-hidden="true">
               <Light text="간판 다음으로," />
@@ -92,6 +83,9 @@ export default function Home() {
               <Light text="손님이 보는 곳." start={8} />
             </span>
           </h1>
+          <div className="hero-visual-wrap" style={col("17 / 25")}>
+            <HeroPhones />
+          </div>
           <p className="hero-lead measure" style={col("1 / 11")}>
             수원 율전동에서 동네 가게 홈페이지를 만들고, 만든 뒤에도 매달 관리합니다.
           </p>
@@ -103,7 +97,7 @@ export default function Home() {
               포트폴리오 보기 <Icon name="out" />
             </Link>
           </div>
-          <p className="hero-note t-cap mute" style={col("15 / 25")}>
+          <p className="hero-note t-cap mute" style={col("1 / 13")}>
             상담은 무료이고, 대표가 직접 연락드립니다.
           </p>
         </div>
@@ -112,7 +106,7 @@ export default function Home() {
         <p className="sr-only">doion이 만든 가게: {signs.join(", ")}</p>
       </section>
 
-      {/* 2. 사례 첫 장: 풀블리드 한 장(패럴랙스는 사이트 전체에서 이 한 곳). 간판 다음에 손님이 보는 화면 */}
+      {/* 2. 사례: 머리 + 가로 트랙(대표 피드백으로 저해상도 풀블리드 캡처 제거) */}
       <section id="work" aria-labelledby="work-title">
         <div className="g work-head">
           <h2 className="t-h2" id="work-title" style={col("1 / 17")} data-reveal>
@@ -126,25 +120,6 @@ export default function Home() {
           <p className="measure mute" style={col("18 / 25")}>
             실제 운영 중인 사이트와 업종별 영업용 데모를 함께 모았습니다. 지금 열어볼 수 있어요. 카드를 누르면 라이브 사이트가 새 탭에서 열립니다.
           </p>
-        </div>
-        <a className="feature" href={lead.href} target="_blank" rel="noopener noreferrer" data-cursor="open" aria-label={`${lead.name} 사이트 열기 (새 탭)`}>
-          <div className="feature-media" data-parallax>
-            <DeferredPicture img={desk} mobileSrcSet={mobSet} />
-          </div>
-        </a>
-        <div className="g feature-cap">
-          <h3 className="t-st" style={col("1 / 7", "1 / 5")}>
-            {lead.name}
-          </h3>
-          <p className="t-cap mute" style={col("7 / 11", "5 / 7")}>
-            {lead.category}
-          </p>
-          <p className="measure" style={col("13 / 22")}>
-            {lead.summary}
-          </p>
-          <a className="ul r" href={lead.href} target="_blank" rel="noopener noreferrer" style={col("22 / 25")}>
-            사이트 보기<span className="sr-only"> (새 탭)</span> <Icon name="out" />
-          </a>
         </div>
       </section>
 
@@ -165,7 +140,7 @@ export default function Home() {
           <ul className="track">
             {cases.map((c) => (
               <li key={c.name} className="card">
-                <a href={c.href} target="_blank" rel="noopener noreferrer" data-cursor="open">
+                <a href={c.href} target="_blank" rel="noopener noreferrer">
                   <div className="slice" aria-hidden="true">
                     <span>{c.sign ?? c.name}</span>
                   </div>
@@ -261,8 +236,13 @@ export default function Home() {
             </span>
           </h2>
           <p className="mute">상담부터 납품까지 약 2주.</p>
-          {/* 실사 교체 자리 B: 대표가 매장에서 사장님과 상담하는 장면(4:5). 지금은 사례 릴 영상 */}
-          <Reel />
+          {/* 실사 교체 자리 B: 대표가 매장에서 사장님과 상담하는 장면(4:5). 지금은 실제 고객 사이트 화면 */}
+          <figure>
+            <div className="media r45 tone">
+              <Image src={tone(processImg, "45")} alt={`${processImg.name} 사이트 모바일 화면`} width={780} height={975} sizes="(max-width: 767px) 90vw, 25vw" />
+            </div>
+            <figcaption className="t-cap mute fig-cap">{processImg.name} 사이트, 모바일 첫 화면</figcaption>
+          </figure>
         </div>
         <div style={col("10 / 25")}>
           <ol className="steps">

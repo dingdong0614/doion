@@ -23,11 +23,13 @@
   --font: "Pretendard First", "Pretendard Subset", "Pretendard Variable", "Pretendard Fallback", -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo",
     "Malgun Gothic", sans-serif;
 
-  /* 크기 5단계. display는 "간판 다음으로," 한 줄이 내용 폭을 채우는 크기(Pretendard 5.55em 기준) */
-  --fs-display: clamp(48px, calc((100vw - 2 * var(--m)) / 5.7), 320px);
-  --fs-h2: clamp(32px, 4.2vw, 60px);
-  --fs-st: clamp(22px, 2.2vw, 32px);
-  --fs-body: 17px;
+  /* 크기 6단계(2026-09-29 대표 피드백 "글이 너무 커서 부담"으로 전체 축소).
+     hero: 홈 첫 줄만, 1440에서 화면 폭 약 60%("간판 다음으로," 5.55em 기준) / display 최대 92px / 나머지는 같은 비율로 */
+  --fs-hero: clamp(44px, calc((100vw - 2 * var(--m)) * 0.115), 160px);
+  --fs-display: clamp(40px, 6.4vw, 92px);
+  --fs-h2: clamp(26px, 3.05vw, 44px);
+  --fs-st: clamp(19px, 1.67vw, 24px);
+  --fs-body: 16px;
   --fs-cap: 13px;
 
   /* 굵기: 얇은 제목(250~350) 과 간판 글자(800)의 대비 */
@@ -51,9 +53,6 @@
   --t-reveal: 0.8s;
   --t-hero: 1.2s;
 
-  /* 사진 보정 프리셋 doion-tone-01 (scripts/tone.py 와 짝). 꺼짐은 무채색, 켜짐은 원색 */
-  --tone-off: grayscale(1) contrast(1.02);
-  --tone-on: grayscale(0) contrast(1);
 
   color-scheme: light;
 }
@@ -485,19 +484,21 @@ a:hover .ul .ico {
 .strip {
   position: relative;
   overflow: hidden;
-  height: calc(var(--fs-display) * 0.56);
   border-block: 1px solid var(--ink);
   display: flex;
   align-items: center;
+  /* 대표 피드백: 글자 위아래를 자르지 않는다(띠 높이 = 글자 전체 + 여백) */
+  padding-block: 0.14em;
+  font-size: var(--fs-display);
 }
 .strip-in {
   display: flex;
   align-items: center;
   gap: 0.34em;
   white-space: nowrap;
-  font-size: var(--fs-display);
+  font-size: 1em;
   font-weight: var(--w-sign);
-  line-height: 1;
+  line-height: 1.2;
   letter-spacing: -0.01em;
   padding-left: var(--m);
 }
@@ -511,15 +512,15 @@ a:hover .ul .ico {
 }
 .slice {
   overflow: hidden;
-  height: calc(var(--fs-h2) * 0.58);
   display: flex;
   align-items: center;
+  padding-block: 6px 2px;
   border-top: 1px solid currentColor;
 }
 .slice span {
-  font-size: var(--fs-h2);
+  font-size: var(--fs-st);
   font-weight: var(--w-sign);
-  line-height: 1;
+  line-height: 1.2;
   letter-spacing: -0.01em;
   white-space: nowrap;
 }
@@ -629,69 +630,6 @@ html[data-loader] body {
   pointer-events: none;
 }
 
-/* ---------- 커서(마우스 기기만) ---------- */
-.cursor {
-  position: fixed;
-  left: 0;
-  top: 0;
-  z-index: 90;
-  width: 10px;
-  height: 10px;
-  margin: -5px 0 0 -5px;
-  border-radius: 50%;
-  background: var(--ink);
-  pointer-events: none;
-  opacity: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: width var(--t-hover) var(--ease-out), height var(--t-hover) var(--ease-out), margin var(--t-hover) var(--ease-out),
-    background-color var(--t-hover) var(--ease-out), opacity var(--t-hover) var(--ease-out);
-}
-.cursor span {
-  font-size: var(--fs-cap);
-  font-weight: 500;
-  color: var(--bg);
-  opacity: 0;
-  white-space: nowrap;
-  transition: opacity var(--t-hover) var(--ease-out);
-}
-.cursor[data-on="true"] {
-  opacity: 1;
-}
-.cursor[data-mode="link"] {
-  width: 44px;
-  height: 44px;
-  margin: -22px 0 0 -22px;
-  background: transparent;
-  box-shadow: inset 0 0 0 1px var(--ink);
-}
-.cursor[data-mode="open"] {
-  width: 96px;
-  height: 96px;
-  margin: -48px 0 0 -48px;
-  background: var(--accent);
-}
-.cursor[data-mode="open"] span {
-  opacity: 1;
-}
-.cursor[data-dark="true"] {
-  background: var(--bg);
-}
-.cursor[data-dark="true"][data-mode="link"] {
-  background: transparent;
-  box-shadow: inset 0 0 0 1px var(--bg);
-}
-.cursor[data-dark="true"][data-mode="open"] {
-  background: var(--accent);
-}
-@media (hover: hover) and (pointer: fine) {
-  html[data-cursor="on"] [data-cursor="open"],
-  html[data-cursor="on"] [data-cursor="open"] * {
-    cursor: none;
-  }
-}
-
 /* ---------- 간판 불 켜기: 글자가 왼쪽부터 명도 0.15 에서 1 (글로우 없음, CSS만) ---------- */
 @keyframes light {
   from {
@@ -711,7 +649,7 @@ html[data-loader] body {
   }
 }
 
-/* ---------- 홈 1. 첫 화면: 24컬럼 타입 배치 ---------- */
+/* ---------- 홈 1. 첫 화면: 제목(왼쪽) + 손님 휴대폰 세 대(오른쪽). 대표 피드백 "글만 있어 심심함" ---------- */
 .hero {
   min-height: calc(100svh - 72px);
   display: flex;
@@ -734,12 +672,13 @@ html[data-loader] body {
 .hero-a {
   display: block;
   white-space: nowrap;
+  font-size: var(--fs-hero);
 }
 .hero-b {
   display: block;
   text-align: right;
   /* 첫 줄 쉼표 꼬리(약 0.2em)가 둘째 줄과 겹치지 않게 */
-  margin-top: calc(var(--fs-display) * 0.1);
+  margin-top: calc(var(--fs-hero) * 0.1);
 }
 .hero-cta {
   display: flex;
@@ -747,22 +686,74 @@ html[data-loader] body {
   gap: 12px 28px;
   align-items: center;
 }
-.hero-note {
-  align-self: end;
-}
 .hero .strip {
   margin-top: var(--in-a);
 }
-/* 첫 화면의 상호 띠는 작게(h2 크기, 높이 약 34px): 첫 화면 주인공은 제목 하나 */
+/* 첫 화면의 상호 띠는 작게(선언문 크기): 첫 화면 주인공은 제목과 휴대폰 */
 .strip.sm {
-  height: calc(var(--fs-h2) * 0.56);
+  font-size: var(--fs-st);
 }
-.strip.sm .strip-in {
-  font-size: var(--fs-h2);
+/* 휴대폰: 실제 고객 사이트 화면(원색). 가운데는 60fps 스크롤 영상 */
+.phones {
+  position: relative;
+  display: grid;
+  grid-template-columns: 0.8fr 1.4fr 0.8fr;
+  align-items: center;
+  margin-inline: auto;
+  width: 100%;
 }
-@media (min-width: 768px) {
-  .hero-note {
-    text-align: right;
+.phone {
+  position: relative;
+  aspect-ratio: 390 / 844;
+  border: 5px solid var(--ink);
+  border-radius: 26px; /* 기기 모양(모서리 0 규칙의 예외: 실물 휴대폰 묘사) */
+  overflow: hidden;
+  background: var(--ink);
+}
+.phone video {
+  /* 포스터 이미지보다 1px 작게: 영상 첫 프레임이 LCP 후보로 다시 잡히지 않게 */
+  inset: 1px !important;
+  width: calc(100% - 2px) !important;
+  height: calc(100% - 2px) !important;
+}
+.phone img,
+.phone video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: top center;
+}
+.phone.side {
+  z-index: 1;
+}
+.phone.l {
+  margin-right: -14%;
+  transform: translateY(6%);
+}
+.phone.r {
+  margin-left: -14%;
+  transform: translateY(-6%);
+}
+.phone.c {
+  z-index: 2;
+}
+.phones-cap {
+  margin-top: 12px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 16px;
+  align-items: center;
+  justify-content: space-between;
+}
+@media (max-width: 1023px) {
+  .phones {
+    max-width: 300px;
+  }
+  .phone {
+    border-width: 4px;
+    border-radius: 20px;
   }
 }
 @media (min-width: 1024px) {
@@ -770,72 +761,30 @@ html[data-loader] body {
     grid-row: 2;
   }
   .hero-lead {
-    grid-row: 2;
-    align-self: end;
-    padding-bottom: 0.5em;
-  }
-  .hero-cta,
-  .hero-note {
     grid-row: 3;
+  }
+  .hero-cta {
+    grid-row: 4;
+  }
+  .hero-note {
+    grid-row: 5;
+  }
+  .hero-visual-wrap {
+    grid-row: 2 / 6;
+    align-self: center;
   }
 }
 
-/* ---------- 홈 2. 사례 첫 장: 풀블리드 한 장 ---------- */
+/* ---------- 홈 2. 사례 머리 ---------- */
 .work-head {
   padding-top: var(--sec);
   row-gap: var(--in-b);
   align-items: end;
 }
-.feature {
-  display: block;
-  margin-top: var(--in-a);
-}
-.feature-media {
-  position: relative;
-  overflow: hidden;
-  aspect-ratio: 4 / 5;
-  background: var(--ph);
-}
-@media (min-width: 768px) {
-  .feature-media {
-    aspect-ratio: 16 / 9;
-  }
-}
-.feature-media img {
-  position: absolute;
-  left: 0;
-  top: -7%;
-  width: 100%;
-  height: 114%;
-  object-fit: cover;
-  object-position: top center;
-  filter: var(--tone-off);
-  transform: translateY(var(--py, 0%));
-  will-change: transform;
-  transition: filter var(--t-reveal) var(--ease-out);
-}
-@media (hover: hover) and (pointer: fine) {
-  .feature:hover .feature-media img {
-    filter: var(--tone-on);
-  }
-}
-.feature-cap {
-  margin-top: var(--in-b);
-  row-gap: 12px;
-  align-items: baseline;
-}
-.feature-cap .r {
-  justify-self: start;
-}
-@media (min-width: 768px) {
-  .feature-cap .r {
-    justify-self: end;
-  }
-}
 
 /* ---------- 홈 3. 사례 가로 트랙 ---------- */
 .track-sec {
-  margin-top: var(--sec);
+  margin-top: var(--in-a);
 }
 .track-pin {
   container-type: inline-size;
@@ -894,8 +843,7 @@ html[data-loader] body {
 }
 
 /* 화면 밖 사진 칸은 그리기·이미지 요청을 미룬다(칸 크기는 비율로 고정이라 레이아웃 이동 없음) */
-.media,
-.feature-media {
+.media {
   content-visibility: auto;
   contain-intrinsic-size: auto 1px auto 480px;
 }
@@ -915,17 +863,15 @@ html[data-loader] body {
   object-fit: cover;
   object-position: top center;
 }
-/* 사진은 무채색 고정(한 세션 톤). 원색은 마우스 기기에서 올렸을 때만(대표 결정 항목) */
-.tone img,
-.tone video {
-  filter: var(--tone-off);
-  transition: filter var(--t-reveal) var(--ease-out), transform var(--t-hover) var(--ease-out);
-}
+/* 사진·영상은 원색 그대로(대표 피드백 "너무 흑백", 모바일에서 호버가 안 됨).
+   톤 통일은 scripts/tone.py 보정 프리셋(채도·대비·흰 균형 약간)으로만 */
 @media (hover: hover) and (pointer: fine) {
   a:hover .tone img {
-    filter: var(--tone-on);
     transform: scale(1.03);
   }
+}
+.tone img {
+  transition: transform var(--t-hover) var(--ease-out);
 }
 .card .media {
   margin-top: 12px;
@@ -1268,6 +1214,17 @@ fieldset {
 .chip {
   position: relative;
 }
+/* 업종 필터: 칸 폭을 글자와 무관하게 고정(글꼴이 바뀌어도 줄바꿈·위치가 그대로, CLS 0) */
+.chips.filters {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(92px, 1fr));
+}
+@media (min-width: 768px) {
+  .chips.filters {
+    grid-template-columns: repeat(auto-fill, minmax(112px, 1fr));
+    max-width: 1040px;
+  }
+}
 .chip input {
   position: absolute;
   opacity: 0;
@@ -1555,14 +1512,10 @@ button.chip {
     position: absolute;
     inset: 0;
     opacity: 0;
-    filter: var(--tone-off);
-    transition: opacity var(--t-reveal) var(--ease-out), filter var(--t-reveal) var(--ease-out);
+    transition: opacity var(--t-reveal) var(--ease-out);
   }
   .pf-preview .media img[data-on="true"] {
     opacity: 1;
-  }
-  .pf:has(.pf-list a:hover) .pf-preview .media img[data-on="true"] {
-    filter: var(--tone-on);
   }
 }
 .proposals {
