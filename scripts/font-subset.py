@@ -44,7 +44,7 @@ with tempfile.TemporaryDirectory() as tmp:
         hangul = sum(1 for c in cs if "\uac00" <= c <= "\ud7a3")
         print(f"{name}: 한글 {hangul}자, 전체 {len(cs)}자 -> {out.relative_to(ROOT)} {out.stat().st_size // 1024}KB")
 
-# font-display swap: block은 글자가 보일 때까지 LCP가 늦어짐(실측 2.7초). swap은 첫 프레임 글꼴 교체로 CLS 약 0.02~0.04(기준 0.1 이하)
+# font-display swap: 첫 프레임은 대체 글꼴일 수 있어, 글자 폭에 따라 줄이 바뀌는 칩 줄은 칸 폭을 고정했다(globals.css .chips.filters)
 # 첫 화면 서브셋은 CSS에 data URI로 넣는다(스타일시트와 함께 도착해 첫 레이아웃부터 같은 글꼴, 글꼴 교체로 인한 두 번째 레이아웃 없음)
 import base64
 b64 = base64.b64encode((ROOT / "app/fonts/PretendardCritical.woff2").read_bytes()).decode()

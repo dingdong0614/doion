@@ -9,7 +9,7 @@ export default function PageMotion() {
   const reduced = useReduced();
 
   useEffect(() => {
-    // 움직임 줄이기: 아무것도 걸지 않음(가로 트랙은 손으로 넘김, 사진은 무채색 그대로)
+    // 움직임 줄이기: 아무것도 걸지 않음(가로 트랙은 손으로 넘김)
     if (reduced !== false) return;
     let cancelled = false;
     let cleanup = () => {};
@@ -73,12 +73,6 @@ export default function PageMotion() {
             { x: dir === "left" ? 0 : d },
             { x: dir === "left" ? d : 0, ease: "none", scrollTrigger: { trigger: s, start: "top bottom", end: "bottom top", scrub: 0.8, invalidateOnRefresh: true } }
           );
-        });
-
-        // 3. 풀블리드 사진: 패럴랙스 yPercent -6 에서 6 (사이트 전체에서 이 한 곳). 사진 톤은 무채색 고정(CSS)
-        // 사진은 load 뒤에 붙으므로(DeferredPicture) 틀 안의 picture를 움직인다
-        $$("[data-parallax]").forEach((m) => {
-          gsap.fromTo(m, { "--py": "-6%" }, { "--py": "6%", ease: "none", scrollTrigger: { trigger: m, start: "top bottom", end: "bottom top", scrub: true } });
         });
 
         // 4. 선언문: 단어가 스크롤에 따라 차례로 짙어짐(명도만, 회색에서 글자색)

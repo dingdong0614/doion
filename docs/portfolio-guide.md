@@ -27,9 +27,9 @@
 
 3. `npm run dev`로 `/`와 `/portfolio`를 확인한 뒤 배포합니다.
 
-- 홈: 피티홀릭짐이 풀블리드 한 장, 나머지는 가로 트랙 카드(4:5 보정본)로 자동 배치됩니다. /portfolio: 목록 + 고정 미리보기.
+- 홈: 전체 사례가 가로 트랙 카드(4:5 보정본, 원색)로 자동 배치됩니다. /portfolio: 목록 + 고정 미리보기.
 - 카테고리 이름은 /portfolio 업종 필터에 그대로 나옵니다(`/portfolio#헬스장`처럼 해시로 시작 가능).
-- 사례를 바꾸면 사례 릴 영상도 다시 만듭니다(`scripts/make-reel.py` 또는 `scripts/record-reel.mjs`, docs/photo-pipeline.md).
+- 히어로 휴대폰 사진은 `scripts/tone.py`의 PHONE 목록, 가운데 영상은 `scripts/make-hero-video.py`(docs/photo-pipeline.md).
 - 업종별 제안서 PDF는 같은 파일의 `proposals` 배열과 `public/assets/proposals/`에서 관리합니다.
 - 가격, 관리 요금, 진행 단계, 차별점 문구는 `data/offer.ts`에서 고칩니다.
 

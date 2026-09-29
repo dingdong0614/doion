@@ -4,7 +4,6 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import SmoothScroll from "@/components/SmoothScroll";
 import Loader from "@/components/Loader";
-import Cursor from "@/components/Cursor";
 import { TransitionRoot } from "@/components/Transition";
 import FontFallback from "@/components/FontFallback";
 import { og, site, twitterCard } from "@/lib/site";
@@ -51,7 +50,6 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         </a>
         <Loader />
         <TransitionRoot />
-        <Cursor />
         <SmoothScroll />
         <FontFallback />
         <Header />

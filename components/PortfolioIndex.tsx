@@ -32,7 +32,7 @@ export default function PortfolioIndex({ items, categories }: { items: Portfolio
       <h2 id="list-title" className="sr-only">
         사례 목록
       </h2>
-      <div className="chips" role="group" aria-label="업종별 보기" style={col("1 / 25")}>
+      <div className="chips filters" role="group" aria-label="업종별 보기" style={col("1 / 25")}>
         {["전체", ...categories].map((c) => (
           <button
             key={c}
@@ -60,7 +60,6 @@ export default function PortfolioIndex({ items, categories }: { items: Portfolio
               href={c.href}
               target="_blank"
               rel="noopener noreferrer"
-              data-cursor="open"
               onPointerEnter={() => setHover(i)}
               onFocus={() => setHover(i)}
             >
@@ -91,7 +90,7 @@ export default function PortfolioIndex({ items, categories }: { items: Portfolio
               alt=""
               width={780}
               height={975}
-              sizes="(max-width: 767px) 1px, 36vw"
+              sizes="(max-width: 767px) 1px, 390px"
               data-on={c === current}
               className="tone-img"
             />
