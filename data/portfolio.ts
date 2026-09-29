@@ -1,14 +1,16 @@
-// 사례 추가 방법: 아래 배열에 항목 하나 + public/assets/portfolio/ 에 썸네일 한 장. (docs/portfolio-guide.md)
+// 사례 추가 방법: 아래 배열에 항목 하나 + 캡처 두 장, 그다음 python3 scripts/tone.py 로 보정본 생성. (docs/portfolio-guide.md)
 
 export type PortfolioItem = {
   name: string;
+  slug: string; // 보정본 파일 이름: public/assets/tone/<slug>-45.jpg, -169.jpg, -11.jpg (scripts/tone.py)
+  sign?: string; // 상호 띠에 쓰는 짧은 상호. 없으면 name. 데모는 띠에 넣지 않음
   category: string; // 필터 탭에 그대로 쓰임
   summary: string;
   href?: string; // 라이브 URL
   thumb: string; // public 기준 경로, 가로형 약 2:1 권장 (공유용·예비)
   desktop?: string; // 1440×900 캡처 (넓은 칸)
   mobile: string; // 390×844 @2x 캡처 (좁은 칸)
-  demo?: boolean; // 영업용 데모면 true — 카드에 '데모'로 표기
+  demo?: boolean; // 영업용 데모면 true, 카드에 '데모'로 표기
   published: boolean; // 공개 동의 미확인이면 false (렌더 안 함)
   order: number; // 작을수록 앞
 };
@@ -16,6 +18,7 @@ export type PortfolioItem = {
 const items: PortfolioItem[] = [
   {
     name: "뭐무까~",
+    slug: "sungdae",
     category: "음식점",
     summary:
       "성균관대 두 캠퍼스와 경희대 국제캠퍼스, 아주대, 고려대, 서울대, 이화여대, 인하대, 중앙대, 한양대, 연세대까지 캠퍼스 11곳의 도보권 맛집 859곳(2026년 9월 기준). 학교를 고르면 학교색으로 바뀌는 설치형 웹앱으로, 지금 문 연 곳과 도보 거리순 정렬, 한/영 전환, 스꾸패스 혜택 표시를 지원.",
@@ -27,6 +30,7 @@ const items: PortfolioItem[] = [
   },
   {
     name: "피티홀릭짐",
+    slug: "ptholic",
     category: "헬스장",
     summary: "수원 율전동 PT 전문 헬스장. Next.js로 전면 리빌드해 운영 중.",
     href: "https://ptholic-1.vercel.app",
@@ -38,6 +42,8 @@ const items: PortfolioItem[] = [
   },
   {
     name: "빠둠뮤직 보컬 트레이닝 센터",
+    slug: "bbadoom",
+    sign: "빠둠뮤직",
     category: "학원",
     summary: "부산 양정·서울 충무로 보컬·음성재활 트레이닝 센터. 데이터 기반 훈련을 앞세운 사이트.",
     href: "https://bbadoom-music.vercel.app",
@@ -49,6 +55,8 @@ const items: PortfolioItem[] = [
   },
   {
     name: "키훈 Beauty Archive",
+    slug: "keyhoon",
+    sign: "키훈",
     category: "뷰티",
     summary: "인스타그램 팔로워 8.7K 뷰티 크리에이터의 제품 아카이브. 인스타그램 연동형.",
     href: "https://keyhoon.vercel.app",
@@ -60,6 +68,7 @@ const items: PortfolioItem[] = [
   },
   {
     name: "장안설비대장",
+    slug: "jangan",
     category: "디렉토리",
     summary: "수원 장안구 보일러·냉난방·샷시 등 설비 소상공인을 업종별로 모아 연결하는 지역 디렉토리.",
     href: "https://jangan-equipment.vercel.app",
@@ -71,6 +80,8 @@ const items: PortfolioItem[] = [
   },
   {
     name: "체대입시 실기 기록판",
+    slug: "chedae",
+    sign: "체대입시",
     category: "디렉토리",
     summary: "실기 기준·입시요강·일정을 정리하고 지역별 학원을 연결하는 정보 허브.",
     href: "https://chedae-ipsi.vercel.app",
@@ -82,6 +93,7 @@ const items: PortfolioItem[] = [
   },
   {
     name: "온담요양원",
+    slug: "ondam",
     category: "요양원",
     summary: "노인요양시설 제안용 데모. 상담·입소 절차 안내부터 시설 소개까지.",
     href: "https://care-demo-git-main-me-68b9.vercel.app",
@@ -94,6 +106,7 @@ const items: PortfolioItem[] = [
   },
   {
     name: "다솜교회",
+    slug: "dasom",
     category: "교회",
     summary: "교회 제안용 데모. 예배 시간 안내부터 새가족 안내까지.",
     href: "https://dasom-church-demo.vercel.app",
@@ -108,6 +121,11 @@ const items: PortfolioItem[] = [
 
 export const portfolio = items.filter((i) => i.published).sort((a, b) => a.order - b.order);
 export const categories = [...new Set(portfolio.map((i) => i.category))];
+
+// 상호 띠(고유 장치): 공개 동의된 실제 고객 상호만, 데모 제외
+export const signs = portfolio.filter((i) => !i.demo).map((i) => i.sign ?? i.name);
+
+export const tone = (item: PortfolioItem, ratio: "45" | "169" | "11") => `/assets/tone/${item.slug}-${ratio}.jpg`;
 
 export const proposals = [
   { title: "헬스장·피트니스 센터", file: "gym-fitness.pdf", desc: "NFC/QR 현장 연동, 예약 통합, Doion Care 관리까지." },

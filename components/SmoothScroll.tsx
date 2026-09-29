@@ -1,31 +1,47 @@
 "use client";
 
-// 부드러운 스크롤(관성). 사이트의 모션 설정을 존중한다:
-// - data-motion="off"(사이트 토글) 또는 OS의 "동작 줄이기"면 켜지 않음(네이티브 스크롤 유지).
-// - 기존 CSS 스크롤 구동 애니메이션(rise·parallax 등)은 스크롤 위치 기반이라 그대로 동작.
+// 관성 스크롤(Lenis, lerp 0.1). 움직임 줄이기(시스템·사이트 버튼)면 켜지 않고 네이티브 스크롤.
+// Lenis는 첫 입력 때 불러온다(첫 로드 JS에서 뺌).
 import { useEffect } from "react";
-import Lenis from "lenis";
 import "lenis/dist/lenis.css";
+import { onFirstInput, setLenis, useReduced } from "@/lib/motion";
+import type Lenis from "lenis";
 
 export default function SmoothScroll() {
+  const reduced = useReduced();
+
   useEffect(() => {
-    const root = document.documentElement;
-    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    if (root.dataset.motion === "off" || reduce) return;
-
-    const lenis = new Lenis({ duration: 1.1, smoothWheel: true, wheelMultiplier: 1 });
+    if (reduced !== false) return;
+    let lenis: Lenis | null = null;
     let raf = 0;
-    const loop = (t: number) => {
-      lenis.raf(t);
+    let t = 0;
+    let dead = false;
+    const off = onFirstInput(async () => {
+      const { default: L } = await import("lenis");
+      if (dead) return;
+      lenis = new L({ lerp: 0.1, smoothWheel: true });
+      setLenis(lenis);
+      const loop = (time: number) => {
+        lenis?.raf(time);
+        raf = requestAnimationFrame(loop);
+      };
       raf = requestAnimationFrame(loop);
-    };
-    raf = requestAnimationFrame(loop);
-
+      // 첫 방문 로더(1.6초) 동안은 멈춤
+      if (document.documentElement.hasAttribute("data-loader")) {
+        lenis.stop();
+        t = window.setTimeout(() => lenis?.start(), 1650);
+      }
+      window.dispatchEvent(new Event("doion:lenis"));
+    });
     return () => {
+      dead = true;
+      off();
+      clearTimeout(t);
       cancelAnimationFrame(raf);
-      lenis.destroy();
+      lenis?.destroy();
+      setLenis(null);
     };
-  }, []);
+  }, [reduced]);
 
   return null;
 }

@@ -5,11 +5,13 @@
 | IndexNow 키 파일 | `public/cce6ed560d2835e73f311f296b9cfaa0.txt` (내용 동일) | 로컬 200 ✓ |
 | 네이버 서치어드바이저 메타 | `lib/site.ts` `naverVerification` → `app/layout.tsx` `metadata.verification.other` | `<head>`에 출력 ✓ |
 | 구글 서치콘솔 | DNS TXT 인증이라 코드와 무관. **DNS 레코드 건드리지 말 것** | 유지 |
-| JSON-LD | 홈(`app/page.tsx`) `ProfessionalService`. email ceo@doion.co.kr, telephone, areaServed 수원시·율전동·천천동, priceRange ₩300,000~₩800,000 | ✓ |
+| JSON-LD | 홈(`app/page.tsx`) `ProfessionalService`. email ceo@doion.co.kr, telephone, areaServed 수원시·율전동·천천동, priceRange는 `data/offer.ts` 제작비에서 계산(2026-09-29 기준 ₩500,000~₩1,000,000) | ✓ |
 | robots.txt | `app/robots.ts`. `/admin.html`, `/api/` 차단 + `Sitemap:` 지시어 | ✓ |
 | sitemap.xml | `app/sitemap.ts`. 새 경로(확장자 없음) 6개 | ✓ |
 | canonical·title·description | 페이지마다 `metadata` | ✓ |
-| OG 이미지 | 기존 `/assets/og-image.png` 1200×630 재사용 | ✓ |
+| OG 이미지 | `/assets/og-2026.png` 1200×630 (`lib/site.ts`) | ✓ |
+| 제목 구분자 | 2026-09-29부터 `페이지 | doion(도이온)` (긴 대시 대신 세로줄) | ✓ |
+| 404 | `app/not-found.tsx`, 404 상태 코드 + noindex | ✓ |
 
 ## 기존 대비 바뀐 점
 

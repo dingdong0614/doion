@@ -51,7 +51,7 @@ export async function POST(req: Request) {
   const apiKey = process.env.RESEND_API_KEY;
   if (!apiKey) {
     if (process.env.NODE_ENV !== "production") {
-      console.info("[contact] RESEND_API_KEY 없음 — 개발 모드라 메일 대신 로그만 남김", { ...data, phone: "***" });
+      console.info("[contact] RESEND_API_KEY 없음: 개발 모드라 메일 대신 로그만 남김", { ...data, phone: "***" });
       return Response.json({ ok: true, dev: true });
     }
     // Resend 키가 없으면 검증·횟수 제한만 서버에서 하고, 메일은 브라우저가 Web3Forms로 보냄

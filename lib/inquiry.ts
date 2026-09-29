@@ -1,4 +1,4 @@
-// 문의 폼 검증 — 클라이언트와 서버가 같은 함수를 씀.
+// 문의 폼 검증: 클라이언트와 서버가 같은 함수를 씀.
 export const industries = ["헬스장·피트니스", "뷰티샵·미용실", "학원·교육", "교회·종교시설", "요양원·요양시설", "음식점·카페", "기타"];
 
 export type Inquiry = { shop: string; name: string; phone: string; industry: string; message: string; consent: boolean };

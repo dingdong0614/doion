@@ -10,8 +10,9 @@ export const metadata: Metadata = {
 
 export default function PrivacyPage() {
   return (
-    <article className="hero wrap prose-legal" style={{ maxWidth: 860 }}>
-      <h1 className="title-lg">
+    <article className="g legal">
+      <div className="doc" style={{ "--c": "5 / 21" } as React.CSSProperties}>
+      <h1 className="t-h2">
         개인정보처리방침
       </h1>
       <p style={{ marginTop: 16 }}>
@@ -199,6 +200,7 @@ export default function PrivacyPage() {
 
       <h2>12. 방침 변경</h2>
       <p>내용이 바뀌면 시행 7일 전부터 이 페이지에 알립니다.</p>
+      </div>
     </article>
   );
 }

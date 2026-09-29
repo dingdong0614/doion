@@ -1,4 +1,4 @@
-// 홈 실적 지표(누적 제작 매장 / 평균 제작 기간 / 설치한 NFC·QR 태그) — admin.html에서 수정. 기존 api/stats.js 이식.
+// 홈 실적 지표(누적 제작 매장 / 평균 제작 기간 / 설치한 NFC·QR 태그). admin.html에서 수정. 기존 api/stats.js 이식.
 import { isAdmin, kv, kvEnabled } from "@/lib/kv";
 import { statDefaults } from "@/data/offer";
 

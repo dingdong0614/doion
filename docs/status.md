@@ -33,3 +33,11 @@
 - `public/llms.txt`에 "대표 제작 사례"(뭐무까) 항목 추가.
 - 확인만 하고 그대로 둔 것: 가격(제작 30·60·80만, 관리 5·10·13만, 1년 고정)은 공통 기준과 일치. 업종별 제안서 6종은 파일과 목록 일치. 홈 "사례 N개"는 portfolio 배열 길이로 자동 계산(현재 8). 홈 실적 지표(statDefaults)는 KV로 덮이는 값이라 손대지 않음. sitemap lastModified는 빌드 시각이라 배포하면 자동 갱신.
 - 남은 일: 포트폴리오 5곳(장안설비대장·피티홀릭짐·체대입시·온담요양원·다솜교회)은 새 디자인으로 리워크됐으나 미배포라, 배포 후 실제 화면으로 캡처 교체 예정. 뭐무까 모바일 캡처(`sungdae-m.jpg`, 현재 자과캠 87곳 화면)도 다캠퍼스가 보이는 화면으로 교체 검토(클라우드에서 접속 차단돼 Chrome으로 캡처 예정).
+
+## 2026-09-29 "간판 다음" 디자인 이식 (브랜치 design/signboard, 미배포)
+- 대표 지시 "도이온 웹사이트 100점으로 만들어": 채점표(100점, 50항목) 기준으로 시안 "간판 다음"을 본 사이트에 이식. push·배포는 대표 승인 후.
+- 서체 Wanted Sans → Pretendard Variable(얇은 제목 250 때문). 폰트 2단계 로딩(docs/font-subset.md).
+- 스택 추가: GSAP 3.15(ScrollTrigger, CustomEase, 첫 입력 때 동적 import), Lenis 1.3(첫 입력 때 동적 import). lucide-react 제거(자체 아이콘). Next 16.3.6.
+- 새 파일: app/template.tsx(페이지 전환), app/not-found.tsx(404), components/Loader·Cursor·Transition·PageMotion·SignStrip·Reel·PriceDoc·PageHead·PortfolioIndex·Light·Icon·FontFallback, scripts/tone.py·make-reel.py·record-reel.mjs·critical-chars.py·font-subset.py, docs/photo-pipeline.md.
+- 뺀 것: 다크 테마 토글, 홈 실적 숫자 줄(Ledger, /api/stats·admin은 그대로 둠), 부채꼴 사례, 사례 모자이크, 업종 칩 줄(상담 폼 업종 선택으로 이동), 홈 NFC 번호 3단계(본문 한 단락으로).
+- 보안 헤더 4종 추가(next.config.ts headers). 상담 폼 API·rate limit·처리방침·301·IndexNow 키·네이버 인증은 그대로.

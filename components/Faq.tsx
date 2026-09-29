@@ -1,4 +1,5 @@
 import { faq } from "@/data/offer";
+import Icon from "./Icon";
 
 // 네이티브 <details> 아코디언 + FAQPage 구조화 데이터(검색 결과 노출용)
 export default function Faq() {
@@ -13,7 +14,10 @@ export default function Faq() {
       <div className="faq">
         {faq.map((f) => (
           <details key={f.q}>
-            <summary>{f.q}</summary>
+            <summary>
+              {f.q}
+              <Icon name="plus" />
+            </summary>
             <p>{f.a}</p>
           </details>
         ))}

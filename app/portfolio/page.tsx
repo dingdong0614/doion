@@ -1,8 +1,9 @@
 import type { Metadata } from "next";
-import { og } from "@/lib/site";
 import Link from "next/link";
-import { FileText } from "lucide-react";
-import PortfolioBrowser from "@/components/PortfolioBrowser";
+import { og } from "@/lib/site";
+import Icon from "@/components/Icon";
+import PageHead from "@/components/PageHead";
+import PortfolioIndex from "@/components/PortfolioIndex";
 import { categories, portfolio, proposals } from "@/data/portfolio";
 
 export const metadata: Metadata = {
@@ -13,54 +14,61 @@ export const metadata: Metadata = {
   openGraph: og("/portfolio"),
 };
 
+const col = (c: string, cm?: string) => ({ "--c": c, ...(cm ? { "--cm": cm } : {}) }) as React.CSSProperties;
+
 export default function PortfolioPage() {
   return (
     <>
-      <section className="hero wrap" style={{ paddingBottom: 40 }}>
-        <h1 className="title-lg">
-          만든 사이트,
-          <br />
-          <span className="dim">지금 열어보세요.</span>
-        </h1>
-        <p className="lead" style={{ marginTop: 20 }}>
-          실제 운영 중인 사이트와 업종별 영업용 데모를 함께 모았습니다. 카드를 누르면 라이브 사이트가 새 탭에서 열립니다.
+      {/* 1. 머리: 둘째 줄을 8컬럼 들여 씀 */}
+      <PageHead a="만든 사이트," b="지금 열어보세요." capL={`사례 ${portfolio.length}곳`} capR="라이브 사이트는 새 탭에서 열립니다" align="indent">
+        <p className="measure" style={col("1 / 10")}>
+          실제 운영 중인 사이트와 업종별 영업용 데모를 함께 모았습니다. 줄을 누르면 라이브 사이트가 새 탭에서 열립니다.
         </p>
-      </section>
+      </PageHead>
 
-      <section className="wrap" aria-labelledby="list-title">
-        <h2 id="list-title" className="sr-only">
-          사례 목록
+      {/* 2. 목록 + 고정 미리보기(14 + 1 + 9) */}
+      <PortfolioIndex items={portfolio} categories={categories} />
+
+      {/* 3. 업종별 제안서: 두 칸 문서 목록 */}
+      <section className="g proposals" aria-labelledby="proposal-title">
+        <h2 id="proposal-title" className="t-h2" style={col("1 / 9")} data-reveal>
+          <span className="ln">
+            <span>업종별 제안서.</span>
+          </span>
         </h2>
-        <PortfolioBrowser items={portfolio} categories={categories} />
-      </section>
-
-      <section className="section wrap" aria-labelledby="proposal-title">
-        <div className="section-head">
-          <h2 id="proposal-title" className="title-md">
-            업종별 제안서.
-          </h2>
-          <p className="lead">업종마다 필요한 기능과 강조할 부분이 다릅니다. 해당 업종 제안서를 PDF로 바로 볼 수 있어요.</p>
-        </div>
-        <ul className="reason-list">
+        <p className="measure mute" style={col("9 / 19")}>
+          업종마다 필요한 기능과 강조할 부분이 다릅니다. 해당 업종 제안서를 PDF로 바로 볼 수 있어요.
+        </p>
+        <ul className="prop-list" style={col("1 / 25")}>
           {proposals.map((p) => (
             <li key={p.file}>
-              <a href={`/assets/proposals/${p.file}`} target="_blank" rel="noopener noreferrer" style={{ display: "flex", gap: 14 }}>
-                <FileText size={22} aria-hidden style={{ flex: "none", marginTop: 4, color: "var(--accent)" }} />
-                <span>
-                  <span className="h3" style={{ display: "block" }}>
-                    {p.title} <span className="muted" style={{ fontSize: "0.85rem", fontWeight: 400 }}>PDF</span>
+              <a href={`/assets/proposals/${p.file}`} target="_blank" rel="noopener noreferrer">
+                <span className="t">
+                  <span className="t-st">{p.title}</span>
+                  <span className="t-cap mute">
+                    PDF<span className="sr-only"> (새 탭)</span>
                   </span>
-                  <span className="muted">{p.desc}</span>
                 </span>
+                <span className="mute">{p.desc}</span>
               </a>
             </li>
           ))}
         </ul>
-        <p style={{ marginTop: 40 }}>
-          <Link href="/contact" className="btn btn-primary">
-            우리 매장도 상담받기
+      </section>
+
+      {/* 4. 마무리 띠: 제목 왼쪽, 버튼 오른쪽 아래 */}
+      <section className="g band" aria-labelledby="band-title">
+        <h2 id="band-title" className="t-h2" style={col("1 / 15")}>
+          우리 매장도 상담받기
+        </h2>
+        <div className="end row-links" style={col("15 / 25")}>
+          <Link href="/contact" className="btn btn-ink">
+            무료 상담 신청
           </Link>
-        </p>
+          <Link href="/pricing" className="ul">
+            가격 보기 <Icon name="out" />
+          </Link>
+        </div>
       </section>
     </>
   );

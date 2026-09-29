@@ -26,7 +26,7 @@ export default function LiveStatus() {
   return (
     <p className="live" data-open={open === true} aria-live="polite">
       <i aria-hidden />
-      {open === null ? " " : open ? "지금 전화 상담 가능해요" : "지금은 상담 신청을 남겨주세요"}
+      {open === null ? " " : open ? "지금 전화 상담 가능해요" : "지금은 상담 신청을 남겨주세요"}
     </p>
   );
 }

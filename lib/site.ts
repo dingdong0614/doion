@@ -13,9 +13,11 @@ export const site = {
 };
 
 // 페이지별 metadata.openGraph는 layout 값을 통째로 덮어쓰므로, 공통값을 여기서 같이 넣음
-const shareImage = { url: "/assets/og-2026.png", width: 1200, height: 630, alt: "doion — 간판 다음으로, 손님이 보는 곳." };
+const shareImage = { url: "/assets/og-2026.png", width: 1200, height: 630, alt: "doion(도이온): 간판 다음으로, 손님이 보는 곳." };
 export const og = (url: string) => ({ type: "website" as const, siteName: site.name, locale: "ko_KR", url, images: [shareImage] });
 export const twitterCard = { card: "summary_large_image" as const, images: [shareImage] };
+
+export const tel = `tel:${site.phone.replaceAll("-", "")}`;
 
 export const nav = [
   { href: "/portfolio", label: "사례" },
