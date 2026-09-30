@@ -1,8 +1,8 @@
 "use client";
 
 // 히어로 휴대폰 세 대: 간판 다음에 손님이 보는 곳(실제 고객 사이트 화면, 원색).
-// 가운데는 피티홀릭짐 모바일 사이트를 한 프레임씩 찍어 만든 60fps 스크롤 영상(scripts/make-hero-video.py).
-// 영상은 사용자가 움직이거나 load 3초 뒤에 붙이고(첫 화면 LCP는 포스터 이미지), 움직임 줄이기면 포스터만. 5초 넘는 자동 재생이라 정지 버튼.
+// 왼쪽 뭐무까~, 가운데 관악중앙교회, 오른쪽 피티홀릭짐. 가운데는 관악중앙교회 모바일 사이트를 한 프레임씩 찍어 만든 60fps 스크롤 영상(scripts/make-hero-video.py).
+// 영상은 사용자가 움직이거나 load 5초 뒤에 붙이고(첫 화면 LCP는 포스터 이미지), 움직임 줄이기면 포스터만. 5초 넘는 자동 재생이라 정지 버튼.
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import Icon from "./Icon";
@@ -16,7 +16,7 @@ export default function HeroPhones() {
   const [playing, setPlaying] = useState(false);
 
   useEffect(() => {
-    // 영상(약 0.4~0.7MB)은 첫 화면이 다 그려진 뒤에 붙인다: 사용자가 움직이면 바로, 아니면 load 3초 뒤.
+    // 영상(약 0.4~0.7MB)은 첫 화면이 다 그려진 뒤에 붙인다: 사용자가 움직이면 바로, 아니면 load 5초 뒤.
     // 첫 프레임은 포스터와 같은 그림이라 붙는 순간 화면이 바뀌지 않는다.
     let t = 0;
     const evs = ["pointerdown", "touchstart", "scroll", "keydown", "wheel"] as const;
@@ -26,7 +26,7 @@ export default function HeroPhones() {
       setReady(true);
     };
     const arm = () => {
-      t = window.setTimeout(go, 3000);
+      t = window.setTimeout(go, 5000);
     };
     evs.forEach((e) => addEventListener(e, go, { once: true, passive: true }));
     if (document.readyState === "complete") arm();
@@ -73,7 +73,7 @@ export default function HeroPhones() {
         <div className="phone c">
           <Image
             src="/assets/video/hero-poster.jpg"
-            alt="피티홀릭짐 사이트 휴대폰 화면"
+            alt="관악중앙교회 사이트 휴대폰 화면"
             width={480}
             height={1038}
             sizes="(max-width: 1023px) 40vw, 200px"
@@ -89,11 +89,11 @@ export default function HeroPhones() {
           )}
         </div>
         <div className="phone side r">
-          <Image src="/assets/tone/jangan-phone.jpg" alt="장안설비대장 사이트 휴대폰 첫 화면" width={780} height={1688} sizes="(max-width: 1023px) 30vw, 150px" />
+          <Image src="/assets/tone/ptholic-phone.jpg" alt="피티홀릭짐 사이트 휴대폰 첫 화면" width={780} height={1688} sizes="(max-width: 1023px) 30vw, 150px" />
         </div>
       </div>
       <figcaption className="phones-cap t-cap mute">
-        <span>뭐무까~ · 피티홀릭짐 · 장안설비대장, 손님 휴대폰에서 보이는 화면</span>
+        <span>뭐무까~ · 관악중앙교회 · 피티홀릭짐, 손님 휴대폰에서 보이는 화면</span>
         {showVideo && (
           <button type="button" className="ul t-cap" onClick={toggle} aria-pressed={playing}>
             <Icon name={playing ? "pause" : "play"} />

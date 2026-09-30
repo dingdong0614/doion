@@ -26,6 +26,8 @@ CAPTURES = {
     "chedae": ("chedae-d-2609b.jpg", "chedae-m-2609b.jpg"),
     "ondam": ("ondam-d-2609b.jpg", "ondam-m-2609b.jpg"),
     "dasom": ("dasom-d-2609b.jpg", "dasom-m-2609b.jpg"),
+    "gajach": (None, "gajach-m-2609.jpg"),
+    "green": (None, "green-m-2609.jpg"),
 }
 
 WB = (1.0, 0.994, 0.972)  # 배경 #F7F7F4 방향의 따뜻한 흰 균형
@@ -60,7 +62,7 @@ def save(im: Image.Image, name: str, width: int):
     im.save(OUT / name, "JPEG", quality=86, optimize=True, progressive=True)
 
 
-PHONE = ["sungdae", "jangan"]  # 히어로 옆 휴대폰 두 대(가운데는 60fps 영상, scripts/make-hero-video.py)
+PHONE = ["sungdae", "ptholic"]  # 히어로 옆 휴대폰 두 대: 왼쪽 뭐무까~, 오른쪽 피티홀릭짐(가운데 관악중앙교회는 60fps 영상, scripts/make-hero-video.py)
 USED_11 = ["bbadoom"]
 
 if __name__ == "__main__":

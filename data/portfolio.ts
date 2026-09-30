@@ -41,6 +41,29 @@ const items: PortfolioItem[] = [
     order: 2,
   },
   {
+    name: "관악중앙교회",
+    slug: "gajach",
+    category: "교회",
+    summary:
+      "대한예수교장로회(통합) 관악중앙교회 홈페이지 리뉴얼(2026년 9월). Next.js와 Sanity로 새로 만들어 주일설교·예배시간·오시는 길·새가족 등록을 첫 화면에 모으고, 주보와 소식은 교회가 관리자 화면에서 직접 올립니다.",
+    href: "https://gajach-web.vercel.app",
+    thumb: "/assets/portfolio/gajach-thumb-2609.jpg",
+    mobile: "/assets/work/gajach-m-2609.jpg",
+    published: true,
+    order: 3,
+  },
+  {
+    name: "그린중고가전",
+    slug: "green",
+    category: "중고가전",
+    summary: "서울·인천·경기 중고가전 매입 업체의 랜딩페이지(2026년 9월). 전화 한 통이나 간편 견적 문의로 시세 확인부터 당일 방문 수거까지 이어지게 구성.",
+    href: "https://green-jungogaejeon.vercel.app",
+    thumb: "/assets/portfolio/green-thumb-2609.jpg",
+    mobile: "/assets/work/green-m-2609.jpg",
+    published: true,
+    order: 4,
+  },
+  {
     name: "빠둠뮤직 보컬 트레이닝 센터",
     slug: "bbadoom",
     sign: "빠둠뮤직",
@@ -51,7 +74,7 @@ const items: PortfolioItem[] = [
     mobile: "/assets/work/bbadoom-m-2609b.jpg",
     desktop: "/assets/work/bbadoom-d-2609b.jpg",
     published: true,
-    order: 3,
+    order: 5,
   },
   {
     name: "키훈 Beauty Archive",
@@ -64,7 +87,7 @@ const items: PortfolioItem[] = [
     mobile: "/assets/work/keyhoon-m.jpg",
     desktop: "/assets/work/keyhoon-d.jpg",
     published: true,
-    order: 4,
+    order: 6,
   },
   {
     name: "장안설비대장",
@@ -76,7 +99,7 @@ const items: PortfolioItem[] = [
     mobile: "/assets/work/jangan-m-2609b.jpg",
     desktop: "/assets/work/jangan-d-2609b.jpg",
     published: true,
-    order: 5,
+    order: 7,
   },
   {
     name: "체대입시 실기 기록판",
@@ -89,7 +112,7 @@ const items: PortfolioItem[] = [
     mobile: "/assets/work/chedae-m-2609b.jpg",
     desktop: "/assets/work/chedae-d-2609b.jpg",
     published: true,
-    order: 6,
+    order: 8,
   },
   {
     name: "온담요양원",
@@ -102,7 +125,7 @@ const items: PortfolioItem[] = [
     mobile: "/assets/work/ondam-m-2609b.jpg",
     desktop: "/assets/work/ondam-d-2609b.jpg",
     published: true,
-    order: 7,
+    order: 9,
   },
   {
     name: "다솜교회",
@@ -115,7 +138,7 @@ const items: PortfolioItem[] = [
     mobile: "/assets/work/dasom-m-2609b.jpg",
     desktop: "/assets/work/dasom-d-2609b.jpg",
     published: true,
-    order: 8,
+    order: 10,
   },
 ];
 

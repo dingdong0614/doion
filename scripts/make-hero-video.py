@@ -2,10 +2,12 @@
 
 실시간 녹화 대신 스크롤 위치를 한 프레임씩 옮기며 DPR 2 스크린샷을 찍고(부드러운 이징으로 위치 보간),
 ffmpeg -framerate 60 으로 인코딩한다. 내려갔다 같은 프레임을 거꾸로 올라와 끊김 없는 루프.
-대상: 고객 사이트를 로컬에서 띄운 주소(작업 환경에서 라이브 도메인 접속이 막혀, 공개 저장소
-dingdong0614/ptholic-1 을 next build && next start 로 띄워 찍음. 외부 이미지·폰트 요청은 막거나 로컬 파일로 대체).
+대상: 관악중앙교회(gajach-web.vercel.app) 모바일 첫 화면에서 1900px 아래까지(2026-09-30, 대표 지시로 가운데 교체).
+클라우드 작업 환경은 외부 도메인이 막혀, 대표 PC에서 Playwright로 같은 방식(reduced-motion, 로더 끝날 때까지 대기)으로
+프레임을 찍어 와 --frames 로 인코딩. 로컬 주소를 주면 이 스크립트가 직접 찍는다(이전 피티홀릭짐 영상 방식).
 출력: public/assets/video/hero.webm (VP9), hero.mp4 (H.264), hero-poster.jpg
 실행: python3 scripts/make-hero-video.py http://localhost:4001/ <pretendard 패키지 경로(선택)>
+      python3 scripts/make-hero-video.py --frames <d0000.jpg 폴더>
 보정: scripts/tone.py 의 preset(채도·대비·흰 균형 약간)을 프레임마다 적용.
 """
 import asyncio, os, subprocess, sys, tempfile
@@ -18,8 +20,9 @@ from tone import preset  # noqa: E402
 
 ROOT = Path(__file__).resolve().parent.parent
 OUT = ROOT / "public/assets/video"
-URL = sys.argv[1] if len(sys.argv) > 1 else "http://localhost:4001/"
-PKG = sys.argv[2] if len(sys.argv) > 2 else ""
+FRAMES = sys.argv[2] if len(sys.argv) > 2 and sys.argv[1] == "--frames" else ""
+URL = sys.argv[1] if len(sys.argv) > 1 and not FRAMES else "http://localhost:4001/"
+PKG = sys.argv[2] if len(sys.argv) > 2 and not FRAMES else ""
 FPS = 60
 DOWN_S, HOLD_TOP_S, HOLD_BOTTOM_S = 3.6, 0.5, 0.4
 DIST = 1900  # 내려가는 거리(CSS px): 첫 화면 → 트레이너 → 가격표(외부 이미지가 빠진 칸 전까지)
@@ -64,8 +67,12 @@ def main():
     OUT.mkdir(parents=True, exist_ok=True)
     with tempfile.TemporaryDirectory() as t:
         tmp = Path(t)
-        n = asyncio.run(capture(tmp))
-        down = [tmp / f"d{i:04d}.png" for i in range(n)]
+        if FRAMES:
+            # 다른 컴퓨터에서 같은 방식(390x844 DPR 2, 이징 스크롤 한 프레임씩)으로 찍어 온 d0000.jpg... 폴더
+            down = sorted(Path(FRAMES).glob("d*.*"))
+        else:
+            n = asyncio.run(capture(tmp))
+            down = [tmp / f"d{i:04d}.png" for i in range(n)]
         seq = [down[0]] * round(HOLD_TOP_S * FPS) + down + [down[-1]] * round(HOLD_BOTTOM_S * FPS) + down[::-1][1:-1]
         for k, f in enumerate(seq):
             im = preset(Image.open(f)).resize((W, H), Image.LANCZOS)
