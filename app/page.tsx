@@ -59,7 +59,7 @@ function find(name: string) {
 export default function Home() {
   const cases = portfolio;
   const [nfc, ...why] = reasons;
-  const careImg = find("빠둠뮤직 보컬 트레이닝 센터");
+  const careImg = find("그린중고가전");
   const processImg = find("체대입시 실기 기록판");
 
   return (

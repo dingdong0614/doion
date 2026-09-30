@@ -20,7 +20,6 @@ OUT.mkdir(parents=True, exist_ok=True)
 CAPTURES = {
     "sungdae": (None, "sungdae-m.jpg"),
     "ptholic": ("ptholic-d-2609b.jpg", "ptholic-m-2609b.jpg"),
-    "bbadoom": ("bbadoom-d-2609b.jpg", "bbadoom-m-2609b.jpg"),
     "keyhoon": ("keyhoon-d.jpg", "keyhoon-m.jpg"),
     "jangan": ("jangan-d-2609b.jpg", "jangan-m-2609b.jpg"),
     "chedae": ("chedae-d-2609b.jpg", "chedae-m-2609b.jpg"),
@@ -65,7 +64,7 @@ def save(im: Image.Image, name: str, width: int):
 PHONE = ["sungdae", "ptholic"]  # 히어로 옆 휴대폰 두 대: 왼쪽 뭐무까~, 오른쪽 피티홀릭짐(가운데 관악중앙교회는 60fps 영상, scripts/make-hero-video.py)
 # 히어로 휴대폰에 첫 화면 대신 쓸 캡처: 피티홀릭짐 첫 화면에는 특가 가격 배지가 있어 doion 가격으로 오해될 수 있음(3차 검수) → 운영 시간 구간(스크롤 3800px)
 PHONE_SRC = {"ptholic": "ptholic-m-hours-2609.jpg"}
-USED_11 = ["bbadoom"]
+USED_11 = ["green"]  # 관리 섹션 1:1 사진(2026-09-30 빠둠뮤직 사례 내림에 따라 교체)
 
 if __name__ == "__main__":
     for slug, (desk, mob) in CAPTURES.items():

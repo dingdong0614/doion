@@ -73,7 +73,8 @@ const items: PortfolioItem[] = [
     thumb: "/assets/portfolio/bbadoom-thumb-2609b.jpg",
     mobile: "/assets/work/bbadoom-m-2609b.jpg",
     desktop: "/assets/work/bbadoom-d-2609b.jpg",
-    published: true,
+    // 2026-09-30 대표 지시: 만들다 만 사이트라 doion.co.kr 사례에서 내림
+    published: false,
     order: 5,
   },
   {
