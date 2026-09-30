@@ -63,6 +63,8 @@ def save(im: Image.Image, name: str, width: int):
 
 
 PHONE = ["sungdae", "ptholic"]  # 히어로 옆 휴대폰 두 대: 왼쪽 뭐무까~, 오른쪽 피티홀릭짐(가운데 관악중앙교회는 60fps 영상, scripts/make-hero-video.py)
+# 히어로 휴대폰에 첫 화면 대신 쓸 캡처: 피티홀릭짐 첫 화면에는 특가 가격 배지가 있어 doion 가격으로 오해될 수 있음(3차 검수) → 운영 시간 구간(스크롤 3800px)
+PHONE_SRC = {"ptholic": "ptholic-m-hours-2609.jpg"}
 USED_11 = ["bbadoom"]
 
 if __name__ == "__main__":
@@ -72,6 +74,7 @@ if __name__ == "__main__":
         if slug in USED_11:
             save(crop(m, 1 / 1), f"{slug}-11.jpg", 780)
         if slug in PHONE:
-            save(m, f"{slug}-phone.jpg", 780)
+            src = PHONE_SRC.get(slug)
+            save(preset(Image.open(SRC / src)) if src else m, f"{slug}-phone.jpg", 780)
         # 데스크톱 1440x900 캡처(DPR 1)는 큰 화면에 흐리게 보여 쓰지 않는다(대표 피드백)
     print("done", sorted(p.name for p in OUT.iterdir()))

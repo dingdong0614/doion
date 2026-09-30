@@ -62,18 +62,7 @@ export default function PageMotion() {
           });
         });
 
-        // 2. 상호 띠: 스크롤에 붙어 흐른다(left는 왼쪽, right는 오른쪽)
-        $$("[data-strip]").forEach((s) => {
-          const dir = s.dataset.strip;
-          if (dir !== "left" && dir !== "right") return;
-          const inner = s.querySelector(".strip-in");
-          const d = () => -innerWidth * 0.35;
-          gsap.fromTo(
-            inner,
-            { x: dir === "left" ? 0 : d },
-            { x: dir === "left" ? d : 0, ease: "none", scrollTrigger: { trigger: s, start: "top bottom", end: "bottom top", scrub: 0.8, invalidateOnRefresh: true } }
-          );
-        });
+        // 2. 상호 띠는 CSS 애니메이션으로 흐른다(SignStrip, globals.css .strip.flow)
 
         // 4. 선언문: 단어가 스크롤에 따라 차례로 짙어짐(명도만, 회색에서 글자색)
         $$("[data-words]").forEach((st) => {
@@ -95,7 +84,10 @@ export default function PageMotion() {
           mm.add("(min-width: 768px)", () => {
             sec.dataset.pinned = "true";
             const dist = () => Math.max(0, track.scrollWidth - pin.clientWidth);
-            const setH = () => sec.style.setProperty("--track-h", `${innerHeight + dist()}px`);
+            // 고정 구간 길이는 옆으로 가는 거리와 화면 1.4개 중 짧은 쪽(3차 검수: 화면 약 4개 → 약 2.4개).
+            // 거리가 더 길면 세로 1px에 가로가 1px보다 더 움직인다
+            const run = () => Math.min(dist(), innerHeight * 1.4);
+            const setH = () => sec.style.setProperty("--track-h", `${innerHeight + run()}px`);
             setH();
             ScrollTrigger.addEventListener("refreshInit", setH);
             gsap.to(track, {

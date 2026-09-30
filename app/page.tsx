@@ -6,6 +6,7 @@ import Light from "@/components/Light";
 import LiveStatus from "@/components/LiveStatus";
 import { BuildRows, CareCols } from "@/components/PriceDoc";
 import HeroPhones from "@/components/HeroPhones";
+import "./hero-poster.css";
 import SignStrip from "@/components/SignStrip";
 import { portfolio, signs, tone } from "@/data/portfolio";
 import { buildPlans, reasons, steps } from "@/data/offer";
@@ -97,7 +98,7 @@ export default function Home() {
               포트폴리오 보기 <Icon name="out" />
             </Link>
           </div>
-          <p className="hero-note t-cap mute" style={col("1 / 13")}>
+          <p className="hero-note" style={col("1 / 13")}>
             상담은 무료이고, 대표가 직접 연락드립니다.
           </p>
         </div>
@@ -117,7 +118,7 @@ export default function Home() {
               <span>간판 다음에 손님이 보는 화면.</span>
             </span>
           </h2>
-          <p className="measure mute" style={col("18 / 25")}>
+          <p className="measure" style={col("18 / 25")}>
             실제 운영 중인 사이트와 업종별 영업용 데모를 함께 모았습니다. 지금 열어볼 수 있어요. 카드를 누르면 라이브 사이트가 새 탭에서 열립니다.
           </p>
         </div>
@@ -194,11 +195,11 @@ export default function Home() {
         </h2>
         <div className="reason r1" style={col("1 / 10")}>
           <h3 className="t-st">{why[0].title}</h3>
-          <p className="mute">{why[0].body}</p>
+          <p>{why[0].body}</p>
         </div>
         <div className="reason r2" style={col("12 / 21")}>
           <h3 className="t-st">{why[1].title}</h3>
-          <p className="mute">{why[1].body}</p>
+          <p>{why[1].body}</p>
         </div>
         {/* 실사 교체 자리 A: 카운터에 붙인 NFC 태그에 손님이 휴대폰을 대는 손 클로즈업(1:1).
             촬영 전까지는 실제 고객 사이트 캡처를 같은 보정 프리셋으로 씀 */}
@@ -210,11 +211,11 @@ export default function Home() {
         </figure>
         <div className="reason r3" style={col("4 / 13")}>
           <h3 className="t-st">{why[2].title}</h3>
-          <p className="mute">{why[2].body}</p>
+          <p>{why[2].body}</p>
         </div>
         <div className="reason r4" style={col("15 / 24")}>
           <h3 className="t-st">{why[3].title}</h3>
-          <p className="mute">{why[3].body}</p>
+          <p>{why[3].body}</p>
           <a className="ul" href="/assets/docs/doion-merits.pdf" target="_blank" rel="noopener noreferrer" style={{ justifySelf: "start" }}>
             <Icon name="doc" /> 전체 비교자료 PDF 보기
           </a>
@@ -235,7 +236,7 @@ export default function Home() {
               <span>네 단계.</span>
             </span>
           </h2>
-          <p className="mute">상담부터 납품까지 약 2주.</p>
+          <p>상담부터 납품까지 약 2주.</p>
           {/* 실사 교체 자리 B: 대표가 매장에서 사장님과 상담하는 장면(4:5). 지금은 실제 고객 사이트 화면 */}
           <figure>
             <div className="media r45 tone">
@@ -256,7 +257,7 @@ export default function Home() {
           </ol>
           <div className="nfc">
             <h3 className="t-st">휴대폰을 대면, 바로 우리 가게 페이지.</h3>
-            <p className="measure mute">{nfc.body}</p>
+            <p className="measure">{nfc.body}</p>
             <div className="row-links">
               <Link className="btn btn-ink" href="#contact" data-label="상담 신청">
                 NFC/QR 설치 상담

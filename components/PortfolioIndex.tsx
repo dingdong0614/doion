@@ -68,10 +68,10 @@ export default function PortfolioIndex({ items, categories }: { items: Portfolio
                 {c.demo && <span className="mute"> · 데모</span>}
               </p>
               <h3 className="t-st">{c.name}</h3>
-              <p className="sum mute">{c.summary}</p>
+              <p className="sum">{c.summary}</p>
               {/* 모바일에서만 보이는 줄 사진(데스크톱은 오른쪽 고정 미리보기) */}
               <div className="media r45 tone">
-                <DeferredImage src={tone(c, "45")} alt="" width={780} height={975} sizes="(max-width: 767px) 92vw, 1px" />
+                <DeferredImage src={tone(c, "45")} alt="" width={780} height={975} sizes="(max-width: 767px) 36vw, 1px" />
               </div>
               <span className="ul">
                 사이트 보기<span className="sr-only"> (새 탭)</span> <Icon name="out" />

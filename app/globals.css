@@ -30,7 +30,7 @@
   --fs-h2: clamp(26px, 3.05vw, 44px);
   --fs-st: clamp(19px, 1.67vw, 24px);
   --fs-body: 16px;
-  --fs-cap: 13px;
+  --fs-cap: 14px; /* 3차 검수: 캡션 최소 14px */
 
   /* 굵기: 얇은 제목(250~350) 과 간판 글자(800)의 대비 */
   --w-display: 250;
@@ -502,6 +502,30 @@ a:hover .ul .ico {
   letter-spacing: -0.01em;
   padding-left: var(--m);
 }
+/* 흐르는 띠: 두 벌 중 한 벌 길이(-50%)만큼 옮기면 처음과 같은 그림이라 이음매 없이 반복 */
+.strip.flow .strip-in {
+  padding-left: 0;
+  gap: 0;
+  width: max-content;
+  animation: strip-flow var(--flow, 110s) linear infinite;
+}
+.strip.flow.sm .strip-in {
+  --flow: 80s;
+}
+.strip.flow[data-dir="right"] .strip-in {
+  animation-direction: reverse;
+}
+.strip-run {
+  display: flex;
+  align-items: center;
+  gap: 0.34em;
+  padding-right: 0.34em;
+}
+@keyframes strip-flow {
+  to {
+    transform: translateX(-50%);
+  }
+}
 .dia {
   flex: none;
   display: inline-block;
@@ -717,7 +741,8 @@ html[data-loader] body {
   height: calc(100% - 2px) !important;
 }
 .phone img,
-.phone video {
+.phone video,
+.phone .poster {
   position: absolute;
   inset: 0;
   width: 100%;
@@ -729,11 +754,11 @@ html[data-loader] body {
   z-index: 1;
 }
 .phone.l {
-  margin-right: -14%;
+  margin-right: -8%;
   transform: translateY(6%);
 }
 .phone.r {
-  margin-left: -14%;
+  margin-left: -8%;
   transform: translateY(-6%);
 }
 .phone.c {
@@ -748,8 +773,9 @@ html[data-loader] body {
   justify-content: space-between;
 }
 @media (max-width: 1023px) {
+  /* 3차 검수: 묶음 폭 약 340px, 옆 휴대폰은 약 8%만 가려짐 */
   .phones {
-    max-width: 300px;
+    max-width: 340px;
   }
   .phone {
     border-width: 4px;
@@ -772,6 +798,14 @@ html[data-loader] body {
   .hero-visual-wrap {
     grid-row: 2 / 6;
     align-self: center;
+  }
+  /* 3차 검수: 둘째 줄을 휴대폰에서 떼어 제목 아래 왼쪽(들여쓰기)으로, 남는 세로 공간은 위아래로 나눔 */
+  .hero-b {
+    text-align: left;
+    padding-left: calc(var(--fs-hero) * 1.6);
+  }
+  .hero-top {
+    align-content: center;
   }
 }
 
@@ -887,7 +921,6 @@ html[data-loader] body {
 }
 .card-sum {
   margin-top: 8px;
-  color: var(--mute);
   display: -webkit-box;
   -webkit-line-clamp: 3;
   -webkit-box-orient: vertical;
@@ -1407,6 +1440,13 @@ button.chip {
   min-height: 48px;
   padding: 0 12px;
 }
+.m-bar {
+  transition: transform var(--t-hover) var(--ease-out), visibility var(--t-hover);
+}
+.m-bar[data-show="false"] {
+  transform: translateY(110%);
+  visibility: hidden;
+}
 @media (min-width: 768px) {
   .m-bar {
     display: none;
@@ -1473,6 +1513,31 @@ button.chip {
 }
 .pf-row .ul {
   justify-self: start;
+}
+/* 390: 글은 왼쪽, 사진은 오른쪽 작은 칸(3차 검수: 폭 가득 4:5 열 장으로 화면 약 14개 길이) */
+@media (max-width: 767px) {
+  .pf-row {
+    grid-template-columns: minmax(0, 1fr) 36%;
+    align-items: start;
+  }
+  .pf-row > :not(.media) {
+    grid-column: 1;
+  }
+  .pf-row .media {
+    grid-column: 2;
+    grid-row: 1 / span 4;
+    margin-block: 0;
+  }
+  .pf-row {
+    padding-block: 20px;
+    row-gap: 6px;
+  }
+  .pf-row .sum {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
 }
 @media (min-width: 768px) {
   .pf-row {

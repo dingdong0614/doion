@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { site, tel } from "@/lib/site";
+import MobileBar from "./MobileBar";
 import MotionToggle from "./MotionToggle";
 import SignStrip from "./SignStrip";
 
@@ -32,7 +33,7 @@ export default function Footer() {
         <div className="g foot-b">
           <div style={{ "--c": "1 / 9" } as React.CSSProperties}>
             <p>doion(도이온)</p>
-            <p className="mute">수원 율전동에서 동네 가게 홈페이지를 만들고 관리합니다.</p>
+            <p>수원 율전동에서 동네 가게 홈페이지를 만들고 관리합니다.</p>
           </div>
           <div style={{ "--c": "9 / 17" } as React.CSSProperties}>
             <p>대표 {site.ceo}</p>
@@ -62,14 +63,7 @@ export default function Footer() {
       </footer>
 
       {/* 모바일 하단 고정 바 */}
-      <div className="m-bar">
-        <a className="btn btn-line" href={tel}>
-          전화 상담
-        </a>
-        <Link className="btn btn-ink" href="/contact">
-          상담 신청
-        </Link>
-      </div>
+      <MobileBar />
     </>
   );
 }

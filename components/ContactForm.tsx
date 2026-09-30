@@ -72,7 +72,7 @@ export default function ContactForm() {
     return (
       <div className="done" role="status" tabIndex={-1} ref={(el) => el?.focus()} style={{ "--c": "1 / 25" } as React.CSSProperties}>
         <p className="t-h2">상담 신청이 접수됐어요.</p>
-        <p className="mute">남겨주신 연락처로 대표가 직접 연락드립니다.</p>
+        <p>남겨주신 연락처로 대표가 직접 연락드립니다.</p>
         <p>
           <Link href="/portfolio" className="ul">
             기다리시는 동안 포트폴리오 보기
