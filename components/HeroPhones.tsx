@@ -68,7 +68,7 @@ export default function HeroPhones() {
     <figure className="hero-visual">
       <div className="phones">
         <div className="phone side l">
-          <Image src="/assets/tone/sungdae-phone.jpg" alt="뭐무까~ 앱 휴대폰 첫 화면" width={780} height={1688} sizes="(max-width: 1023px) 110px, 170px" />
+          <Image src="/assets/tone/sungdae-2610-phone.jpg" alt="뭐무까~ 앱 휴대폰 첫 화면" width={780} height={1688} sizes="(max-width: 1023px) 110px, 170px" />
         </div>
         <div className="phone c">
           {/* 포스터(LCP)는 홈 전용 CSS의 data URI(app/hero-poster.css, scripts/hero-poster.py): 이미지 요청 없이 첫 페인트에 그려짐 */}
@@ -81,7 +81,7 @@ export default function HeroPhones() {
           )}
         </div>
         <div className="phone side r">
-          <Image src="/assets/tone/ptholic-phone.jpg" alt="피티홀릭짐 사이트 휴대폰 화면, 운영 시간 안내" width={780} height={1688} sizes="(max-width: 1023px) 110px, 170px" />
+          <Image src="/assets/tone/ptholic-2610-phone.jpg" alt="피티홀릭짐 사이트 휴대폰 화면, 운영 시간 안내" width={780} height={1688} sizes="(max-width: 1023px) 110px, 170px" />
         </div>
       </div>
       <figcaption className="phones-cap t-cap mute">
